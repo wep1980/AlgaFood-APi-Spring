@@ -2,19 +2,20 @@ package br.com.wepdev.domain.model;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
+
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+
 
 @Entity
-@Table(name = "tab_cozinhas")
 public class Cozinha {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY) //Quem gera a chave e o provedor do banco de dados
 	private Long id;
 	
-	@Column(name = "nom_cozinha")
 	private String nome;
 	
 	
