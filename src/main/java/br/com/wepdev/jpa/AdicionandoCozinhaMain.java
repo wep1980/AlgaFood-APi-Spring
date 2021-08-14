@@ -1,7 +1,5 @@
 package br.com.wepdev.jpa;
 
-import java.util.List;
-
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
@@ -9,7 +7,7 @@ import org.springframework.context.ApplicationContext;
 import br.com.wepdev.TreinamentoAlgaFoodApiApplication;
 import br.com.wepdev.domain.model.Cozinha;
 
-public class ConsultaCozinhaMain {
+public class AdicionandoCozinhaMain {
 
 	public static void main(String[] args) {
 	
@@ -22,14 +20,18 @@ public class ConsultaCozinhaMain {
         ApplicationContext context = new SpringApplicationBuilder(TreinamentoAlgaFoodApiApplication.class)
         		.web(WebApplicationType.NONE).run(args);
         
-        
        CozinhaDAO cadastroCozinha = context.getBean(CozinhaDAO.class); // Pegando um bean do tipo cadastro cozinha
-       List<Cozinha> cozinhas = cadastroCozinha.listar();
-       
-       //  Objeto - Variavel - List cozinhas
-       for (Cozinha cozinha  :  cozinhas) {
-		   System.out.println(cozinha.getNome());
-	}
+   
+	   Cozinha c1 = new Cozinha();
+	   c1.setNome("Japonesa");
+	   
+	   Cozinha c2 = new Cozinha();
+	   c2.setNome("Mexicana");
+	 
+	   cadastroCozinha.adicionar(c1);
+	   
+	   c2 = cadastroCozinha.adicionar(c2);
+	   System.out.printf("%d - %s\n", c2.getId(), c2.getNome()); // %d pega o valor Long do getId , %s pega o valor String do getNome -- \n quebra a linha 
 	}
 
 }

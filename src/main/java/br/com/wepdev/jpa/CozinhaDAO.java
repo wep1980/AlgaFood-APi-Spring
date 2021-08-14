@@ -7,11 +7,12 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.wepdev.domain.model.Cozinha;
 
 @Component
-public class CadastroCozinha {
+public class CozinhaDAO {
 
 	@PersistenceContext // Melhor pratica de injecao de dependencia do JPA, tem mais configuracoes
 	private EntityManager entityManager;
@@ -23,5 +24,16 @@ public class CadastroCozinha {
 		TypedQuery<Cozinha> query = entityManager.createQuery("from Cozinha", Cozinha.class);
 		
 		return query.getResultList();
+	}
+	
+	/**
+	 * O marge se o objeto ja existir no banco de dados, ele atualiza o objeto
+	 * e retorna o mesmo, senao ele salva um novo objeto
+	 * @param cozinha
+	 * @return
+	 */
+	@Transactional
+	public Cozinha adicionar(Cozinha cozinha) {
+		 return entityManager.merge(cozinha);
 	}
 }
