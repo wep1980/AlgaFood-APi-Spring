@@ -29,9 +29,9 @@ public class AdicionandoCozinhaMain {
 	   Cozinha c2 = new Cozinha();
 	   c2.setNome("Mexicana");
 	 
-	   cadastroCozinha.adicionar(c1);
+	   cadastroCozinha.salvarOuAtualizar(c1);
 	   
-	   c2 = cadastroCozinha.adicionar(c2);
+	   c2 = cadastroCozinha.salvarOuAtualizar(c2);
 	   System.out.printf("%d - %s\n", c2.getId(), c2.getNome()); // %d pega o valor Long do getId , %s pega o valor String do getNome -- \n quebra a linha 
 	}
 

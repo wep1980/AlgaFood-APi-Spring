@@ -26,7 +26,7 @@ public class AtualizarCozinhaMain {
 	   cozinha.setId(1L);
 	   cozinha.setNome("Argentina");
 	   
-	   cadastroCozinha.adicionar(cozinha);
+	   cadastroCozinha.salvarOuAtualizar(cozinha);
 	}
 
 }

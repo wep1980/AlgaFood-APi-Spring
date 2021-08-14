@@ -9,11 +9,11 @@ import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.wepdev.domain.model.Cozinha;
-import br.com.wepdev.domain.repository.CozinhaRepository;
+import br.com.wepdev.domain.model.Restaurante;
+import br.com.wepdev.domain.repository.RestauranteRepository;
 
 @Repository // TODO comentar sobre a anotacao
-public class CozinhaRepositoryImpl implements CozinhaRepository{
+public class RestauranteRepositoryImpl implements RestauranteRepository{
 	
 	
 	@PersistenceContext // Melhor pratica de injecao de dependencia do JPA, tem mais configuracoes
@@ -22,17 +22,17 @@ public class CozinhaRepositoryImpl implements CozinhaRepository{
 	
 	
 	@Override
-	public List<Cozinha> listar(){
+	public List<Restaurante> listar(){
 		
 		// Consulta feita em JPQL, linguagem do JPA, faz consulta em objetos
-		TypedQuery<Cozinha> query = entityManager.createQuery("from Cozinha", Cozinha.class);
+		TypedQuery<Restaurante> query = entityManager.createQuery("from Restaurante", Restaurante.class);
 		
 		return query.getResultList();
 	}
 
 	@Override
-	public Cozinha buscarPorId(Long id) {
-		return entityManager.find(Cozinha.class, id);
+	public Restaurante buscarPorId(Long id) {
+		return entityManager.find(Restaurante.class, id);
 	}
 
 	
@@ -44,15 +44,15 @@ public class CozinhaRepositoryImpl implements CozinhaRepository{
 	 */
 	@Override
 	@Transactional
-	public Cozinha salvarOuAtualizar(Cozinha cozinha) {
-		 return entityManager.merge(cozinha);
+	public Restaurante salvarOuAtualizar(Restaurante restaurante) {
+		 return entityManager.merge(restaurante);
 	}
 
 	@Override
 	@Transactional
-	public void remover(Cozinha cozinha) {
-		cozinha = buscarPorId(cozinha.getId());
-		entityManager.remove(cozinha);
+	public void remover(Restaurante restaurante) {
+		restaurante = buscarPorId(restaurante.getId());
+		entityManager.remove(restaurante);
 	}
 	
 

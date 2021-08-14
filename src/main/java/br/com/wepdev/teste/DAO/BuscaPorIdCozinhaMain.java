@@ -23,7 +23,7 @@ public class BuscaPorIdCozinhaMain {
         
         CozinhaRepository cozinha = context.getBean(CozinhaRepository.class); // Pegando um bean do tipo cadastro cozinha
    
-       Cozinha cozi = cozinha.porId(1L);
+       Cozinha cozi = cozinha.buscarPorId(1L);
        System.out.println(cozi.getNome());
        
 	}
