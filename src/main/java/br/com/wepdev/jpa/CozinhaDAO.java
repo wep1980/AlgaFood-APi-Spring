@@ -36,4 +36,35 @@ public class CozinhaDAO {
 	public Cozinha adicionar(Cozinha cozinha) {
 		 return entityManager.merge(cozinha);
 	}
+	
+	
+	public Cozinha buscarPorId(Long id) {
+		return entityManager.find(Cozinha.class, id);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
