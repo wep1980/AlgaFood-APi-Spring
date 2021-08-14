@@ -1,4 +1,4 @@
-package br.com.wepdev.jpa;
+package br.com.wepdev.teste.DAO;
 
 import java.util.List;
 
@@ -43,7 +43,11 @@ public class CozinhaDAO {
 	}
 	
 	
-	
+	@Transactional
+	public void remover(Cozinha cozinha) {
+		cozinha = buscarPorId(cozinha.getId());
+		entityManager.remove(cozinha);
+	}
 	
 	
 	

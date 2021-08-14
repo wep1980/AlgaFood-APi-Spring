@@ -1,4 +1,6 @@
-package br.com.wepdev.jpa;
+package br.com.wepdev.teste.DAO;
+
+import java.util.List;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -7,7 +9,7 @@ import org.springframework.context.ApplicationContext;
 import br.com.wepdev.TreinamentoAlgaFoodApiApplication;
 import br.com.wepdev.domain.model.Cozinha;
 
-public class BuscaPorIdCozinhaMain {
+public class ConsultaCozinhaMain {
 
 	public static void main(String[] args) {
 	
@@ -20,11 +22,14 @@ public class BuscaPorIdCozinhaMain {
         ApplicationContext context = new SpringApplicationBuilder(TreinamentoAlgaFoodApiApplication.class)
         		.web(WebApplicationType.NONE).run(args);
         
+        
        CozinhaDAO cadastroCozinha = context.getBean(CozinhaDAO.class); // Pegando um bean do tipo cadastro cozinha
-   
-       Cozinha cozinha = cadastroCozinha.buscarPorId(1L);
-       System.out.println(cozinha.getNome());
+       List<Cozinha> cozinhas = cadastroCozinha.listar();
        
+       //  Objeto - Variavel - List cozinhas
+       for (Cozinha cozinha  :  cozinhas) {
+		   System.out.println(cozinha.getNome());
+	}
 	}
 
 }

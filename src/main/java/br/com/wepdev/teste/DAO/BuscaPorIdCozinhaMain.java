@@ -1,4 +1,4 @@
-package br.com.wepdev.jpa;
+package br.com.wepdev.teste.DAO;
 
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationContext;
 import br.com.wepdev.TreinamentoAlgaFoodApiApplication;
 import br.com.wepdev.domain.model.Cozinha;
 
-public class AtualizarCozinhaMain {
+public class BuscaPorIdCozinhaMain {
 
 	public static void main(String[] args) {
 	
@@ -22,11 +22,9 @@ public class AtualizarCozinhaMain {
         
        CozinhaDAO cadastroCozinha = context.getBean(CozinhaDAO.class); // Pegando um bean do tipo cadastro cozinha
    
-	   Cozinha cozinha = new Cozinha();
-	   cozinha.setId(1L);
-	   cozinha.setNome("Argentina");
-	   
-	   cadastroCozinha.salvarOuAtualiza(cozinha);
+       Cozinha cozinha = cadastroCozinha.buscarPorId(1L);
+       System.out.println(cozinha.getNome());
+       
 	}
 
 }
