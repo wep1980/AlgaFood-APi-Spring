@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationContext;
 import br.com.wepdev.TreinamentoAlgaFoodApiApplication;
 import br.com.wepdev.domain.model.Cozinha;
 
-public class AdicionandoCozinhaMain {
+public class AtualizarCozinhaMain {
 
 	public static void main(String[] args) {
 	
@@ -22,16 +22,11 @@ public class AdicionandoCozinhaMain {
         
        CozinhaDAO cadastroCozinha = context.getBean(CozinhaDAO.class); // Pegando um bean do tipo cadastro cozinha
    
-	   Cozinha c1 = new Cozinha();
-	   c1.setNome("Japonesa");
+	   Cozinha cozinha = new Cozinha();
+	   cozinha.setId(1L);
+	   cozinha.setNome("Argentina");
 	   
-	   Cozinha c2 = new Cozinha();
-	   c2.setNome("Mexicana");
-	 
-	   cadastroCozinha.salvarOuAtualiza(c1);
-	   
-	   c2 = cadastroCozinha.salvarOuAtualiza(c2);
-	   System.out.printf("%d - %s\n", c2.getId(), c2.getNome()); // %d pega o valor Long do getId , %s pega o valor String do getNome -- \n quebra a linha 
+	   cadastroCozinha.salvarOuAtualiza(cozinha);
 	}
 
 }

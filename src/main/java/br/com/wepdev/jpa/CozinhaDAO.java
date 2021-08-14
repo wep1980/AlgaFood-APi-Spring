@@ -33,7 +33,7 @@ public class CozinhaDAO {
 	 * @return
 	 */
 	@Transactional
-	public Cozinha adicionar(Cozinha cozinha) {
+	public Cozinha salvarOuAtualiza(Cozinha cozinha) {
 		 return entityManager.merge(cozinha);
 	}
 	
