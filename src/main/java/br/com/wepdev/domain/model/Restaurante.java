@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import lombok.Data;
@@ -28,6 +29,7 @@ public class Restaurante {
 	private BigDecimal taxaFrete;
 	
 	@ManyToOne // Muitos - many(*) RESTAURANTES possuem uma - one(1) COZINHA
+	//@JoinColumn(name = "cozinha_id") // Forma de colocar nome em uma coluna que referencia uma chave estrangeira
 	private Cozinha cozinha; // Um restaurante possui uma cozinha
 
 
