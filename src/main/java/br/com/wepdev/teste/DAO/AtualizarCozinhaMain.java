@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContext;
 
 import br.com.wepdev.TreinamentoAlgaFoodApiApplication;
 import br.com.wepdev.domain.model.Cozinha;
+import br.com.wepdev.domain.repository.CozinhaRepository;
 
 public class AtualizarCozinhaMain {
 
@@ -20,13 +21,12 @@ public class AtualizarCozinhaMain {
         ApplicationContext context = new SpringApplicationBuilder(TreinamentoAlgaFoodApiApplication.class)
         		.web(WebApplicationType.NONE).run(args);
         
-       CozinhaDAO cadastroCozinha = context.getBean(CozinhaDAO.class); // Pegando um bean do tipo cadastro cozinha
-   
+       CozinhaRepository cadastroCozinha = context.getBean(CozinhaRepository.class); // Pegando um bean do tipo cadastro cozinha   
 	   Cozinha cozinha = new Cozinha();
 	   cozinha.setId(1L);
 	   cozinha.setNome("Argentina");
 	   
-	   cadastroCozinha.salvarOuAtualiza(cozinha);
+	   cadastroCozinha.adicionar(cozinha);
 	}
 
 }

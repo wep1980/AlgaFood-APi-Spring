@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContext;
 
 import br.com.wepdev.TreinamentoAlgaFoodApiApplication;
 import br.com.wepdev.domain.model.Cozinha;
+import br.com.wepdev.domain.repository.CozinhaRepository;
 
 public class AdicionandoCozinhaMain {
 
@@ -20,7 +21,7 @@ public class AdicionandoCozinhaMain {
         ApplicationContext context = new SpringApplicationBuilder(TreinamentoAlgaFoodApiApplication.class)
         		.web(WebApplicationType.NONE).run(args);
         
-       CozinhaDAO cadastroCozinha = context.getBean(CozinhaDAO.class); // Pegando um bean do tipo cadastro cozinha
+       CozinhaRepository cadastroCozinha = context.getBean(CozinhaRepository.class); // Pegando um bean do tipo cadastro cozinha
    
 	   Cozinha c1 = new Cozinha();
 	   c1.setNome("Japonesa");
@@ -28,9 +29,9 @@ public class AdicionandoCozinhaMain {
 	   Cozinha c2 = new Cozinha();
 	   c2.setNome("Mexicana");
 	 
-	   cadastroCozinha.salvarOuAtualiza(c1);
+	   cadastroCozinha.adicionar(c1);
 	   
-	   c2 = cadastroCozinha.salvarOuAtualiza(c2);
+	   c2 = cadastroCozinha.adicionar(c2);
 	   System.out.printf("%d - %s\n", c2.getId(), c2.getNome()); // %d pega o valor Long do getId , %s pega o valor String do getNome -- \n quebra a linha 
 	}
 

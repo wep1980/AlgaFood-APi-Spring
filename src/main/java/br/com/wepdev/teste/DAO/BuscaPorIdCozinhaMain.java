@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContext;
 
 import br.com.wepdev.TreinamentoAlgaFoodApiApplication;
 import br.com.wepdev.domain.model.Cozinha;
+import br.com.wepdev.domain.repository.CozinhaRepository;
 
 public class BuscaPorIdCozinhaMain {
 
@@ -20,10 +21,10 @@ public class BuscaPorIdCozinhaMain {
         ApplicationContext context = new SpringApplicationBuilder(TreinamentoAlgaFoodApiApplication.class)
         		.web(WebApplicationType.NONE).run(args);
         
-       CozinhaDAO cadastroCozinha = context.getBean(CozinhaDAO.class); // Pegando um bean do tipo cadastro cozinha
+        CozinhaRepository cozinha = context.getBean(CozinhaRepository.class); // Pegando um bean do tipo cadastro cozinha
    
-       Cozinha cozinha = cadastroCozinha.buscarPorId(1L);
-       System.out.println(cozinha.getNome());
+       Cozinha cozi = cozinha.porId(1L);
+       System.out.println(cozi.getNome());
        
 	}
 

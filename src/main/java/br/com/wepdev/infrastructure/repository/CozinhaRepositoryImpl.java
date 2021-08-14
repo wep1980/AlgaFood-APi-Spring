@@ -1,4 +1,4 @@
-package br.com.wepdev.teste.DAO;
+package br.com.wepdev.infrastructure.repository;
 
 import java.util.List;
 
@@ -6,25 +6,35 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.wepdev.domain.model.Cozinha;
+import br.com.wepdev.domain.repository.CozinhaRepository;
 
-@Component
-public class CozinhaDAO {
-
+@Repository // TODO comentar sobre a anotacao
+public class CozinhaRepositoryImpl implements CozinhaRepository{
+	
+	
 	@PersistenceContext // Melhor pratica de injecao de dependencia do JPA, tem mais configuracoes
 	private EntityManager entityManager;
+
 	
 	
-	public List<Cozinha> listar(){
+	@Override
+	public List<Cozinha> todas(){
 		
 		// Consulta feita em JPQL, linguagem do JPA, faz consulta em objetos
 		TypedQuery<Cozinha> query = entityManager.createQuery("from Cozinha", Cozinha.class);
 		
 		return query.getResultList();
 	}
+
+	@Override
+	public Cozinha porId(Long id) {
+		return entityManager.find(Cozinha.class, id);
+	}
+
 	
 	/**
 	 * O marge se o objeto ja existir no banco de dados, ele atualiza o objeto
@@ -32,43 +42,18 @@ public class CozinhaDAO {
 	 * @param cozinha
 	 * @return
 	 */
+	@Override
 	@Transactional
-	public Cozinha salvar(Cozinha cozinha) {
+	public Cozinha adicionar(Cozinha cozinha) {
 		 return entityManager.merge(cozinha);
 	}
-	
-	
-	public Cozinha buscarPorId(Long id) {
-		return entityManager.find(Cozinha.class, id);
-	}
-	
-	
+
+	@Override
 	@Transactional
 	public void remover(Cozinha cozinha) {
-		cozinha = buscarPorId(cozinha.getId());
+		cozinha = porId(cozinha.getId());
 		entityManager.remove(cozinha);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 }
