@@ -2,6 +2,7 @@ package br.com.wepdev.api.controller;
 
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -68,7 +70,24 @@ public class CozinhaController {
 	}
 	
 	
-	
+	@PutMapping("/{cozinhaId}")
+	public ResponseEntity<Cozinha> atualizar(@PathVariable Long cozinhaId, 
+			@RequestBody Cozinha cozinha){
+		Cozinha cozinhaAtual = repository.buscarPorId(cozinhaId); // Cozinha armazenada no Banco de dados
+		//cozinhaAtual.setNome(cozinha.getNome()); // Setando o nome da cozinha que veio da requisicao e colocando na cozinha armazenada no banco
+		
+		if(cozinhaAtual != null) {
+			/*
+			 * Faz a mesma coisa que a linha acima, seta todas as propriedades de uma unica vez.
+			 * NO TERCEIRO PARAMETRO O CAMPO Id É IGNORADO, EVITANDO ERROS , POIS O ID NAO DEVE SER MODIFICADO PQ ESTA SENDO FEITA UMA ATUALIZAÇÃO
+			 */
+			BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
+			
+			cozinhaAtual = repository.salvarOuAtualizar(cozinha);
+			return ResponseEntity.ok(cozinhaAtual);
+	    }
+		return ResponseEntity.notFound().build();
+	}
 	
 	
 	
