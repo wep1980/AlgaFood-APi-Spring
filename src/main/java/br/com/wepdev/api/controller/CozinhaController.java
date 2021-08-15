@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.wepdev.api.model.CozinhasXmlWrapper;
+import br.com.wepdev.domain.exception.EntidadeEmUsoException;
+import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.repository.CozinhaRepository;
+import br.com.wepdev.domain.service.CozinhaService;
 
 
 //@ResponseBody // As Respostas dos metedos desse controlador devem ir na resposta da requisicao
@@ -33,19 +35,13 @@ public class CozinhaController {
 	@Autowired
 	private CozinhaRepository repository;
 	
+	@Autowired
+	private CozinhaService cozinhaService;
+	
 	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE) // Produz Json - Anotacao colocada no escopo da classe
 	public List<Cozinha> listar(){
 		return repository.listar();
-	}
-	
-	/**
-	 * Metodo que vau retornar uma lista de cozinhas em formato XML customizado atraves da classe CozinhasXmlWrapper(VISUALIZACAO NO POSTMAN)
-	 * @return
-	 */
-	@GetMapping(produces = MediaType.APPLICATION_XML_VALUE) // Produz XML 
-	public CozinhasXmlWrapper listarXml(){
-	   return new CozinhasXmlWrapper(repository.listar());
 	}
 	
 
@@ -68,7 +64,7 @@ public class CozinhaController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED) // Status 201, recurso criado
 	public Cozinha adicionar(@RequestBody Cozinha cozinha) {
-		return repository.salvarOuAtualizar(cozinha); // Retona a cozinha no corpo
+		return cozinhaService.salvarOuAtualiza(cozinha); // Retona a cozinha no corpo
 	}
 	
 	
@@ -85,7 +81,7 @@ public class CozinhaController {
 			 */
 			BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
 			
-			cozinhaAtual = repository.salvarOuAtualizar(cozinha);
+			cozinhaAtual = cozinhaService.salvarOuAtualiza(cozinha);
 			return ResponseEntity.ok(cozinhaAtual);
 	    }
 		return ResponseEntity.notFound().build(); // Se nao existir o Id da cozinha retorna um NOT FOUND e sem corpo.
@@ -95,15 +91,14 @@ public class CozinhaController {
 	@DeleteMapping("/{cozinhaId}")
 	public ResponseEntity<Cozinha> remover(@PathVariable Long cozinhaId){
 		try {
-		Cozinha cozinha = repository.buscarPorId(cozinhaId); // Cozinha armazenada no Banco de dados
-		if(cozinha != null) {
-			repository.remover(cozinha);
+			 cozinhaService.remover(cozinhaId);
+			 return ResponseEntity.noContent().build(); // Como o recurso ja foi removido na ha necessidade de retornar um corpo
+			 
+		} catch (EntidadeNaoEncontradaException e) { // Excessao de negocio customizada
+			//AO TENTAR REMOVER UMA COZINHA VINCULADA AO RESTAURANTE OCORRE UM ERRO DE VIOLAÇÃO NO BD, RESPOSTA HTTP SERA ESSA.
+			return ResponseEntity.noContent().build(); // Como o recurso ja foi removido na ha necessidade de retornar um corpo 
 			
-			return ResponseEntity.noContent().build(); // Como o recurso ja foi removido na ha necessidade de retornar um corpo
-		}
-		return ResponseEntity.notFound().build(); // Se nao existir o Id da cozinha retorna um NOT FOUND e sem corpo.
-		
-		} catch (DataIntegrityViolationException e) {
+		} catch (EntidadeEmUsoException e) { // Excessao de negocio customizada
 			//AO TENTAR REMOVER UMA COZINHA VINCULADA AO RESTAURANTE OCORRE UM ERRO DE VIOLAÇÃO NO BD, RESPOSTA HTTP SERA ESSA.
 			return ResponseEntity.status(HttpStatus.CONFLICT).build(); 
 			

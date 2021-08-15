@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,8 +51,11 @@ public class CozinhaRepositoryImpl implements CozinhaRepository{
 
 	@Override
 	@Transactional
-	public void remover(Cozinha cozinha) {
-		cozinha = buscarPorId(cozinha.getId());
+	public void remover(Long id) {
+		Cozinha cozinha = buscarPorId(id);
+		if(cozinha == null) {
+			throw new EmptyResultDataAccessException(1); // Excessao propria do spring , no parametro se coloca 1, pois se esperava no resultado uma cozinha
+		}
 		entityManager.remove(cozinha);
 	}
 	
