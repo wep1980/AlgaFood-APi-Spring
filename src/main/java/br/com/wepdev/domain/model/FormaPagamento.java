@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+
 @Entity
 @Data // Anotacao do LOMBOK que possui gets , sets , equals&HashCode e ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true) // Habilita os campos explicidamente que serao utilizados no Equals e hashcode

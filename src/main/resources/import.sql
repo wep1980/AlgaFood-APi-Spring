@@ -16,9 +16,9 @@ insert into estado (id , nome) values (1 , 'Rio de janeiro');
 insert into estado (id , nome) values (2 , 'Rio grande do sul');
 insert into estado (id , nome) values (3 , 'Bahia');
 
-insert into cidade (nome , estado_id) values ('Rio de janeiro' , 1);
-insert into cidade (nome , estado_id) values ('Porto alegre' , 2);
-insert into cidade (nome , estado_id) values ('Salvador' , 3);
+insert into cidade (nome , estado_id) values ('Petropolis' , 1);
+insert into cidade (nome , estado_id) values ('Gramado' , 2);
+insert into cidade (nome , estado_id) values ('Morro de são paulo' , 3);
 
 insert into permissao (nome , descricao) values ('Adm' , 'Administrador');
 insert into permissao (nome , descricao) values ('Gerente' , 'Gerente nivel 1');
