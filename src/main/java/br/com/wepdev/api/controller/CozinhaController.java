@@ -3,8 +3,10 @@ package br.com.wepdev.api.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,10 +43,42 @@ public class CozinhaController {
 	   return new CozinhasXmlWrapper(repository.listar());
 	}
 	
-	@ResponseStatus(HttpStatus.CREATED) // Alterando a resposta do status HTTP
+	/**
+	 * ResponseEntity possui um metodo status, que define o status da resposta que sera devolvido e devolvendo um corpo
+	 * que nesse caso e a cozinha
+	 * @param cozinhaId
+	 * @return
+	 */
 	@GetMapping("/{cozinhaId}")
-	public Cozinha buscarPorId(@PathVariable Long cozinhaId) {
-		return repository.buscarPorId(cozinhaId);
+	public ResponseEntity<Cozinha> buscarPorId(@PathVariable Long cozinhaId) {
+		Cozinha cozinha = repository.buscarPorId(cozinhaId);
+		
+		//return ResponseEntity.status(HttpStatus.OK).body(cozinha); // Envia na resposta o status e um corpo, que nesse caso e a cozinha
+		//return ResponseEntity.ok(cozinha); // Resposta mais simples
+		//return ResponseEntity.status(HttpStatus.OK).build(); // resposta com o status mas sem o corpo.
+		
+		//------- RESPOSTA DE STATUS COM REDIRECIONAMENTO
+		
+		// Criando o headers para ir na resposta
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.LOCATION, "http://localhost:8080/cozinhas"); // informa a uri temporaria
+		
+		return ResponseEntity
+				.status(HttpStatus.FOUND)
+				.headers(headers).build(); // Resposta de redirecionamento de uri temporario
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 
 }
