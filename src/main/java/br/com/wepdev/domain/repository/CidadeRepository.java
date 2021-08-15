@@ -13,6 +13,6 @@ public interface CidadeRepository {
 	
 	Cidade salvarOuAtualizar(Cidade cidade);
 	
-	void remover(Cidade cidade);
+	void remover(Long id);
 	
 }

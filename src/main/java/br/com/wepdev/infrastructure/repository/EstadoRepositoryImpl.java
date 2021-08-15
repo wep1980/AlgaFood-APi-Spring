@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ public class EstadoRepositoryImpl implements EstadoRepository{
 	public List<Estado> listar(){
 		
 		// Consulta feita em JPQL, linguagem do JPA, faz consulta em objetos
-		TypedQuery<Estado> query = entityManager.createQuery("from estado", Estado.class);
+		TypedQuery<Estado> query = entityManager.createQuery("from Estado", Estado.class);
 		
 		return query.getResultList();
 	}
@@ -48,12 +49,17 @@ public class EstadoRepositoryImpl implements EstadoRepository{
 		 return entityManager.merge(estado);
 	}
 
-	@Override
-	@Transactional
-	public void remover(Estado estado) {
-		estado = buscarPorId(estado.getId());
-		entityManager.remove(estado);
-	}
+	   @Transactional
+	    @Override
+	    public void remover(Long id) {
+	        Estado estado = buscarPorId(id);
+	        
+	        if (estado == null) {
+	            throw new EmptyResultDataAccessException(1);
+	        }
+	        
+	        entityManager.remove(estado);
+	    }
 	
 
 }

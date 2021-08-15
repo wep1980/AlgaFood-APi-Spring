@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,12 +49,17 @@ public class CidadeRepositoryImpl implements CidadeRepository{
 		 return entityManager.merge(cidade);
 	}
 
-	@Override
-	@Transactional
-	public void remover(Cidade cidade) {
-		cidade = buscarPorId(cidade.getId());
-		entityManager.remove(cidade);
-	}
+    @Transactional
+    @Override
+    public void remover(Long id) {
+        Cidade cidade = buscarPorId(id);
+        
+        if (cidade == null) {
+            throw new EmptyResultDataAccessException(1);
+        }
+        
+        entityManager.remove(cidade);
+    }
 	
 
 }
