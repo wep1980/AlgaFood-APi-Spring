@@ -1,5 +1,6 @@
 package br.com.wepdev.api.controller;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.wepdev.domain.exception.EntidadeEmUsoException;
 import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
@@ -124,16 +128,53 @@ public class RestauranteController {
 		 */
 		@PatchMapping("/{restauranteId}") 
 		public ResponseEntity<?> atualizarparcial(@PathVariable Long restauranteId , @RequestBody Map<String, Object> campos){
-			/*
+			
+			Restaurante restauranteAtual = restauranteRepository.buscarPorId(restauranteId);
+			if(restauranteAtual == null) {
+				return ResponseEntity.notFound().build();
+			}
+			
+			// Atribui os valores do campos para dentro do restauranteAtual
+			merge(campos , restauranteAtual);
+			
+			 return atualizar(restauranteId, restauranteAtual);
+		}
+
+
+		/**
+		 * Metodo que mescla os valores do postman com os valores armazendos no Banco de dados
 			 * Expressao Lambda
 			 * nomePropriedade -> String do Map
 			 * valorPropriedade -> Object do Map
-			 */
-			campos.forEach((nomePropriedade , valorPropriedade) -> {
-				System.out.println(nomePropriedade + " - " + valorPropriedade);
-			});
-			 return ResponseEntity.ok().build();
+			 * REFLECTIONS -> INSPECIONA OBJETOS JAVA EM TEMPO DE EXECUÇÃO DE FORMA DINAMICA
+		 * @param camposOrigem
+		 * @param restauranteDestino
+		 */
+		private void merge(Map<String, Object> dadosOrigem , Restaurante restauranteDestino) {
 			
+			// Serializa e converte objetos java em JSON e ao contrario tb
+			ObjectMapper objectMapper = new ObjectMapper();
+			// Criando um objeto Restaurante com os dados da origem(POSTMAN), JA CONVERTIDO E EVITANDO ERROS
+			Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem, Restaurante.class); 
+			
+			System.out.println(restauranteOrigem);
+			
+			// Pegando as propriedades passadas pelo cliente
+			dadosOrigem.forEach((nomePropriedade , valorPropriedade) -> {
+				
+				// field -> representa um atributo da classe Restaurante
+				Field field = ReflectionUtils.findField(Restaurante.class, nomePropriedade); // Retorna a instancia de um campo
+				
+				field.setAccessible(true); // Acessa variavel private
+				
+				 // Buscando o valor da propriedade representada pelo field, dentro da instancia de restauranteOrigem
+				Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
+				
+				System.out.println(nomePropriedade + " - " + valorPropriedade + " - " + novoValor);
+				
+				// field -> atribuindo o valorPropriedade de instancia que é o nome, no nome da do restauranteDestino(Restaurante "nome") 
+				ReflectionUtils.setField(field, restauranteDestino, novoValor);
+			});
 		}
 		
 		
