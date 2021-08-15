@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.wepdev.api.model.CozinhasXmlWrapper;
 import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.repository.CozinhaRepository;
 
@@ -27,6 +28,15 @@ public class CozinhaController {
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE) // Produz Json - Anotacao colocada no escopo da classe
 	public List<Cozinha> listar(){
 		return repository.listar();
+	}
+	
+	/**
+	 * Metodo que vau retornar uma lista de cozinhas em formato XML customizado atraves da classe CozinhasXmlWrapper(VISUALIZACAO NO POSTMAN)
+	 * @return
+	 */
+	@GetMapping(produces = MediaType.APPLICATION_XML_VALUE) // Produz XML 
+	public CozinhasXmlWrapper listarXml(){
+	   return new CozinhasXmlWrapper(repository.listar());
 	}
 	
 	
