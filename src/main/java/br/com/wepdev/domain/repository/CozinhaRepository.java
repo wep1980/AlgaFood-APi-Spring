@@ -9,6 +9,8 @@ public interface CozinhaRepository {
 	
 	List<Cozinha> listar();
 	
+	List<Cozinha> consultarPorNome(String nome);
+	
 	Cozinha buscarPorId(Long id);
 	
 	Cozinha salvarOuAtualizar(Cozinha cozinha);

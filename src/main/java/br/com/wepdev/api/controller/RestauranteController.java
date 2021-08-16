@@ -121,7 +121,7 @@ public class RestauranteController {
 	 
 		
 		/**
-		 * Atualiza so campos selecionados, utilizando Map conseguimos usar String(chave) como nome dos campos e o valor como um objeto qualquer
+		 * Atualiza so campos especificos
 		 * @param restauranteId
 		 * @param campos
 		 * @return
@@ -142,7 +142,8 @@ public class RestauranteController {
 
 
 		/**
-		 * Metodo que mescla os valores do postman com os valores armazendos no Banco de dados
+		 * Metodo que mescla os valores do postman com os valores armazendos no Banco de dados, atualizando assim
+		 * somente campos especificos
 			 * Expressao Lambda
 			 * nomePropriedade -> String do Map
 			 * valorPropriedade -> Object do Map
@@ -170,7 +171,7 @@ public class RestauranteController {
 				 // Buscando o valor da propriedade representada pelo field, dentro da instancia de restauranteOrigem
 				Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
 				
-				System.out.println(nomePropriedade + " - " + valorPropriedade + " - " + novoValor);
+				System.out.println(nomePropriedade + " = " + valorPropriedade + " = " + novoValor);
 				
 				// field -> atribuindo o valorPropriedade de instancia que é o nome, no nome da do restauranteDestino(Restaurante "nome") 
 				ReflectionUtils.setField(field, restauranteDestino, novoValor);

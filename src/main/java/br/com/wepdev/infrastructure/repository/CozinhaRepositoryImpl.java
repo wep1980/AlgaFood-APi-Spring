@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.repository.CozinhaRepository;
 
-@Repository // TODO comentar sobre a anotacao
+@Repository // alem de ser um component ela traz como beneficio o fato de ser uma tradutora de exception
 public class CozinhaRepositoryImpl implements CozinhaRepository{
 	
 	
@@ -57,6 +57,19 @@ public class CozinhaRepositoryImpl implements CozinhaRepository{
 			throw new EmptyResultDataAccessException(1); // Excessao propria do spring , no parametro se coloca 1, pois se esperava no resultado uma cozinha
 		}
 		entityManager.remove(cozinha);
+	}
+
+	
+	/**
+	 * Metodo com consulta em JPQL, que e a linguagem de consulta do jpa
+	 * like -> busca por uma parte do nome
+	 * "%" + nome + "%" -> complementa o like buscando por qualquer parte do nome 
+	 */
+	@Override
+	public List<Cozinha> consultarPorNome(String nome) {
+		return entityManager.createQuery("from Cozinha where nome like :nome", Cozinha.class)
+				.setParameter("nome", "%" + nome + "%")
+				.getResultList();
 	}
 	
 
