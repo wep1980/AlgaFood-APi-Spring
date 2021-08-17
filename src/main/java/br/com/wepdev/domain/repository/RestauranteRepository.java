@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import br.com.wepdev.domain.model.Restaurante;
@@ -21,7 +23,10 @@ public interface RestauranteRepository extends JpaRepository<Restaurante, Long>{
 	List<Restaurante> findByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal);
 	
 	// Busca por qualquer parte do nome de um restaurante junto com ID da cozinha
-	List<Restaurante> queryByNomeContainingAndCozinhaId(String nome, Long cozinhaId);
+	//List<Restaurante> queryByNomeContainingAndCozinhaId(String nome, Long cozinhaId); // Metodo com nome muito grande ou ruim na legibilidade
+	
+	@Query("from Restaurante where nome like %:nome% and cozinha.id =:id")//Faz o binding do id com @Param("id") de cozinha, se fosse cozinha.id =:cozinhaId nao precisaria de binding
+	List<Restaurante> consultarPorNomeECozinhaId(String nome, @Param("id") Long cozinhaId); // Esse metodo faz o mesmo que o metodo acima que foi criado com query methods
 	
 	/*
 	 * Prefixos para iniciar o nome de um metodo. todos tem o mesmo funcionamento.

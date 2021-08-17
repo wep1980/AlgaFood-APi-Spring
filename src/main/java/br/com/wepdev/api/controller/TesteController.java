@@ -58,7 +58,8 @@ public class TesteController {
 	
 	@GetMapping("/restaurantes/por-nome-cozinhaid") // O @RequestParam ja vem embutido, nao necessario implementar explicitamente
 	public List<Restaurante> restaurantesPorNomeCozinhaId(String nome, Long cozinhaId){ // Fazendo binding do nome que vem da requisicao para a variavel nome e cozinhaId
-		return restauranteRepository.queryByNomeContainingAndCozinhaId(nome , cozinhaId);
+		//return restauranteRepository.queryByNomeContainingAndCozinhaId(nome , cozinhaId);
+		return restauranteRepository.consultarPorNomeECozinhaId(nome , cozinhaId);
 	}
 	
 	
