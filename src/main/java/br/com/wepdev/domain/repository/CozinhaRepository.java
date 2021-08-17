@@ -37,6 +37,18 @@ public interface CozinhaRepository extends JpaRepository<Cozinha, Long>{
 	List<Cozinha> findTodasByNomeContaining(String nome);  
 	
 	
+	/*
+	 * Prefixos para iniciar o nome de um metodo. todos tem o mesmo funcionamento.
+	 * findBy
+	 * readBy
+	 * getBy
+	 * queryBy
+	 * streamBy
+	 */
+	
+	
+	// Consulta a cozinha pelo nome exato, se existir returna true, se nao existir retorna false
+	boolean existsByNome(String nome);
 	
 	
 	

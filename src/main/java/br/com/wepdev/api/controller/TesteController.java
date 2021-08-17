@@ -51,14 +51,50 @@ public class TesteController {
 	
 	
 	@GetMapping("/restaurantes/por-taxa-frete") // O @RequestParam ja vem embutido, nao necessario implementar explicitamente
-	public List<Restaurante> restaurantesPorTaxaFrete(BigDecimal taxaInicial, BigDecimal taxaFinal){ // Fazendo binding do nome que vem da requisicao para a variavel nome
+	public List<Restaurante> restaurantesPorTaxaFrete(BigDecimal taxaInicial, BigDecimal taxaFinal){ // Fazendo binding do nome que vem da requisicao para a variavel taxaInicial e taxaFinal
 		return restauranteRepository.findByTaxaFreteBetween(taxaInicial , taxaFinal);
 	}	
 	
+	
 	@GetMapping("/restaurantes/por-nome-cozinhaid") // O @RequestParam ja vem embutido, nao necessario implementar explicitamente
-	public List<Restaurante> restaurantesPorNomeCozinhaId(String nome, Long cozinhaId){ // Fazendo binding do nome que vem da requisicao para a variavel nome
-		return restauranteRepository.findByNomeContainingAndCozinhaId(nome , cozinhaId);
+	public List<Restaurante> restaurantesPorNomeCozinhaId(String nome, Long cozinhaId){ // Fazendo binding do nome que vem da requisicao para a variavel nome e cozinhaId
+		return restauranteRepository.queryByNomeContainingAndCozinhaId(nome , cozinhaId);
+	}
+	
+	
+	@GetMapping("/restaurantes/primeiro-restaurante") // O @RequestParam ja vem embutido, nao necessario implementar explicitamente
+	public Optional<Restaurante> buscarPrimeiroRestaurante(String nome){ // Fazendo binding do nome que vem da requisicao para a variavel nome
+		return restauranteRepository.findFirstQualquerCoisaByNomeContaining(nome);
 	}	
+	
+	
+	@GetMapping("/restaurantes/top2-restaurante") // O @RequestParam ja vem embutido, nao necessario implementar explicitamente
+	public List<Restaurante> buscar2PrimeirosRestaurantes(String nome){ // Fazendo binding do nome que vem da requisicao para a variavel nome
+		return restauranteRepository.findTop2QualquerCoisaByNomeContaining(nome);
+	}
+	
+	@GetMapping("/cozinha/exists") 
+	public boolean cozinhaExists(@RequestParam("nome") String nome){ // Fazendo binding do nome que vem da requisicao para a variavel nome
+		return cozinhaRepository.existsByNome(nome);
+	}
+	
+	@GetMapping("/restaurantes/count-por-cozinha") // O @RequestParam ja vem embutido, nao necessario implementar explicitamente
+	public int restaurantesCountPorCozinhaId(Long cozinhaId){ // Fazendo binding do nome que vem da requisicao para a variavel nome
+		return restauranteRepository.countByCozinhaId(cozinhaId);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

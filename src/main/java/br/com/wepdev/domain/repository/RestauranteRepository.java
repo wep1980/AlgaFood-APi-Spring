@@ -2,6 +2,7 @@ package br.com.wepdev.domain.repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -20,6 +21,24 @@ public interface RestauranteRepository extends JpaRepository<Restaurante, Long>{
 	List<Restaurante> findByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal);
 	
 	// Busca por qualquer parte do nome de um restaurante junto com ID da cozinha
-	List<Restaurante> findByNomeContainingAndCozinhaId(String nome, Long cozinhaId);
+	List<Restaurante> queryByNomeContainingAndCozinhaId(String nome, Long cozinhaId);
+	
+	/*
+	 * Prefixos para iniciar o nome de um metodo. todos tem o mesmo funcionamento.
+	 * findBy
+	 * readBy
+	 * getBy
+	 * queryBy
+	 * streamBy
+	 */
+	
+	// First -> Retorna somente o primeiro restaurante. Poderia ser colocado qualquer descrição onde esta o QualquerCoisa
+	Optional<Restaurante> findFirstQualquerCoisaByNomeContaining(String nome);
+	
+	// Top2 ->  Retorna somente os 2 primeiros restaurantes. Poderia ser colocado qualquer descrição onde esta o QualquerCoisa
+	List<Restaurante> findTop2QualquerCoisaByNomeContaining(String nome);
+	
+	// Conta a quantidade de restaurantes pela cozinhaId selecionada
+	int countByCozinhaId(Long cozinhaId);
 	
 }
