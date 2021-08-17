@@ -1,18 +1,12 @@
 package br.com.wepdev.domain.repository;
 
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import br.com.wepdev.domain.model.Cidade;
 
-public interface CidadeRepository {
+@Repository
+public interface CidadeRepository extends JpaRepository<Cidade, Long>{
 
-	
-	List<Cidade> listar();
-	
-	Cidade buscarPorId(Long id);
-	
-	Cidade salvarOuAtualizar(Cidade cidade);
-	
-	void remover(Long id);
 	
 }

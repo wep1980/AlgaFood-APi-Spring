@@ -25,20 +25,21 @@ public class CozinhaService {
 	
 	
 	
-	public Cozinha salvarOuAtualiza(Cozinha cozinha) {
+	public Cozinha salvar(Cozinha cozinha) {
 		return CozinhaRepository.save(cozinha);
 	}
-	
 	
 	public void excluir(Long cozinhaId) {
 		try {
 			CozinhaRepository.deleteById(cozinhaId);
 			
-		} catch (EmptyResultDataAccessException e) {//Classe customizada(Excessao de negocio) de excecao para traduzir a excessao acima, EmptyResultDataAccessException
-			throw new EntidadeNaoEncontradaException(String.format("Não existe um cadastro de cozinha com código %d", cozinhaId));//String.format -> formatando a mensagem
-			
-		} catch (DataIntegrityViolationException e) { //Classe customizada(Excessao de negocio) de excecao para traduzir a excessao acima, DataIntegrityViolationException
-			throw new EntidadeEmUsoException(String.format("Cozinha de código %d não pode ser removida, pois está em uso", cozinhaId));//String.format -> formatando a mensagem
+		} catch (EmptyResultDataAccessException e) {
+			throw new EntidadeNaoEncontradaException(
+				String.format("Não existe um cadastro de cozinha com código %d", cozinhaId));
+		
+		} catch (DataIntegrityViolationException e) {
+			throw new EntidadeEmUsoException(
+				String.format("Cozinha de código %d não pode ser removida, pois está em uso", cozinhaId));
 		}
 	}
 

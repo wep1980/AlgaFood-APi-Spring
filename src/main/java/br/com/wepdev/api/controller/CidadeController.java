@@ -1,11 +1,11 @@
 package br.com.wepdev.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,58 +35,46 @@ public class CidadeController {
 	
 	@Autowired
 	private CidadeService cidadeService;
+
 	
 	
-	
-	
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE) // Produz Json - Anotacao colocada no escopo da classe
-		public List<Cidade> listar() {
-			return cidadeRepository.listar();
-		}
-    
-    
-	@GetMapping("/{cidadeId}")
-	public ResponseEntity<Cidade> buscarPorId(@PathVariable Long cidadeId) {
-		Cidade cidade = cidadeRepository.buscarPorId(cidadeId);
-		
-		if(cidade != null) {
-			return ResponseEntity.ok(cidade);
-		}
-		//return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Se nao existir o Id retorna um NOT FOUND e sem corpo.
-		return ResponseEntity.notFound().build(); // Atalho para a linha acima
+	@GetMapping
+	public List<Cidade> listar() {
+		return cidadeRepository.findAll();
 	}
 	
+	@GetMapping("/{cidadeId}")
+	public ResponseEntity<Cidade> buscar(@PathVariable Long cidadeId) {
+		Optional<Cidade> cidade = cidadeRepository.findById(cidadeId);
+		
+		if (cidade.isPresent()) {
+			return ResponseEntity.ok(cidade.get());
+		}
+		
+		return ResponseEntity.notFound().build();
+	}
 	
-	
-	/**
-	 * ResponseEntity<?> salvar -> <?> Foi colocado um coringa para que a resposta no corpo fosse de qualquer tipo, 
-	 * nao so de cidade, ja que a resposta deve ser uma string pois uma message de erro sera enviada atraves do getMessage() caso aconteça
-	 * @param restaurante
-	 * @return
-	 */
 	@PostMapping
-	public ResponseEntity<?> salvar(@RequestBody Cidade cidade){
+	public ResponseEntity<?> adicionar(@RequestBody Cidade cidade) {
 		try {
 			cidade = cidadeService.salvar(cidade);
-			return ResponseEntity.status(HttpStatus.CREATED).body(cidade);
+			
+			return ResponseEntity.status(HttpStatus.CREATED)
+					.body(cidade);
 		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
+			return ResponseEntity.badRequest()
+					.body(e.getMessage());
 		}
 	}
 	
-	
-	
-	/**
-	 * ResponseEntity<?> atualizar -> <?> Foi colocado um coringa para que a resposta no corpo fosse de qualquer tipo, 
-	 * nao so de cidade, ja que a resposta deve ser uma string pois uma message de erro sera enviada atraves do getMessage() caso aconteça
-	 * @param restauranteId
-	 * @param cidade
-	 * @return
-	 */
-    @PutMapping("/{cidadeId}")
-    public ResponseEntity<?> atualizar(@PathVariable Long cidadeId, @RequestBody Cidade cidade) {
-        try {
-			Cidade cidadeAtual = cidadeRepository.buscarPorId(cidadeId);
+	@PutMapping("/{cidadeId}")
+	public ResponseEntity<?> atualizar(@PathVariable Long cidadeId,
+			@RequestBody Cidade cidade) {
+		try {
+			// Podemos usar o orElse(null) também, que retorna a instância de cidade
+			// dentro do Optional, ou null, caso ele esteja vazio,
+			// mas nesse caso, temos a responsabilidade de tomar cuidado com NullPointerException
+			Cidade cidadeAtual = cidadeRepository.findById(cidadeId).orElse(null);
 			
 			if (cidadeAtual != null) {
 				BeanUtils.copyProperties(cidade, cidadeAtual, "id");
@@ -94,39 +82,30 @@ public class CidadeController {
 				cidadeAtual = cidadeService.salvar(cidadeAtual);
 				return ResponseEntity.ok(cidadeAtual);
 			}
+			
 			return ResponseEntity.notFound().build();
 		
 		} catch (EntidadeNaoEncontradaException e) {
 			return ResponseEntity.badRequest()
 					.body(e.getMessage());
 		}
-    }
-	
-	
+	}
 	
 	@DeleteMapping("/{cidadeId}")
-	public ResponseEntity<Cidade> remover(@PathVariable Long cidadeId){
+	public ResponseEntity<Cidade> remover(@PathVariable Long cidadeId) {
 		try {
-			 cidadeService.remover(cidadeId);
-			 return ResponseEntity.noContent().build(); // Como o recurso ja foi removido na ha necessidade de retornar um corpo
-			 
-		} catch (EntidadeNaoEncontradaException e) { // Excessao de negocio customizada
-			//AO TENTAR REMOVER UMA COZINHA VINCULADA AO RESTAURANTE OCORRE UM ERRO DE VIOLAÇÃO NO BD, RESPOSTA HTTP SERA ESSA.
-			return ResponseEntity.noContent().build(); // Como o recurso ja foi removido na ha necessidade de retornar um corpo 
+			cidadeService.excluir(cidadeId);	
+			return ResponseEntity.noContent().build();
 			
-		} catch (EntidadeEmUsoException e) { // Excessao de negocio customizada
-			//AO TENTAR REMOVER UMA COZINHA VINCULADA AO RESTAURANTE OCORRE UM ERRO DE VIOLAÇÃO NO BD, RESPOSTA HTTP SERA ESSA.
-			return ResponseEntity.status(HttpStatus.CONFLICT).build(); 
+		} catch (EntidadeNaoEncontradaException e) {
+			return ResponseEntity.notFound().build();
 			
+		} catch (EntidadeEmUsoException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 	}
 	
-	
-	
-	
-	
-	
-	
+
 	
 
 }

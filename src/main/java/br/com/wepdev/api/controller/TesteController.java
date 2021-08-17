@@ -1,6 +1,7 @@
 package br.com.wepdev.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,9 +27,19 @@ public class TesteController {
 	 * @param nome
 	 * @return
 	 */
-//	@GetMapping("/cozinha/por-nome") 
-//	public List<Cozinha> cozinhasPorNome(@RequestParam("nome") String nome){ // Fazendo binding do nome que vem da requisicao para a variavel nome
-//		return cozinhaRepository.consultarPorNome(nome);
-//	}
+	@GetMapping("/cozinha/por-nome") 
+	public List<Cozinha> cozinhasPorNome(@RequestParam("nome") String nome){ // Fazendo binding do nome que vem da requisicao para a variavel nome
+		return cozinhaRepository.findQualquerNomeByNome(nome);
+	}
+	
+	/**
+	 * Retorna um optional de cozinha, pois no repository ele tb retorna um optional de cozinha
+	 * @param nome
+	 * @return
+	 */
+	@GetMapping("/cozinha/unico-por-nome") 
+	public Optional<Cozinha> cozinhaPorNome(@RequestParam("nome") String nome){ // Fazendo binding do nome que vem da requisicao para a variavel nome
+		return cozinhaRepository.findUnicaByNome(nome);
+	}
 
 }

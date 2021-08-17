@@ -1,11 +1,11 @@
 package br.com.wepdev.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,63 +38,55 @@ public class EstadoController {
 	private EstadoService estadoService;
 	
 	
-	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE) // Produz Json - Anotacao colocada no escopo da classe
-	public List<Estado> listar(){
-		return estadoRepository.listar();
+	@GetMapping
+	public List<Estado> listar() {
+		return estadoRepository.findAll();
 	}
 	
-
 	@GetMapping("/{estadoId}")
-	public ResponseEntity<Estado> buscarPorId(@PathVariable Long estadoId) {
-		Estado estado = estadoRepository.buscarPorId(estadoId);
+	public ResponseEntity<Estado> buscar(@PathVariable Long estadoId) {
+		Optional<Estado> estado = estadoRepository.findById(estadoId);
 		
-		if(estado != null) {
-			return ResponseEntity.ok(estado);
+		if (estado.isPresent()) {
+			return ResponseEntity.ok(estado.get());
 		}
-		//return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Se nao existir o Id retorna um NOT FOUND e sem corpo.
-		return ResponseEntity.notFound().build(); // Atalho para a linha acima
+		
+		return ResponseEntity.notFound().build();
 	}
 	
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	public Estado adicionar(@RequestBody Estado estado) {
+		return estadoService.salvar(estado);
+	}
 	
-	/**
-	 * @RequestBody Cozinha -> o RequestBody vai receber o corpo da Cozinha
-	 * @param cozinha
-	 */
-	  @PostMapping
-		@ResponseStatus(HttpStatus.CREATED)
-		public Estado adicionar(@RequestBody Estado estado) {
-			return estadoService.salvar(estado);
-		}
-	
-	
-	    @PutMapping("/{estadoId}")
-		public ResponseEntity<Estado> atualizar(@PathVariable Long estadoId, @RequestBody Estado estado) {
-			Estado estadoAtual = estadoRepository.buscarPorId(estadoId);
+	@PutMapping("/{estadoId}")
+	public ResponseEntity<Estado> atualizar(@PathVariable Long estadoId,
+			@RequestBody Estado estado) {
+		Estado estadoAtual = estadoRepository.findById(estadoId).orElse(null);
+		
+		if (estadoAtual != null) {
+			BeanUtils.copyProperties(estado, estadoAtual, "id");
 			
-			if (estadoAtual != null) {
-				BeanUtils.copyProperties(estado, estadoAtual, "id");
-				
-				estadoAtual = estadoService.salvar(estadoAtual);
-				return ResponseEntity.ok(estadoAtual);
-			}
-			
-			return ResponseEntity.notFound().build();
+			estadoAtual = estadoService.salvar(estadoAtual);
+			return ResponseEntity.ok(estadoAtual);
 		}
-	
+		
+		return ResponseEntity.notFound().build();
+	}
 	
 	@DeleteMapping("/{estadoId}")
-	public ResponseEntity<Estado> remover(@PathVariable Long estadoId){
+	public ResponseEntity<?> remover(@PathVariable Long estadoId) {
 		try {
-			 estadoService.remover(estadoId);
-			 return ResponseEntity.noContent().build(); // Como o recurso ja foi removido na ha necessidade de retornar um corpo
-			 
-		} catch (EntidadeNaoEncontradaException e) { // Excessao de negocio customizada
-			//AO TENTAR REMOVER UMA COZINHA VINCULADA AO RESTAURANTE OCORRE UM ERRO DE VIOLAÇÃO NO BD, RESPOSTA HTTP SERA ESSA.
-			return ResponseEntity.noContent().build(); // Como o recurso ja foi removido na ha necessidade de retornar um corpo 
+			estadoService.excluir(estadoId);	
+			return ResponseEntity.noContent().build();
 			
-		} catch (EntidadeEmUsoException e) { // Excessao de negocio customizada
-			//AO TENTAR REMOVER UMA COZINHA VINCULADA AO RESTAURANTE OCORRE UM ERRO DE VIOLAÇÃO NO BD, RESPOSTA HTTP SERA ESSA.
-			return ResponseEntity.status(HttpStatus.CONFLICT).build(); 
+		} catch (EntidadeNaoEncontradaException e) {
+			return ResponseEntity.notFound().build();
+			
+		} catch (EntidadeEmUsoException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+					.body(e.getMessage());
 		}
 	}
 	
