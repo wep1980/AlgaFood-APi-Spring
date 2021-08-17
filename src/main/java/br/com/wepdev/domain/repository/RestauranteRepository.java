@@ -13,6 +13,6 @@ public interface RestauranteRepository {
 	
 	Restaurante salvarOuAtualizar(Restaurante cozinha);
 	
-	void remover(Long id);
+	void remover(Restaurante restaurante);
 	
 }

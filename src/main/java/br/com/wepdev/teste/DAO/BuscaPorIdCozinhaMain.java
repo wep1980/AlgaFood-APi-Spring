@@ -1,5 +1,7 @@
 package br.com.wepdev.teste.DAO;
 
+import java.util.Optional;
+
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
@@ -23,8 +25,8 @@ public class BuscaPorIdCozinhaMain {
         
         CozinhaRepository cozinha = context.getBean(CozinhaRepository.class); // Pegando um bean do tipo cadastro cozinha
    
-       Cozinha cozi = cozinha.buscarPorId(1L);
-       System.out.println(cozi.getNome());
+       Optional<Cozinha> cozi = cozinha.findById(1L);
+       System.out.println(cozi.get().getNome());
        
 	}
 

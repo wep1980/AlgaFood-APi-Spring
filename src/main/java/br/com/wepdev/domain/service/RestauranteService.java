@@ -32,28 +32,28 @@ public class RestauranteService {
 	
 	public Restaurante salvar(Restaurante restaurante) {
 		Long cozinhaId = restaurante.getCozinha().getId();
-		Cozinha cozinha = cozinhaRepository.buscarPorId(cozinhaId);
-		if(cozinha == null) {
-			throw new EntidadeNaoEncontradaException(String.format("Não existe cadastro de cozinha com código %d", cozinhaId));
-		}
+		Cozinha cozinha = cozinhaRepository.findById(cozinhaId)
+				// orElseThrow() -> Retorna a instancia de cozinha que esta dentro do Optional, se nao tiver nada dentro, lança a exception com lambda
+				.orElseThrow(() -> new EntidadeNaoEncontradaException(String.format("Não existe cadastro de cozinha com código %d", cozinhaId)));
+	
 		restaurante.setCozinha(cozinha);
 		return restauranteRepository.salvarOuAtualizar(restaurante);
 	}
 	
 	
-    public void remover(Long restauranteId) {
-        try {
-        	restauranteRepository.remover(restauranteId);
-            
-        } catch (EmptyResultDataAccessException e) {
-            throw new EntidadeNaoEncontradaException(
-                String.format("Não existe um cadastro de cidade com código %d", restauranteId));
-        
-        } catch (DataIntegrityViolationException e) {
-            throw new EntidadeEmUsoException(
-                String.format("Cidade de código %d não pode ser removida, pois está em uso", restauranteId));
-        }
-    }
+//    public void remover(Long restauranteId) {
+//        try {
+//        	restauranteRepository.remover(restauranteId);
+//            
+//        } catch (EmptyResultDataAccessException e) {
+//            throw new EntidadeNaoEncontradaException(
+//                String.format("Não existe um cadastro de cidade com código %d", restauranteId));
+//        
+//        } catch (DataIntegrityViolationException e) {
+//            throw new EntidadeEmUsoException(
+//                String.format("Cidade de código %d não pode ser removida, pois está em uso", restauranteId));
+//        }
+//    }
 	
 
 }

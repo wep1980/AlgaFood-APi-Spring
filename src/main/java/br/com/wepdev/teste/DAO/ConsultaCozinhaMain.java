@@ -25,7 +25,7 @@ public class ConsultaCozinhaMain {
         
         
        CozinhaRepository cozinhas = context.getBean(CozinhaRepository.class); // Pegando um bean do tipo cadastro cozinha
-       List<Cozinha> todasCozinhas = cozinhas.listar();
+       List<Cozinha> todasCozinhas = cozinhas.findAll();
        
        //  Objeto - Variavel - List cozinhas
        for (Cozinha cozinha  :  todasCozinhas) {

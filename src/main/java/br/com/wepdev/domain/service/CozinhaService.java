@@ -21,18 +21,18 @@ public class CozinhaService {
 	
 	
 	@Autowired
-	private CozinhaRepository repository;
+	private CozinhaRepository CozinhaRepository;
 	
 	
 	
 	public Cozinha salvarOuAtualiza(Cozinha cozinha) {
-		return repository.salvarOuAtualizar(cozinha);
+		return CozinhaRepository.save(cozinha);
 	}
 	
 	
-	public void remover(Long cozinhaId) {
+	public void excluir(Long cozinhaId) {
 		try {
-			repository.remover(cozinhaId);
+			CozinhaRepository.deleteById(cozinhaId);
 			
 		} catch (EmptyResultDataAccessException e) {//Classe customizada(Excessao de negocio) de excecao para traduzir a excessao acima, EmptyResultDataAccessException
 			throw new EntidadeNaoEncontradaException(String.format("Não existe um cadastro de cozinha com código %d", cozinhaId));//String.format -> formatando a mensagem

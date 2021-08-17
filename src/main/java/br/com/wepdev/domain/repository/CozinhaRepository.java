@@ -1,20 +1,21 @@
 package br.com.wepdev.domain.repository;
 
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import br.com.wepdev.domain.model.Cozinha;
 
-public interface CozinhaRepository {
+/**
+ * Inteface CozinhaRepository extende JpaRepository que ja possui varios metodos implementados, 
+ * ele cria a implementacao em tempo de execucao
+ * @author Waldir
+ *
+ */
+@Repository
+public interface CozinhaRepository extends JpaRepository<Cozinha, Long>{
 
 	
-	List<Cozinha> listar();
+	//List<Cozinha> consultarPorNome(String nome);
 	
-	List<Cozinha> consultarPorNome(String nome);
-	
-	Cozinha buscarPorId(Long id);
-	
-	Cozinha salvarOuAtualizar(Cozinha cozinha);
-	
-	void remover(Long id);
 	
 }

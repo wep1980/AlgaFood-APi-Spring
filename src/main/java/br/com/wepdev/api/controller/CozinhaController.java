@@ -1,6 +1,7 @@
 package br.com.wepdev.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class CozinhaController {
 	
 	
 	@Autowired
-	private CozinhaRepository repository;
+	private CozinhaRepository CozinhaRepository;
 	
 	@Autowired
 	private CozinhaService cozinhaService;
@@ -40,16 +41,16 @@ public class CozinhaController {
 	
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE) // Produz Json - Anotacao colocada no escopo da classe
 	public List<Cozinha> listar(){
-		return repository.listar();
+		return CozinhaRepository.findAll();
 	}
 	
 
 	@GetMapping("/{cozinhaId}")
 	public ResponseEntity<Cozinha> buscarPorId(@PathVariable Long cozinhaId) {
-		Cozinha cozinha = repository.buscarPorId(cozinhaId);
+		Optional<Cozinha> cozinha = CozinhaRepository.findById(cozinhaId); // O findById nunca returna um null. e sim um Optional
 		
-		if(cozinha != null) {
-			return ResponseEntity.ok(cozinha);
+		if(cozinha.isPresent()) { // Como agora o retorno e um Optional, no if ele pergunta se tem algo dentro com isPresent()
+			return ResponseEntity.ok(cozinha.get()); // Pegando a instancia da cozinha com get() que esta dentro do Optional
 		}
 		//return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Se nao existir o Id retorna um NOT FOUND e sem corpo.
 		return ResponseEntity.notFound().build(); // Atalho para a linha acima
@@ -70,36 +71,36 @@ public class CozinhaController {
 	@PutMapping("/{cozinhaId}")
 	public ResponseEntity<Cozinha> atualizar(@PathVariable Long cozinhaId, 
 			@RequestBody Cozinha cozinha){
-		Cozinha cozinhaAtual = repository.buscarPorId(cozinhaId); // Cozinha armazenada no Banco de dados
+		Optional<Cozinha> cozinhaAtual = CozinhaRepository.findById(cozinhaId); // Cozinha armazenada no Banco de dados
 		//cozinhaAtual.setNome(cozinha.getNome()); // Setando o nome da cozinha que veio da requisicao e colocando na cozinha armazenada no banco
 		
-		if(cozinhaAtual != null) {
+		if(cozinhaAtual.isPresent()) {
 			/*
 			 * Faz a mesma coisa que a linha acima, seta todas as propriedades de uma unica vez.
 			 * NO TERCEIRO PARAMETRO O CAMPO Id É IGNORADO, EVITANDO ERROS , POIS O ID NAO DEVE SER MODIFICADO PQ ESTA SENDO FEITA UMA ATUALIZAÇÃO
 			 */
-			BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
+			BeanUtils.copyProperties(cozinha, cozinhaAtual.get(), "id");  // Pegando a instancia da cozinhaAtual com get() que esta dentro do Optional
 			
-			cozinhaAtual = cozinhaService.salvarOuAtualiza(cozinha);
-			return ResponseEntity.ok(cozinhaAtual);
+			Cozinha cozinhaSalva = cozinhaService.salvarOuAtualiza(cozinhaAtual.get());
+			return ResponseEntity.ok(cozinhaSalva);
 	    }
 		return ResponseEntity.notFound().build(); // Se nao existir o Id da cozinha retorna um NOT FOUND e sem corpo.
 	}
 	
 	
 	@DeleteMapping("/{cozinhaId}")
-	public ResponseEntity<Cozinha> remover(@PathVariable Long cozinhaId){
+	public ResponseEntity<?> remover(@PathVariable Long cozinhaId){ // Foi colocado o coringa <?> para que no corpo da resposta possa ser passado qualquer tipo de objeto
 		try {
-			 cozinhaService.remover(cozinhaId);
+			 cozinhaService.excluir(cozinhaId);
 			 return ResponseEntity.noContent().build(); // Como o recurso ja foi removido na ha necessidade de retornar um corpo
 			 
 		} catch (EntidadeNaoEncontradaException e) { // Excessao de negocio customizada
 			//AO TENTAR REMOVER UMA COZINHA VINCULADA AO RESTAURANTE OCORRE UM ERRO DE VIOLAÇÃO NO BD, RESPOSTA HTTP SERA ESSA.
-			return ResponseEntity.noContent().build(); // Como o recurso ja foi removido na ha necessidade de retornar um corpo 
+			return ResponseEntity.notFound().build(); // Como o recurso ja foi removido na ha necessidade de retornar um corpo 
 			
 		} catch (EntidadeEmUsoException e) { // Excessao de negocio customizada
 			//AO TENTAR REMOVER UMA COZINHA VINCULADA AO RESTAURANTE OCORRE UM ERRO DE VIOLAÇÃO NO BD, RESPOSTA HTTP SERA ESSA.
-			return ResponseEntity.status(HttpStatus.CONFLICT).build(); 
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage()); // Passando a mensagem no corpo do Objeto EntidadeEmUsoException
 			
 		}
 	}

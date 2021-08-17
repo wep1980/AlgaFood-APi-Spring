@@ -102,22 +102,22 @@ public class RestauranteController {
 	    }
 	    
 	    
-		@DeleteMapping("/{restauranteId}")
-		public ResponseEntity<Restaurante> remover(@PathVariable Long restauranteId){
-			try {
-				 restauranteService.remover(restauranteId);
-				 return ResponseEntity.noContent().build(); // Como o recurso ja foi removido na ha necessidade de retornar um corpo
-				 
-			} catch (EntidadeNaoEncontradaException e) { // Excessao de negocio customizada
-				//AO TENTAR REMOVER UMA COZINHA VINCULADA AO RESTAURANTE OCORRE UM ERRO DE VIOLAÇÃO NO BD, RESPOSTA HTTP SERA ESSA.
-				return ResponseEntity.noContent().build(); // Como o recurso ja foi removido na ha necessidade de retornar um corpo 
-				
-			} catch (EntidadeEmUsoException e) { // Excessao de negocio customizada
-				//AO TENTAR REMOVER UMA COZINHA VINCULADA AO RESTAURANTE OCORRE UM ERRO DE VIOLAÇÃO NO BD, RESPOSTA HTTP SERA ESSA.
-				return ResponseEntity.status(HttpStatus.CONFLICT).build(); 
-				
-			}
-		}
+//		@DeleteMapping("/{restauranteId}")
+//		public ResponseEntity<?> remover(@PathVariable Long restauranteId){
+//			try {
+//				 restauranteService.remover(restauranteId);
+//				 return ResponseEntity.noContent().build(); // Como o recurso ja foi removido na ha necessidade de retornar um corpo
+//				 
+//			} catch (EntidadeNaoEncontradaException e) { // Excessao de negocio customizada
+//				//AO TENTAR REMOVER UMA COZINHA VINCULADA AO RESTAURANTE OCORRE UM ERRO DE VIOLAÇÃO NO BD, RESPOSTA HTTP SERA ESSA.
+//				return ResponseEntity.noContent().build(); // Como o recurso ja foi removido na ha necessidade de retornar um corpo 
+//				
+//			} catch (EntidadeEmUsoException e) { // Excessao de negocio customizada
+//				//AO TENTAR REMOVER UMA COZINHA VINCULADA AO RESTAURANTE OCORRE UM ERRO DE VIOLAÇÃO NO BD, RESPOSTA HTTP SERA ESSA.
+//				return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+//				
+//			}
+//		}
 	 
 		
 		/**

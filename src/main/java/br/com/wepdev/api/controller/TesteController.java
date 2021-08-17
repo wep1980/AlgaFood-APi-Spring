@@ -26,9 +26,9 @@ public class TesteController {
 	 * @param nome
 	 * @return
 	 */
-	@GetMapping("/cozinha/por-nome") 
-	public List<Cozinha> cozinhasPorNome(@RequestParam("nome") String nome){ // Fazendo binding do nome que vem da requisicao para a variavel nome
-		return cozinhaRepository.consultarPorNome(nome);
-	}
+//	@GetMapping("/cozinha/por-nome") 
+//	public List<Cozinha> cozinhasPorNome(@RequestParam("nome") String nome){ // Fazendo binding do nome que vem da requisicao para a variavel nome
+//		return cozinhaRepository.consultarPorNome(nome);
+//	}
 
 }
