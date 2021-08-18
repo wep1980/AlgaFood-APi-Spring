@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import br.com.wepdev.domain.model.Restaurante;
 
 @Repository
-public interface RestauranteRepository extends JpaRepository<Restaurante, Long>{
+public interface RestauranteRepository extends JpaRepository<Restaurante, Long> , RestauranteRepositoryQueries{
 
 	/*
 	 * Referencia para a documentacao das keywords
@@ -49,5 +49,35 @@ public interface RestauranteRepository extends JpaRepository<Restaurante, Long>{
 	
 	// Conta a quantidade de restaurantes pela cozinhaId selecionada
 	int countByCozinhaId(Long cozinhaId);
+	
+	
+	/**
+	 * Assinatura do metodo implementado no RestauranteRepositoryImpl, 
+	 * o problema e que dessa forma nao existe um vinculo entre a assinatura e o metodo.
+	 * 
+	 * @param nome
+	 * @param taxaFreteInicial
+	 * @param taxaFreteFinal
+	 * @return
+	 */
+	//public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }
