@@ -1,12 +1,15 @@
 package br.com.wepdev.infrastructure.repository;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import br.com.wepdev.domain.model.Restaurante;
 import br.com.wepdev.domain.repository.RestauranteRepositoryQueries;
@@ -41,13 +44,36 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 	@Override
 	public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal){
 		
-		var jpql ="from Restaurante where nome like :nome and taxaFrete between :taxaInicial and :taxaFinal";
+		var jpql = new StringBuilder(); // StringBuilder() -> Uma forma melhor de concatenar Strings
 		
-		return manager.createQuery(jpql, Restaurante.class)
-				.setParameter("nome", "%" + nome + "%")
-				.setParameter("taxaInicial", taxaFreteInicial)
-				.setParameter("taxaFinal", taxaFreteFinal)
-				.getResultList();
+		var parametrosDaQuery = new HashMap< String , Object >();
+		
+		// Para resolver o problema se for passado so a taxaFrete inicial sem o nome e colocado where 0 = 0 que e sempre verdadeiro
+		jpql.append("from Restaurante where 0 = 0 "); // Se nao for passado nenhum restaurante o where 0 = 0 e verdadeiro e retorna todos os restaurantes
+		
+		if(StringUtils.hasLength(nome)) { // verifica se o nome esta vazio ou nulo
+			jpql.append("and nome like :nome ");
+			parametrosDaQuery.put("nome", "%" + nome + "%");
+		}
+		
+		if(taxaFreteInicial != null) {
+			jpql.append("and taxaFrete >= :taxaInicial ");
+			parametrosDaQuery.put("taxaInicial", taxaFreteInicial);
+		}
+		
+		if(taxaFreteFinal != null) {
+			jpql.append("and taxaFrete <= :taxaFinal ");
+			parametrosDaQuery.put("taxaFinal", taxaFreteFinal);
+		}
+		
+		// createQuery recebe jpql.toString() pq o jpql virou um StringBuilder()
+		TypedQuery<Restaurante> query = manager.createQuery(jpql.toString(), Restaurante.class);// TypedQuery() -> Instancia que recebe a consulta de createQuery
+		
+		// Para cada chave, valor : faça query.setParameter(chave, valor)
+		parametrosDaQuery.forEach((chave, valor) -> query.setParameter(chave, valor)); // forEach loop com expressao lambda
+		
+		return query.getResultList();
+			
 	}
 	
 	
