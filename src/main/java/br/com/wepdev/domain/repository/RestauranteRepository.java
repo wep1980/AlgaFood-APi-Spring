@@ -11,6 +11,14 @@ import org.springframework.stereotype.Repository;
 
 import br.com.wepdev.domain.model.Restaurante;
 
+
+/**
+ * Ao herdar de RestauranteRepositoryQueries que é uma interface, automaticamente ele implementa os metodos sem a necessidade
+ * da assinatura deles explicitamente.
+ * 
+ * @author Waldir
+ *
+ */
 @Repository
 public interface RestauranteRepository extends JpaRepository<Restaurante, Long> , RestauranteRepositoryQueries{
 
