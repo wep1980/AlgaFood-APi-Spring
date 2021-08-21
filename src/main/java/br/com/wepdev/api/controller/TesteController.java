@@ -85,9 +85,9 @@ public class TesteController {
 	}
 	
 	
-	@GetMapping("/restaurantes/por-nome-taxa-frete") // O @RequestParam ja vem embutido, nao necessario implementar explicitamente
-	public List<Restaurante> restaurantesPorNomeETaxaFrete(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal){ // Fazendo binding do nome que vem da requisicao para a variavel taxaInicial e taxaFinal
-		return restauranteRepository.find(nome, taxaInicial , taxaFinal);
+	@GetMapping("/restaurantes/por-nome-e-frete") // O @RequestParam ja vem embutido, nao necessario implementar explicitamente
+	public List<Restaurante> restaurantesPorNomeETaxaFrete(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal){ // Fazendo binding do nome que vem da requisicao para a variavel taxaInicial e taxaFinal
+		return restauranteRepository.find(nome, taxaFreteInicial , taxaFreteFinal);
 	}	
 	
 	
