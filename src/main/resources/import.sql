@@ -5,7 +5,7 @@ insert into cozinha (id , nome) values (3 , 'Brasileira');
 insert into restaurante (nome , taxa_frete , cozinha_id) values ('Paris 6' , 10 , 1);
 insert into restaurante (nome , taxa_frete , cozinha_id) values ('Gran parrilha' , 9.50 , 2);
 insert into restaurante (nome , taxa_frete , cozinha_id) values ('Fogo de chao' , 15 , 3);
-insert into restaurante (nome , taxa_frete , cozinha_id) values ('Buxixo' , 5 , 1);
+insert into restaurante (nome , taxa_frete , cozinha_id) values ('Buxixo' , 0 , 1);
 insert into restaurante (nome , taxa_frete , cozinha_id) values ('Gratini' , 9.50 , 2);
 insert into restaurante (nome , taxa_frete , cozinha_id) values ('Caçador' , 13 , 3);
 insert into restaurante (nome , taxa_frete , cozinha_id) values ('Vizinhando' , 11 , 1);

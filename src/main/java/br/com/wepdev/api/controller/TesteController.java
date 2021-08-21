@@ -1,5 +1,8 @@
 package br.com.wepdev.api.controller;
 
+import static br.com.wepdev.infrastructure.repository.spec.RestauranteSpecs.comFreteGratis; // Import static configurado em : window -> preferences -> favorites -> new type
+import static br.com.wepdev.infrastructure.repository.spec.RestauranteSpecs.comNomeSemelhante;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +17,7 @@ import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.model.Restaurante;
 import br.com.wepdev.domain.repository.CozinhaRepository;
 import br.com.wepdev.domain.repository.RestauranteRepository;
-import br.com.wepdev.infrastructure.repository.spec.RestauranteComFreteGratisSpec;
-import br.com.wepdev.infrastructure.repository.spec.RestauranteComNomeSemelhanteSpec;
+import br.com.wepdev.infrastructure.repository.spec.RestauranteSpecs;
 
 @RestController
 @RequestMapping("/teste")
@@ -99,26 +101,38 @@ public class TesteController {
 	}
 	
 	
+//	@GetMapping("/restaurantes/frete-gratis") // O @RequestParam foi preciso para passar os valores na utilizacao do criteria
+//	public List<Restaurante> restaurantesPorFreteGratis(@RequestParam String nome){ // Fazendo binding do nome que vem da requisicao para a variavel taxaInicial e taxaFinal
+//	    
+//		/*
+//		 * Padrao DDD(Domain driven design) Specification
+//		 * Essa classe representa uma restricao, um filtro, que possui codigo Jpa
+//		 */
+//		var comFreteGratis = new RestauranteComFreteGratisSpec();
+//		
+//		/*
+//		 * Padrao DDD(Domain driven design) Specification.
+//		 * Essa classe representa uma restricao, um filtro, que possui codigo Jpa.
+//		 */
+//		var comNomeSemelhante = new RestauranteComNomeSemelhanteSpec(nome);  // Essa classe representa uma restricao, um filtro, que teria um codigo Jpa
+//		
+//		/*
+//		 * O Repositorio precisa ser preprado para receber um specificartion.
+//		 * Busca todos os restaurantes com frete gratis e com nome semelhante.
+//		 */
+//		return restauranteRepository.findAll(comFreteGratis.and(comNomeSemelhante));
+//	}
+	
+	
 	@GetMapping("/restaurantes/frete-gratis") // O @RequestParam foi preciso para passar os valores na utilizacao do criteria
 	public List<Restaurante> restaurantesPorFreteGratis(@RequestParam String nome){ // Fazendo binding do nome que vem da requisicao para a variavel taxaInicial e taxaFinal
-	    
+	
 		/*
-		 * Padrao DDD(Domain driven design) Specification
-		 * Essa classe representa uma restricao, um filtro, que possui codigo Jpa
+		 * RestauranteSpecs.comFreteGratis() -> Pelo fato de ser um restaurante com metodo estatico, o eclipse nao esta fazendo a importacao,
+		 * foi feita a configuracao da classe RestauranteSpecs pegando o pacote br.com.wepdev.infrastructure.repository.spec e configurando em :
+		 * window -> preferences -> favorites -> new type
 		 */
-		var comFreteGratis = new RestauranteComFreteGratisSpec();
-		
-		/*
-		 * Padrao DDD(Domain driven design) Specification.
-		 * Essa classe representa uma restricao, um filtro, que possui codigo Jpa.
-		 */
-		var comNomeSemelhante = new RestauranteComNomeSemelhanteSpec(nome);  // Essa classe representa uma restricao, um filtro, que teria um codigo Jpa
-		
-		/*
-		 * O Repositorio precisa ser preprado para receber um specificartion.
-		 * Busca todos os restaurantes com frete gratis e com nome semelhante.
-		 */
-		return restauranteRepository.findAll(comFreteGratis.and(comNomeSemelhante));
+		return restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
 	}
 	
 	
