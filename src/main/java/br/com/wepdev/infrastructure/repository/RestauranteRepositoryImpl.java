@@ -1,6 +1,7 @@
 package br.com.wepdev.infrastructure.repository;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,6 +42,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 	
 	/**
 	 * É necessario colocar a assinatura do metodo na Interface RestauranteRepository
+	 * O metodo funciona independente dos parametros passados: nome, taxaFreteInicial ou taxaFreteFinal
 	 * 
 	 * @param nome
 	 * @param taxaFreteInicial
@@ -85,76 +87,47 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 	
 	// ******* CRITERIA Api do JPA para criacao de querys de forma programatica, ele e burocratica, ideal para consultas complexas e dinamicas ****************************************
 	
-//	@Override
-//	public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal){
-//		
-//		CriteriaBuilder builder = manager.getCriteriaBuilder(); // Criando uma instancia de CriteriaBuilder, é uma fabrica.
-//		
-//		CriteriaQuery<Restaurante> criteria = builder.createQuery(Restaurante.class); // Monta uma query de Restaurante atraves do builder(Construtor de clausulas)
-//		
-//		Root<Restaurante> root = criteria.from(Restaurante.class);// Root representa a raiz do restaurante, as propreidades vao ser de restaurante
-//		
-//		// like(root.get("nome"), "%" + nome + "%") -> O primeiro parametro da propriedade e o nome, e a segunda propriedade e o valor
-//		Predicate nomePredicate = builder.like(root.get("nome"), "%" + nome + "%"); // Predicate e um filtro, funciona como se fosse um where
-//		
-//		// TaxaFrete tem q ser maior que ou igual a tacaFreteInicial
-//		Predicate taxaInicialPredicate = builder.greaterThanOrEqualTo(root.get("taxaFrete"), taxaFreteInicial);
-//		
-//		// TaxaFrete tem q ser menor que ou igual a taxaFreteFinal
-//		Predicate taxaFinalPredicate = builder.lessThanOrEqualTo(root.get("taxaFrete"), taxaFreteFinal);
-//		
-//		criteria.where(nomePredicate, taxaInicialPredicate, taxaFinalPredicate); // recebe o filtro dos Predicates(Where)
-//		
-//		TypedQuery<Restaurante> query = manager.createQuery(criteria);
-//		
-//		return query.getResultList();
-//		
-//	}
 	
-	
-	
-	
+	/**
+	 * O Metodo ficou dinamico, e obrigatorio passar todos os parametros
+	 */
 	@Override
-	public List<Restaurante> find(String nome, 
-			BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal) {
-		CriteriaBuilder builder = manager.getCriteriaBuilder();
+	public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal){
 		
-		CriteriaQuery<Restaurante> criteria = builder.createQuery(Restaurante.class);
-		Root<Restaurante> root = criteria.from(Restaurante.class);
-
-		Predicate nomePredicate = builder.like(root.get("nome"), "%" + nome + "%");
+		CriteriaBuilder builder = manager.getCriteriaBuilder(); // Criando uma instancia de CriteriaBuilder, é uma fabrica.
 		
-		Predicate taxaInicialPredicate = builder
-				.greaterThanOrEqualTo(root.get("taxaFrete"), taxaFreteInicial);
+		CriteriaQuery<Restaurante> criteria = builder.createQuery(Restaurante.class); // Monta uma query de Restaurante atraves do builder(Construtor de clausulas)
+		Root<Restaurante> root = criteria.from(Restaurante.class);// Root representa a raiz do restaurante, as propreidades vao ser de restaurante
 		
-		Predicate taxaFinalPredicate = builder
-				.lessThanOrEqualTo(root.get("taxaFrete"), taxaFreteFinal);
+		var predicates = new ArrayList<Predicate>();
 		
-		criteria.where(nomePredicate, taxaInicialPredicate, taxaFinalPredicate);
+		if(StringUtils.hasText(nome)) { // Se tiver texto dentro da variavel nome
+		// like(root.get("nome"), "%" + nome + "%") -> O primeiro parametro da propriedade e o nome, e a segunda propriedade e o valor
+		predicates.add(builder.like(root.get("nome"), "%" + nome + "%")); // Predicate e um filtro, funciona como se fosse um where
+	    }
+		if(taxaFreteInicial != null) {
+		// TaxaFrete tem q ser maior que ou igual a tacaFreteInicial
+			predicates.add(builder.greaterThanOrEqualTo(root.get("taxaFrete"), taxaFreteInicial));
+		}
+		if(taxaFreteFinal != null) {
+		// TaxaFrete tem q ser menor que ou igual a taxaFreteFinal
+			predicates.add(builder.lessThanOrEqualTo(root.get("taxaFrete"), taxaFreteFinal));
+		}
+		
+		/*
+		 * predicates.toArray(new Predicate[0]) -> Transformando a Lista em um array de 0 posições, o where recebe um array.
+		 * Retorna a instancia de um array preenchido com os predicates que estao na lista
+		 */
+		criteria.where(predicates.toArray(new Predicate[0])); // recebe o filtro dos Predicates(Where)
 		
 		TypedQuery<Restaurante> query = manager.createQuery(criteria);
+		
 		return query.getResultList();
+		
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
 	
 	
 
