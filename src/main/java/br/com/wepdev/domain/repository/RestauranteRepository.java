@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -15,11 +16,15 @@ import br.com.wepdev.domain.model.Restaurante;
  * Ao herdar de RestauranteRepositoryQueries que é uma interface, automaticamente ele implementa os metodos sem a necessidade
  * da assinatura deles explicitamente.
  * 
+ * RestauranteRepositoryQueries -> implementa essa interface que recebe a implementacao RestauranteRepositoryImpl onde ficam os metodos customizados.
+ * JpaSpecificationExecutor<Restaurante> -> Implementa as classes de metodos customizados no padrao DDD(Domain driven design) Specifications
+ * 
+ * 
  * @author Waldir
  *
  */
 @Repository
-public interface RestauranteRepository extends JpaRepository<Restaurante, Long> , RestauranteRepositoryQueries{
+public interface RestauranteRepository extends JpaRepository<Restaurante, Long> , RestauranteRepositoryQueries, JpaSpecificationExecutor<Restaurante>{
 
 	/*
 	 * Referencia para a documentacao das keywords

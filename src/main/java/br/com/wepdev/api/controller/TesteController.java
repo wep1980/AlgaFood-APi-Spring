@@ -14,6 +14,8 @@ import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.model.Restaurante;
 import br.com.wepdev.domain.repository.CozinhaRepository;
 import br.com.wepdev.domain.repository.RestauranteRepository;
+import br.com.wepdev.infrastructure.repository.spec.RestauranteComFreteGratisSpec;
+import br.com.wepdev.infrastructure.repository.spec.RestauranteComNomeSemelhanteSpec;
 
 @RestController
 @RequestMapping("/teste")
@@ -91,12 +93,33 @@ public class TesteController {
 	}	
 	
 	
-	@GetMapping("/restaurantes/nome-frete-criteria") // O @RequestParam ja vem embutido, nao necessario implementar explicitamente
+	@GetMapping("/restaurantes/nome-frete-criteria") // O @RequestParam foi preciso para passar os valores na utilizacao do criteria
 	public List<Restaurante> restaurantesPorNomeETaxaFreteCriteria(@RequestParam String nome, @RequestParam  BigDecimal taxaFreteInicial, @RequestParam  BigDecimal taxaFreteFinal){ // Fazendo binding do nome que vem da requisicao para a variavel taxaInicial e taxaFinal
 		return restauranteRepository.find(nome, taxaFreteInicial , taxaFreteFinal);
 	}
 	
 	
+	@GetMapping("/restaurantes/frete-gratis") // O @RequestParam foi preciso para passar os valores na utilizacao do criteria
+	public List<Restaurante> restaurantesPorFreteGratis(@RequestParam String nome){ // Fazendo binding do nome que vem da requisicao para a variavel taxaInicial e taxaFinal
+	    
+		/*
+		 * Padrao DDD(Domain driven design) Specification
+		 * Essa classe representa uma restricao, um filtro, que possui codigo Jpa
+		 */
+		var comFreteGratis = new RestauranteComFreteGratisSpec();
+		
+		/*
+		 * Padrao DDD(Domain driven design) Specification.
+		 * Essa classe representa uma restricao, um filtro, que possui codigo Jpa.
+		 */
+		var comNomeSemelhante = new RestauranteComNomeSemelhanteSpec(nome);  // Essa classe representa uma restricao, um filtro, que teria um codigo Jpa
+		
+		/*
+		 * O Repositorio precisa ser preprado para receber um specificartion.
+		 * Busca todos os restaurantes com frete gratis e com nome semelhante.
+		 */
+		return restauranteRepository.findAll(comFreteGratis.and(comNomeSemelhante));
+	}
 	
 	
 	
