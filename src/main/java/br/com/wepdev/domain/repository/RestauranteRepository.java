@@ -19,12 +19,14 @@ import br.com.wepdev.domain.model.Restaurante;
  * RestauranteRepositoryQueries -> implementa essa interface que recebe a implementacao RestauranteRepositoryImpl onde ficam os metodos customizados.
  * JpaSpecificationExecutor<Restaurante> -> Implementa as classes de metodos customizados no padrao DDD(Domain driven design) Specifications
  * 
+ * CustomJpaRepository<Restaurante, Long> -> Herda o repositorio generico
+ * 
  * 
  * @author Waldir
  *
  */
 @Repository
-public interface RestauranteRepository extends JpaRepository<Restaurante, Long> , RestauranteRepositoryQueries, JpaSpecificationExecutor<Restaurante>{
+public interface RestauranteRepository extends CustomJpaRepository<Restaurante, Long> , RestauranteRepositoryQueries, JpaSpecificationExecutor<Restaurante>{
 
 	/*
 	 * Referencia para a documentacao das keywords

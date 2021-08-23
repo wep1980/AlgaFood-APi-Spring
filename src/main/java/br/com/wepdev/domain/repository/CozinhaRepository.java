@@ -15,7 +15,7 @@ import br.com.wepdev.domain.model.Cozinha;
  *
  */
 @Repository
-public interface CozinhaRepository extends JpaRepository<Cozinha, Long>{
+public interface CozinhaRepository extends CustomJpaRepository<Cozinha, Long>{
 
 	/*
 	 * Referencia para a documentacao das keywords
