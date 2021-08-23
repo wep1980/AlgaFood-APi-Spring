@@ -132,7 +132,9 @@ public class TesteController {
 		 * foi feita a configuracao da classe RestauranteSpecs pegando o pacote br.com.wepdev.infrastructure.repository.spec e configurando em :
 		 * window -> preferences -> favorites -> new type
 		 */
-		return restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
+		//return restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
+		
+		return restauranteRepository.findComFreteGratis(nome);
 	}
 	
 	

@@ -5,6 +5,11 @@ import java.util.List;
 
 import br.com.wepdev.domain.model.Restaurante;
 
+/**
+ * As aassinaturas dos metodos aqui, sao implementados no RepositoryImpl
+ * @author Waldir
+ *
+ */
 public interface RestauranteRepositoryQueries {
 
 	/**
@@ -16,5 +21,8 @@ public interface RestauranteRepositoryQueries {
 	 * @return
 	 */
 	List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal);
+	
+	
+	List<Restaurante> findComFreteGratis(String nome);
 
 }

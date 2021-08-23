@@ -1,5 +1,8 @@
 package br.com.wepdev.infrastructure.repository;
 
+import static br.com.wepdev.infrastructure.repository.spec.RestauranteSpecs.comFreteGratis;
+import static br.com.wepdev.infrastructure.repository.spec.RestauranteSpecs.comNomeSemelhante;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,10 +18,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import br.com.wepdev.domain.model.Restaurante;
+import br.com.wepdev.domain.repository.RestauranteRepository;
 import br.com.wepdev.domain.repository.RestauranteRepositoryQueries;
 
 /**
@@ -38,6 +44,9 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 	
 	@PersistenceContext
 	private EntityManager manager;
+	
+	@Autowired @Lazy //So instancia essa dependencia no momento que for preciso
+	private RestauranteRepository restauranteRepository;
 	
 	
 	/**
@@ -124,6 +133,12 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 		
 		return query.getResultList();
 		
+	}
+
+
+	@Override
+	public List<Restaurante> findComFreteGratis(String nome) {
+		return restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
 	}
 	
 
