@@ -1,6 +1,7 @@
 package br.com.wepdev.domain.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -43,7 +47,7 @@ public class Restaurante {
 	private Cozinha cozinha; // Um restaurante possui uma cozinha
 	
 	@Embedded // Esta classe esta sendo incorporada em Restaurante
-	//@JsonIgnore// Na hora de serializar a propriedade cozinha sera ignorada
+	@JsonIgnore// Na hora de serializar a propriedade cozinha sera ignorada
 	private Endereco endereco;
 
 	/*
@@ -57,5 +61,46 @@ public class Restaurante {
 	           joinColumns = @JoinColumn(name ="restaurante_id"), // Customozindo o nome da coluna que é a chave estrangeira que referencia a tabela restaurante
 	           inverseJoinColumns = @JoinColumn(name ="forma_pagamento_id"))  // Customozindo o nome da coluna que é a chave estrangeira que referencia a tabela formaPagamento
 	private List<FormaPagamento> formasPagamento = new ArrayList<>(); // Quando se cria uma instancia da lista, se evita o nullpointerexception ao instanciar uam cozinha
+	
+	
+	/*
+	 * LocalDateTime -> Representa uma data hora sem fuso horario(Sem TimeStamp)
+	 * nullable = false ->  Propriedade obrigatoria
+	 */
+	@JsonIgnore// Na hora de serializar a propriedade cozinha sera ignorada
+	@CreationTimestamp // No momento em que a entidade for criada pela primeira vez sera atribuida uma data e hora atual
+	@Column(nullable = false, columnDefinition = "datetime") // Retira a precisao dos milisegundos
+	private LocalDateTime dataCadastro;
+	
+	/*
+	 * LocalDateTime -> Representa uma data hora sem fuso horario(Sem TimeStamp)
+	 * nullable = false ->  Propriedade obrigatoria
+	 */
+	@JsonIgnore// Na hora de serializar a propriedade cozinha sera ignorada
+	@UpdateTimestamp // Atualiza a data Hora atual sempre que a entidade for atualizada
+	@Column(nullable = false, columnDefinition = "datetime") // Retira a precisao dos milisegundos
+	private LocalDateTime dataAtualizacao;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

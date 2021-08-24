@@ -12,16 +12,16 @@ insert into cidade (id, nome, estado_id) values (3, 'São Paulo', 2);
 insert into cidade (id, nome, estado_id) values (4, 'Campinas', 2);
 insert into cidade (id, nome, estado_id) values (5, 'Fortaleza', 3);
 
-insert into restaurante (nome , taxa_frete , cozinha_id , endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro) values ('Outback' , 10 , 1, 1,'38400-999', 'Rua João Pinheiro', '1000', 'Centro');
-insert into restaurante (nome , taxa_frete , cozinha_id) values ('Gran parrilha' , 9.50 , 2);
-insert into restaurante (nome , taxa_frete , cozinha_id) values ('Fogo de chao' , 15 , 3);
-insert into restaurante (nome , taxa_frete , cozinha_id) values ('Buxixo' , 0 , 1);
-insert into restaurante (nome , taxa_frete , cozinha_id) values ('Gratini' , 9.50 , 2);
-insert into restaurante (nome , taxa_frete , cozinha_id) values ('Caçador' , 13 , 3);
-insert into restaurante (nome , taxa_frete , cozinha_id) values ('Vizinhando' , 11 , 1);
-insert into restaurante (nome , taxa_frete , cozinha_id) values ('Pavão azul' , 4 , 2);
-insert into restaurante (nome , taxa_frete , cozinha_id) values ('Bar do momo' , 7 , 3);
-insert into restaurante (nome , taxa_frete , cozinha_id) values ('Bode cheiroso' , 0 , 1);
+insert into restaurante (nome , taxa_frete , cozinha_id , data_cadastro, data_atualizacao, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro) values ('Outback' , 10 , 1 ,utc_timestamp, utc_timestamp, 1,'38400-999', 'Rua João Pinheiro', '1000', 'Centro');
+insert into restaurante (nome , taxa_frete , cozinha_id , data_cadastro, data_atualizacao) values ('Gran parrilha' , 9.50 , 2 ,utc_timestamp, utc_timestamp);
+insert into restaurante (nome , taxa_frete , cozinha_id, data_cadastro, data_atualizacao) values ('Fogo de chao' , 15 , 3 ,utc_timestamp, utc_timestamp);
+insert into restaurante (nome , taxa_frete , cozinha_id, data_cadastro, data_atualizacao) values ('Buxixo' , 0 , 1 ,utc_timestamp, utc_timestamp);
+insert into restaurante (nome , taxa_frete , cozinha_id, data_cadastro, data_atualizacao) values ('Gratini' , 9.50 , 2 ,utc_timestamp, utc_timestamp);
+insert into restaurante (nome , taxa_frete , cozinha_id, data_cadastro, data_atualizacao) values ('Caçador' , 13 , 3 ,utc_timestamp, utc_timestamp);
+insert into restaurante (nome , taxa_frete , cozinha_id, data_cadastro, data_atualizacao) values ('Vizinhando' , 11 , 1 ,utc_timestamp, utc_timestamp);
+insert into restaurante (nome , taxa_frete , cozinha_id, data_cadastro, data_atualizacao) values ('Pavão azul' , 4 , 2 ,utc_timestamp, utc_timestamp);
+insert into restaurante (nome , taxa_frete , cozinha_id, data_cadastro, data_atualizacao) values ('Bar do momo' , 7 , 3 ,utc_timestamp, utc_timestamp);
+insert into restaurante (nome , taxa_frete , cozinha_id, data_cadastro, data_atualizacao) values ('Bode cheiroso' , 0 , 1 ,utc_timestamp, utc_timestamp);
 
 insert into forma_pagamento (descricao) values ('Dinheiro');
 insert into forma_pagamento (descricao) values ('Catão de crédito');

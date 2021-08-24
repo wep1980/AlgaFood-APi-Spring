@@ -79,7 +79,7 @@ public class RestauranteController {
 				/*
 				 * Copia as propriedades do restaurante para restauranteAtual, menos do id e formaPagamento
 				 */
-				BeanUtils.copyProperties(restaurante, restauranteAtual, "id" , "formasPagamento", "endereco");
+				BeanUtils.copyProperties(restaurante, restauranteAtual, "id" , "formasPagamento", "endereco", "dataCadastro");
 				
 				restauranteAtual = restauranteService.salvar(restauranteAtual);
 				return ResponseEntity.ok(restauranteAtual);
