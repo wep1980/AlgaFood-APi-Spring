@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -40,6 +41,9 @@ public class Restaurante {
 	@JoinColumn(name = "cozinha_id", nullable = false) // A classe dona da associação e Restaurante, pois é onde fica a coluna cozinha_id
 	@ManyToOne // Muitos - many(*) RESTAURANTES possuem uma - one(1) COZINHA
 	private Cozinha cozinha; // Um restaurante possui uma cozinha
+	
+	@Embedded // Esta classe esta sendo incorporada em Restaurante
+	private Endereco endereco;
 
 	/*
 	 * Nos bancos de dados relacioanais todos os relacionamentos que possuem muitos para muitos (*..*) precisam de uma tabela adicional.
