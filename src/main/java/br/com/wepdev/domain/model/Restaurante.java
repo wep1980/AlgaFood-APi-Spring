@@ -43,6 +43,7 @@ public class Restaurante {
 	private Cozinha cozinha; // Um restaurante possui uma cozinha
 	
 	@Embedded // Esta classe esta sendo incorporada em Restaurante
+	//@JsonIgnore// Na hora de serializar a propriedade cozinha sera ignorada
 	private Endereco endereco;
 
 	/*

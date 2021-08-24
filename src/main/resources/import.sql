@@ -2,7 +2,17 @@ insert into cozinha (id , nome) values (1 , 'Tailandesa');
 insert into cozinha (id , nome) values (2 , 'Indiana');
 insert into cozinha (id , nome) values (3 , 'Brasileira');
 
-insert into restaurante (nome , taxa_frete , cozinha_id) values ('Paris 6' , 10 , 1);
+insert into estado (id, nome) values (1, 'Minas Gerais');
+insert into estado (id, nome) values (2, 'São Paulo');
+insert into estado (id, nome) values (3, 'Ceará');
+
+insert into cidade (id, nome, estado_id) values (1, 'Uberlândia', 1);
+insert into cidade (id, nome, estado_id) values (2, 'Belo Horizonte', 1);
+insert into cidade (id, nome, estado_id) values (3, 'São Paulo', 2);
+insert into cidade (id, nome, estado_id) values (4, 'Campinas', 2);
+insert into cidade (id, nome, estado_id) values (5, 'Fortaleza', 3);
+
+insert into restaurante (nome , taxa_frete , cozinha_id , endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro) values ('Outback' , 10 , 1, 1,'38400-999', 'Rua João Pinheiro', '1000', 'Centro');
 insert into restaurante (nome , taxa_frete , cozinha_id) values ('Gran parrilha' , 9.50 , 2);
 insert into restaurante (nome , taxa_frete , cozinha_id) values ('Fogo de chao' , 15 , 3);
 insert into restaurante (nome , taxa_frete , cozinha_id) values ('Buxixo' , 0 , 1);
@@ -19,13 +29,6 @@ insert into forma_pagamento (descricao) values ('Cartão de débito');
 insert into forma_pagamento (descricao) values ('Boleto');
 
 
-insert into estado (id , nome) values (1 , 'Rio de janeiro');
-insert into estado (id , nome) values (2 , 'Rio grande do sul');
-insert into estado (id , nome) values (3 , 'Bahia');
-
-insert into cidade (nome , estado_id) values ('Petropolis' , 1);
-insert into cidade (nome , estado_id) values ('Gramado' , 2);
-insert into cidade (nome , estado_id) values ('Morro de são paulo' , 3);
 
 insert into permissao (nome , descricao) values ('Adm' , 'Administrador');
 insert into permissao (nome , descricao) values ('Gerente' , 'Gerente nivel 1');
