@@ -31,7 +31,7 @@ public class Restaurante {
 	private BigDecimal taxaFrete;
 	
 	//@JoinColumn(name = "cozinha_id") // Forma de colocar nome em uma coluna que referencia uma chave estrangeira
-	@JoinColumn(nullable = false)
+	@JoinColumn(name = "cozinha_id", nullable = false) // A classe dona da associação e Restaurante, pois é onde fica a coluna cozinha_id
 	@ManyToOne // Muitos - many(*) RESTAURANTES possuem uma - one(1) COZINHA
 	private Cozinha cozinha; // Um restaurante possui uma cozinha
 

@@ -22,7 +22,7 @@ public class CustomJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> i
 
 
 	/**
-	 * Construtor
+	 * Construtor que repassa o entityManager quando a classe e instanciada
 	 * @param entityInformation
 	 * @param entityManager
 	 */
@@ -38,6 +38,7 @@ public class CustomJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> i
 	@Override
 	public Optional<T> buscarPrimeiro() {
 		  var jpql = "from " + getDomainClass().getName(); // Pegando o nome da classa na qual o repository vai estar usando no momento
+		  
 	        /*
 	         *  getDomainClass() -> pegando a classe que esta utilizando o metodo
 	         *  setMaxResults(1) -> Limita o resultadi em apenas uma linha

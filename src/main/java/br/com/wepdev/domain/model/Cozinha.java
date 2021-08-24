@@ -1,15 +1,17 @@
 package br.com.wepdev.domain.model;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,6 +31,15 @@ public class Cozinha {
 	//@JsonProperty(value = "nomeJsonProperty") // Nome que aparecera na representação(POSTMAN)
 	@Column(nullable = false)
 	private String nome;
+	
+	/*
+	 * One -> uma cozinha, tem muitos (Many) restaurantes.
+	 * Dentro de um relacionamento Bi-direcional cada cozinha sera serializada com uma lista de restaurantes, e dentro de cada restaurante e serializado uma lista de cozinhas,
+	 * ou seja, um loop infinito sera criado
+	 */
+	@JsonIgnore // Na hora de serializar a propriedade cozinha sera ignorada
+	@OneToMany(mappedBy = "cozinha") // mappedBy = "cozinha" -> Nome da propriedade onde foi feito o mapeamento em Restaurante para cozinha
+	private List<Restaurante> restaurantes = new ArrayList<>(); // Quando se cria uma instancia da lista, se evita o nullpointerexception ao instanciar uam cozinha
 	
 
 }
