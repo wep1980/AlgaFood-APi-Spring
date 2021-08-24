@@ -14,6 +14,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -41,8 +43,10 @@ public class Restaurante {
 
 	/*
 	 * Nos bancos de dados relacioanais todos os relacionamentos que possuem muitos para muitos (*..*) precisam de uma tabela adicional.
+	 * Deve ser sempre levado em conta o impacto dos relacionametos de muitos para muitos em uma REST APi
 	 * 
 	 */
+	@JsonIgnore // Na hora de serializar a propriedade cozinha sera ignorada
 	@ManyToMany // Muitos restaurantes possuem muitas formas de pagamento
 	@JoinTable(name = "restaurante_forma_pagamento",  // Customozindo o nome da tabela criada em relacoes de muitos para muitos
 	           joinColumns = @JoinColumn(name ="restaurante_id"), // Customozindo o nome da coluna que é a chave estrangeira que referencia a tabela restaurante
