@@ -31,3 +31,5 @@ insert into permissao (nome , descricao) values ('Adm' , 'Administrador');
 insert into permissao (nome , descricao) values ('Gerente' , 'Gerente nivel 1');
 insert into permissao (nome , descricao) values ('Sup' , 'Supervisor');
 insert into permissao (nome , descricao) values ('Fun' , 'Funcionario');
+
+insert into restaurante_forma_pagamento(restaurante_id , forma_pagamento_id) values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3);
