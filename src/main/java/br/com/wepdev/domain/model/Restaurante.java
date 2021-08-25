@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -80,6 +81,11 @@ public class Restaurante {
 	@UpdateTimestamp // Atualiza a data Hora atual sempre que a entidade for atualizada
 	@Column(nullable = false, columnDefinition = "datetime") // Retira a precisao dos milisegundos
 	private LocalDateTime dataAtualizacao;
+	
+	
+	//@JsonIgnore// Na hora de serializar a propriedade cozinha sera ignorada
+	@OneToMany(mappedBy = "restaurante") // Um restaurante para muitos produtos
+	private List<Produto> produtos = new ArrayList<>();
 	
 	
 	
