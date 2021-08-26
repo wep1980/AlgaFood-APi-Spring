@@ -42,7 +42,18 @@ public class Restaurante {
 	@Column(name = "taxa_frete" , nullable = false) // Nao aceita valor nulo
 	private BigDecimal taxaFrete;
 	
-	//@JoinColumn(name = "cozinha_id") // Forma de colocar nome em uma coluna que referencia uma chave estrangeira
+	/**
+	 * @JsonIgnore -> Ao utilizar o jsonIgnore a cozinha nao aparece na representacao(POSTMAN) mas os selects continuam sendo feitos
+	 * A estrategia eagerLoad por padrão é utilizada quando as associacoes terminam com ToOne, exemplo manyToOne.
+	 * EagerLoad -> carregamento ancioso, carregamento antecipado, toda vez que uma instancia de restaurante e carregada a partir do banco de dados ele carrega tb as 
+	 * associacoes que contem EagerLoad.
+	 * 
+	 * Diferença entre inner join e left outer join -> 
+	 * **** inner join : e feito quando se tem certeza que a tabela de associação não vai retornar valor null(nullable = false) ou seja no banco de dados esta notNull. No caso abaixo,
+	 * sempre vai exister uma cozinha para restaurante.
+	 * **** left outer join : 
+	 */
+	//@JsonIgnore 
 	@JoinColumn(name = "cozinha_id", nullable = false) // A classe dona da associação e Restaurante, pois é onde fica a coluna cozinha_id
 	@ManyToOne // Muitos - many(*) RESTAURANTES possuem uma - one(1) COZINHA
 	private Cozinha cozinha; // Um restaurante possui uma cozinha
@@ -54,6 +65,7 @@ public class Restaurante {
 	/*
 	 * Nos bancos de dados relacioanais todos os relacionamentos que possuem muitos para muitos (*..*) precisam de uma tabela adicional.
 	 * Deve ser sempre levado em conta o impacto dos relacionametos de muitos para muitos em uma REST APi
+	 * Ao utilizar o jsonIgnore a formaPagamento nao aparece na representacao(POSTMAN) mas os selects continuam sendo feitos
 	 * 
 	 */
 	@JsonIgnore // Na hora de serializar a propriedade cozinha sera ignorada
@@ -67,6 +79,7 @@ public class Restaurante {
 	/*
 	 * LocalDateTime -> Representa uma data hora sem fuso horario(Sem TimeStamp)
 	 * nullable = false ->  Propriedade obrigatoria
+	 * Ao utilizar o jsonIgnore a dataCadastro nao aparece na representacao(POSTMAN) mas os selects continuam sendo feitos
 	 */
 	@JsonIgnore// Na hora de serializar a propriedade cozinha sera ignorada
 	@CreationTimestamp // No momento em que a entidade for criada pela primeira vez sera atribuida uma data e hora atual
@@ -76,6 +89,7 @@ public class Restaurante {
 	/*
 	 * LocalDateTime -> Representa uma data hora sem fuso horario(Sem TimeStamp)
 	 * nullable = false ->  Propriedade obrigatoria
+	 * Ao utilizar o jsonIgnore a dataAtualizacao nao aparece na representacao(POSTMAN) mas os selects continuam sendo feitos
 	 */
 	@JsonIgnore// Na hora de serializar a propriedade cozinha sera ignorada
 	@UpdateTimestamp // Atualiza a data Hora atual sempre que a entidade for atualizada
