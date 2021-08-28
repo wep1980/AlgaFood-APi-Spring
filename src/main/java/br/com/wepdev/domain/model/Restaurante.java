@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,6 +22,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -83,9 +85,16 @@ public class Restaurante {
 	                        @JoinColumn(name = "endereco_cidade_id") aqui ele recebe um nullable padrão, que é true. nullable = true
 	                        private Cidade cidade;
 	 */
+	
+	
+	/*
+	 * Por padrao todas as anotações terminadas com ToOne utilizam Eager, com Lazy as cozinhas so serao carregadas caso seja necessario.
+	 * Como cozinha possui um @JsonIgnore e em nenhum lugar esta sendo feito um getCozinha().getQualquerMetodo(), nao vai mas ser feito o select cozinha
+	 */
 	//@JsonIgnore 
+	//@JsonIgnoreProperties("hibernateLazyInitializer") // Ignora a propriedade hibernateLazyInitializer que estava causando erro na representação(POSTMAN) durante os testes e nao serializa
+	@ManyToOne(fetch = FetchType.LAZY) // Muitos - many(*) RESTAURANTES possuem uma - one(1) COZINHA.
 	@JoinColumn(name = "cozinha_id", nullable = false) // A classe dona da associação e Restaurante, pois é onde fica a coluna cozinha_id
-	@ManyToOne // Muitos - many(*) RESTAURANTES possuem uma - one(1) COZINHA
 	private Cozinha cozinha; // Um restaurante possui uma cozinha
 	
 	@Embedded // Esta classe esta sendo incorporada em Restaurante

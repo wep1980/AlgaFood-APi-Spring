@@ -43,11 +43,9 @@ public class RestauranteController {
 		
 		List<Restaurante> restaurantes = restauranteRepository.findAll();
 		
-		System.out.println(restaurantes.get(0).getNome());
-		restaurantes.get(0).getFormasPagamento().forEach(System.out::println);
+		System.out.println("O nome da cozinha é : ");
+		System.out.println(restaurantes.get(0).getCozinha().getNome());
 		
-		System.out.println(restaurantes.get(1).getNome());
-		restaurantes.get(1).getFormasPagamento().forEach(System.out::println);
 		
 		return restaurantes;
 		//return restauranteRepository.findAll();

@@ -2,6 +2,7 @@ package br.com.wepdev.domain.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,8 +26,9 @@ public class Cidade {
 	@Column(nullable = false)
 	private String nome;
 	
-	@JoinColumn(nullable = false)
+	
 	@ManyToOne // Muitas - many(*) CIDADES para um - one(1) ESTADO
+	@JoinColumn(nullable = false)
 	private Estado estado;
 
 }
