@@ -33,16 +33,14 @@ public class Cozinha {
 	private String nome;
 	
 	
-	private String descricao;
-	
 	/*
 	 * One -> uma cozinha, tem muitos (Many) restaurantes.
 	 * Dentro de um relacionamento Bi-direcional cada cozinha sera serializada com uma lista de restaurantes, e dentro de cada restaurante e serializado uma lista de cozinhas,
 	 * ou seja, um loop infinito sera criado
 	 */
-	@JsonIgnore // Na hora de serializar a propriedade cozinha sera ignorada
-	@OneToMany(mappedBy = "cozinha") // mappedBy = "cozinha" -> Nome da propriedade onde foi feito o mapeamento em Restaurante para cozinha
-	private List<Restaurante> restaurantes = new ArrayList<>(); // Quando se cria uma instancia da lista, se evita o nullpointerexception ao instanciar uam cozinha
+	//@JsonIgnore // Na hora de serializar a propriedade cozinha sera ignorada
+	//@OneToMany(mappedBy = "cozinha") // mappedBy = "cozinha" -> Nome da propriedade onde foi feito o mapeamento em Restaurante para cozinha
+	//private List<Restaurante> restaurantes = new ArrayList<>(); // Quando se cria uma instancia da lista, se evita o nullpointerexception ao instanciar uam cozinha
 	
 
 }
