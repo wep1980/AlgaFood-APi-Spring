@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -32,6 +33,16 @@ public interface RestauranteRepository extends CustomJpaRepository<Restaurante, 
 	 * Referencia para a documentacao das keywords
 	 * https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.query-creation
 	 */
+	
+	
+	/*
+	 * Assosiação de Restaurante com cozinha que é manyToOne é feito um FETCH automaticamente, 
+	 * quando e feito um JOIN em uma relação manyToMany que é a de Restaurante com FormaPagamento o FETCH nao e feito automaticamente, 
+	 * entao o correto é ser feito um LEFT JOIN FETCH, pois no caso de nao exister nenhuma formaPagamento para o restaurante associado, mesmo assim ele sera retornado,
+	 * se fosse o JOIN FETCH nao retornaria nenhum restaurante
+	 */
+	@Query("from Restaurante r join r.cozinha left join fetch r.formasPagamento")
+	List<Restaurante> findAll();
 	
     // Busca os restaurantes com taxa frete entre os valores inicial e final , pode ser adicionado qualquer nome entre o FIND e o BY, portanto que nao seja uma keyWords
 	List<Restaurante> findByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal);

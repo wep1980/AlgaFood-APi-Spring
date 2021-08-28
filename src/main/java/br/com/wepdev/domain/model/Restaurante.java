@@ -91,9 +91,8 @@ public class Restaurante {
 	 * Por padrao todas as anotações terminadas com ToOne utilizam Eager, com Lazy as cozinhas so serao carregadas caso seja necessario.
 	 * Como cozinha possui um @JsonIgnore e em nenhum lugar esta sendo feito um getCozinha().getQualquerMetodo(), nao vai mas ser feito o select cozinha
 	 */
-	@JsonIgnore 
-	//@JsonIgnoreProperties("hibernateLazyInitializer") // Ignora a propriedade hibernateLazyInitializer que estava causando erro na representação(POSTMAN) durante os testes e nao serializa
-	@ManyToOne(fetch = FetchType.LAZY) // Muitos - many(*) RESTAURANTES possuem uma - one(1) COZINHA.
+	//@JsonIgnore 
+	@ManyToOne//(fetch = FetchType.LAZY) // Muitos - many(*) RESTAURANTES possuem uma - one(1) COZINHA.
 	@JoinColumn(name = "cozinha_id", nullable = false) // A classe dona da associação e Restaurante, pois é onde fica a coluna cozinha_id
 	private Cozinha cozinha; // Um restaurante possui uma cozinha
 	
@@ -110,8 +109,8 @@ public class Restaurante {
 	 * lazy e um carregamento por demanda, preguiçoso
 	 * 
 	 */
-	@JsonIgnore // Na hora de serializar a propriedade cozinha sera ignorada
-	@ManyToMany(fetch = FetchType.EAGER) // Muitos restaurantes possuem muitas formas de pagamento
+	//@JsonIgnore // Na hora de serializar a propriedade cozinha sera ignorada
+	@ManyToMany // Muitos restaurantes possuem muitas formas de pagamento, -- Dificilmente no ToMany e alterado o padrao que é Lazy para Eager
 	@JoinTable(name = "restaurante_forma_pagamento",  // Customozindo o nome da tabela criada em relacoes de muitos para muitos
 	           joinColumns = @JoinColumn(name ="restaurante_id"), // Customozindo o nome da coluna que é a chave estrangeira que referencia a tabela restaurante
 	           inverseJoinColumns = @JoinColumn(name ="forma_pagamento_id"))  // Customozindo o nome da coluna que é a chave estrangeira que referencia a tabela formaPagamento
