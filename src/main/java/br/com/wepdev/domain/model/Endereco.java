@@ -32,7 +32,7 @@ public class Endereco {
 	 * Por padrao todas as anotações terminadas com ToOne utilizam Eager, com Lazy as cidades so serao carregadas caso seja necessario.
 	 * Como cidade possui um @JsonIgnore e em nenhum lugar esta sendo feito um getCidade().getQualquerMetodo(), nao vai mas ser feito o select cozinha
 	 */
-	@ManyToOne(fetch = FetchType.LAZY) // Muitos endereços para uma cidade
+	@ManyToOne(fetch = FetchType.LAZY) // Muitos endereços para 1 cidade
 	@JoinColumn(name = "endereco_cidade_id")
 	private Cidade cidade;
 

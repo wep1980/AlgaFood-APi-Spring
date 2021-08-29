@@ -27,10 +27,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-
-
-
-
 /**
  *  * @JsonIgnore -> Ao utilizar o jsonIgnore a cozinha nao aparece na representacao(POSTMAN) mas os selects continuam sendo feitos
 	 * A estrategia EagerLoad por padrão é utilizada quando as associacoes terminam com ToOne, exemplo manyToOne.
@@ -45,8 +41,7 @@ import lombok.EqualsAndHashCode;
 	 * realizado, exameplo: @ManyToOne
 	                        @JoinColumn(name = "endereco_cidade_id") aqui ele recebe um nullable padrão, que é true. nullable = true
 	                        private Cidade cidade;
-	                        
-	                        
+
 	Nos bancos de dados relacioanais todos os relacionamentos que possuem muitos para muitos (*..*) precisam de uma tabela adicional.
 	 * Deve ser sempre levado em conta o impacto dos relacionametos de muitos para muitos em uma REST APi
 	 * Ao utilizar o jsonIgnore a formaPagamento nao aparece na representacao(POSTMAN) mas os selects continuam sendo feitos
@@ -94,10 +89,10 @@ public class Restaurante {
 	//@JsonIgnore 
 	@ManyToOne//(fetch = FetchType.LAZY) // Muitos - many(*) RESTAURANTES possuem uma - one(1) COZINHA.
 	@JoinColumn(name = "cozinha_id", nullable = false) // A classe dona da associação e Restaurante, pois é onde fica a coluna cozinha_id
-	private Cozinha cozinha; // Um restaurante possui uma cozinha
+	private Cozinha cozinha; // Um restaurante possui 1 cozinha
 	
 	@Embedded // Esta classe esta sendo incorporada em Restaurante
-	@JsonIgnore// Na hora de serializar a propriedade cozinha sera ignorada
+	@JsonIgnore// Na hora de serializar a propriedade endereço sera ignorada
 	private Endereco endereco;
 
 	/*
@@ -139,7 +134,7 @@ public class Restaurante {
 	
 	
 	@JsonIgnore// Na hora de serializar a propriedade cozinha sera ignorada
-	@OneToMany(mappedBy = "restaurante") // Um restaurante para muitos produtos
+	@OneToMany(mappedBy = "restaurante") // Um restaurante possue muitos produtos
 	private List<Produto> produtos = new ArrayList<>();
 	
 	

@@ -41,7 +41,7 @@ public class Produto {
 	
 	@JsonIgnore // Na hora de serializar a propriedade cozinha sera ignorada
 	@JoinColumn(nullable = false)
-	@ManyToOne // Muitos produtos para um restaurante
+	@ManyToOne // Muitos produtos para 1 restaurante
 	private Restaurante restaurante;
 
 }
