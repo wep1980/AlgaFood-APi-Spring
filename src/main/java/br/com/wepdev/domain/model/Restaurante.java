@@ -109,7 +109,7 @@ public class Restaurante {
 	 * lazy e um carregamento por demanda, preguiçoso
 	 * 
 	 */
-	//@JsonIgnore // Na hora de serializar a propriedade cozinha sera ignorada
+	@JsonIgnore // Na hora de serializar a propriedade cozinha sera ignorada
 	@ManyToMany // Muitos restaurantes possuem muitas formas de pagamento, -- Dificilmente no ToMany e alterado o padrao que é Lazy para Eager
 	@JoinTable(name = "restaurante_forma_pagamento",  // Customozindo o nome da tabela criada em relacoes de muitos para muitos
 	           joinColumns = @JoinColumn(name ="restaurante_id"), // Customozindo o nome da coluna que é a chave estrangeira que referencia a tabela restaurante

@@ -32,7 +32,7 @@ public class Cozinha {
 	@Column(nullable = false)
 	private String nome;
 	
-	
+
 	/*
 	 * One -> uma cozinha, tem muitos (Many) restaurantes.
 	 * Dentro de um relacionamento Bi-direcional cada cozinha sera serializada com uma lista de restaurantes, e dentro de cada restaurante e serializado uma lista de cozinhas,

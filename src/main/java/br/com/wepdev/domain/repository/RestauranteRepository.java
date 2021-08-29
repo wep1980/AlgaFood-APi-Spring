@@ -41,7 +41,7 @@ public interface RestauranteRepository extends CustomJpaRepository<Restaurante, 
 	 * entao o correto é ser feito um LEFT JOIN FETCH, pois no caso de nao exister nenhuma formaPagamento para o restaurante associado, mesmo assim ele sera retornado,
 	 * se fosse o JOIN FETCH nao retornaria nenhum restaurante
 	 */
-	@Query("from Restaurante r join fetch r.cozinha left join fetch r.formasPagamento")
+	@Query("from Restaurante r join fetch r.cozinha")
 	List<Restaurante> findAll();
 	
     // Busca os restaurantes com taxa frete entre os valores inicial e final , pode ser adicionado qualquer nome entre o FIND e o BY, portanto que nao seja uma keyWords
