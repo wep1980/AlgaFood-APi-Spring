@@ -37,7 +37,8 @@ public class CozinhaController {
 	@Autowired
 	private CozinhaService cozinhaService;
 	
-	
+
+
 	@GetMapping
 	public List<Cozinha> listar() {
 		return CozinhaRepository.findAll();
@@ -53,7 +54,8 @@ public class CozinhaController {
 		
 		return ResponseEntity.notFound().build();
 	}
-	
+
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Cozinha adicionar(@RequestBody Cozinha cozinha) {
@@ -74,20 +76,29 @@ public class CozinhaController {
 		
 		return ResponseEntity.notFound().build();
 	}
-	
+
+
+//	@DeleteMapping("/{cozinhaId}")
+//	public ResponseEntity<?> remover(@PathVariable Long cozinhaId) {
+//		try {
+//			cozinhaService.excluir(cozinhaId);
+//			return ResponseEntity.noContent().build();
+//
+//		} catch (EntidadeNaoEncontradaException e) {
+//			//return ResponseEntity.notFound().build(); // O NOTFOUND nao permite customizar o corpo
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não encontrado"); // O Body permite retornar um responsyEntity no corpo
+//
+//		} catch (EntidadeEmUsoException e) {
+//			return ResponseEntity.status(HttpStatus.CONFLICT)
+//					.body(e.getMessage());
+//		}
+//	}
+
+
 	@DeleteMapping("/{cozinhaId}")
-	public ResponseEntity<?> remover(@PathVariable Long cozinhaId) {
-		try {
-			cozinhaService.excluir(cozinhaId);	
-			return ResponseEntity.noContent().build();
-			
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.notFound().build();
-			
-		} catch (EntidadeEmUsoException e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT)
-					.body(e.getMessage());
-		}
+	@ResponseStatus(HttpStatus.NO_CONTENT) // Em caso de sucesso manda um status no content
+	public void remover(@PathVariable Long cozinhaId) {
+			cozinhaService.excluir(cozinhaId);
 	}
 
 }
