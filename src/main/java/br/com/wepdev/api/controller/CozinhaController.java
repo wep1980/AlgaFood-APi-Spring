@@ -22,6 +22,8 @@ import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.repository.CozinhaRepository;
 import br.com.wepdev.domain.service.CozinhaService;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.server.ServerWebInputException;
 
 
 //@ResponseBody // As Respostas dos metedos desse controlador devem ir na resposta da requisicao
@@ -98,7 +100,16 @@ public class CozinhaController {
 	@DeleteMapping("/{cozinhaId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT) // Em caso de sucesso manda um status no content
 	public void remover(@PathVariable Long cozinhaId) {
-			cozinhaService.excluir(cozinhaId);
+		cozinhaService.excluir(cozinhaId);
+		// Nao é mais necessario colocar o try catch aqui pois a excessao esta sendo tratado dentro do serviceCozinha, o que nao é uma boa pratica
+//		try {
+//			cozinhaService.excluir(cozinhaId);
+//		} catch (EntidadeNaoEncontradaException e){
+//			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage()); // Dessa forma ainda n é possivel customizar totalmente a resposta nas excessoes
+//			//throw new ServerWebInputException(e.getMessage()); // Retorna o status e a mensagem, a mesma coisa que o codigo acima.
+//
+//		}
+
 	}
 
 }

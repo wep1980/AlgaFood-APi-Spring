@@ -3,12 +3,14 @@ package br.com.wepdev.domain.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import br.com.wepdev.domain.exception.EntidadeEmUsoException;
 import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.repository.CozinhaRepository;
+import org.springframework.web.server.ResponseStatusException;
 
 
 /**
@@ -34,6 +36,11 @@ public class CozinhaService {
 			CozinhaRepository.deleteById(cozinhaId);
 			
 		} catch (EmptyResultDataAccessException e) {
+			/*
+			// Classe de exception Status propria do spring, so que esse tratamento de exception deve ser feito em outra camada
+			 */
+//			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+//					String.format("Não existe um cadastro de cozinha com código %d", cozinhaId));
 			throw new EntidadeNaoEncontradaException(
 				String.format("Não existe um cadastro de cozinha com código %d", cozinhaId));
 		
