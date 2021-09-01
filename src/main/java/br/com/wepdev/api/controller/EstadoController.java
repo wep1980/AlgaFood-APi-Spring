@@ -42,52 +42,35 @@ public class EstadoController {
 	public List<Estado> listar() {
 		return estadoRepository.findAll();
 	}
-	
+
+
 	@GetMapping("/{estadoId}")
-	public ResponseEntity<Estado> buscar(@PathVariable Long estadoId) {
-		Optional<Estado> estado = estadoRepository.findById(estadoId);
-		
-		if (estado.isPresent()) {
-			return ResponseEntity.ok(estado.get());
-		}
-		
-		return ResponseEntity.notFound().build();
+	public Estado buscar(@PathVariable Long estadoId) {
+		return estadoService.buscarOuFalhar(estadoId);
 	}
-	
+
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Estado adicionar(@RequestBody Estado estado) {
 		return estadoService.salvar(estado);
 	}
-	
+
+
 	@PutMapping("/{estadoId}")
-	public ResponseEntity<Estado> atualizar(@PathVariable Long estadoId,
-			@RequestBody Estado estado) {
-		Estado estadoAtual = estadoRepository.findById(estadoId).orElse(null);
-		
-		if (estadoAtual != null) {
+	public Estado atualizar(@PathVariable Long estadoId, @RequestBody Estado estado) {
+		    //Busca o estado atual ou lança uma exception que esta com NOT.FOUND
+		    Estado estadoAtual = estadoService.buscarOuFalhar(estadoId);
+			// Copia a instancia de estado para estadoAtual, exceto o id
 			BeanUtils.copyProperties(estado, estadoAtual, "id");
-			
-			estadoAtual = estadoService.salvar(estadoAtual);
-			return ResponseEntity.ok(estadoAtual);
-		}
-		
-		return ResponseEntity.notFound().build();
+		    // Salva e retorna o corpo, e a resposta HTTP e enviada como 200 -> OK
+			return estadoService.salvar(estadoAtual);
 	}
-	
+
+
 	@DeleteMapping("/{estadoId}")
-	public ResponseEntity<?> remover(@PathVariable Long estadoId) {
-		try {
-			estadoService.excluir(estadoId);	
-			return ResponseEntity.noContent().build();
-			
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.notFound().build();
-			
-		} catch (EntidadeEmUsoException e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT)
-					.body(e.getMessage());
-		}
+	public void remover(@PathVariable Long estadoId) {
+		estadoService.excluir(estadoId);
 	}
 	
 	

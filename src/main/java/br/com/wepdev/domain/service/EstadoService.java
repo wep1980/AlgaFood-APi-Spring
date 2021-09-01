@@ -1,5 +1,6 @@
 package br.com.wepdev.domain.service;
 
+import br.com.wepdev.domain.model.Cozinha;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,8 +19,12 @@ import br.com.wepdev.domain.repository.EstadoRepository;
  */
 @Service
 public class EstadoService {
-	
-	
+
+
+	public static final String MSG_ESTADO_CADASTRO_NAO_ENCONTRADO = "Não existe um cadastro de estado com código %d";
+	public static final String MSG_ERRO_ESTADO_USO = "Estado de código %d não pode ser removido, pois está em uso";
+
+
 	@Autowired
 	private EstadoRepository estadoRepository;
 
@@ -34,12 +39,22 @@ public class EstadoService {
 			
 		} catch (EmptyResultDataAccessException e) {
 			throw new EntidadeNaoEncontradaException(
-				String.format("Não existe um cadastro de estado com código %d", estadoId));
+				String.format(MSG_ESTADO_CADASTRO_NAO_ENCONTRADO, estadoId));
 		
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-				String.format("Estado de código %d não pode ser removido, pois está em uso", estadoId));
+				String.format(MSG_ERRO_ESTADO_USO, estadoId));
 		}
+	}
+
+	/**
+	 * Optional -> E o tipo de objeto que o findById retorna, que pode ser qualquer entidade.
+	 * orElseThrow -> Retorna o objeto que esta dentro do Optional, se nao tiver nada dentro do Optional,
+	 * ele lança a excessao
+	 */
+	public Estado buscarOuFalhar(Long estadoId){
+		return estadoRepository.findById(estadoId).orElseThrow(() -> new EntidadeNaoEncontradaException(
+				String.format(MSG_ESTADO_CADASTRO_NAO_ENCONTRADO, estadoId)));
 	}
 
 }

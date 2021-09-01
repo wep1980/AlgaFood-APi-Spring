@@ -10,14 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -45,64 +38,35 @@ public class RestauranteController {
 	
 	
 	@GetMapping("/{restauranteId}")
-	public ResponseEntity<Restaurante> buscar(@PathVariable Long restauranteId) {
-		Optional<Restaurante> restaurante = restauranteRepository.findById(restauranteId);
-		
-		if (restaurante.isPresent()) {
-			return ResponseEntity.ok(restaurante.get());
-		}
-		
-		return ResponseEntity.notFound().build();
+	public Restaurante buscar(@PathVariable Long restauranteId) {
+		return restauranteService.buscarOuFalhar(restauranteId);
+
 	}
-	
+
+
 	@PostMapping
-	public ResponseEntity<?> adicionar(@RequestBody Restaurante restaurante) {
-		try {
-			restaurante = restauranteService.salvar(restaurante);
-			
-			return ResponseEntity.status(HttpStatus.CREATED)
-					.body(restaurante);
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.badRequest()
-					.body(e.getMessage());
-		}
+	@ResponseStatus(HttpStatus.CREATED)
+	public Restaurante adicionar(@RequestBody Restaurante restaurante) {
+	     return restauranteService.salvar(restaurante);
 	}
-	
+
+
 	@PutMapping("/{restauranteId}")
-	public ResponseEntity<?> atualizar(@PathVariable Long restauranteId,
-			@RequestBody Restaurante restaurante) {
-		try {
-			Restaurante restauranteAtual = restauranteRepository
-					.findById(restauranteId).orElse(null);
-			
-			if (restauranteAtual != null) {
-				
-				/*
-				 * Copia as propriedades do restaurante para restauranteAtual, menos do id e formaPagamento
-				 */
-				BeanUtils.copyProperties(restaurante, restauranteAtual, "id" , "formasPagamento", "endereco", "dataCadastro");
-				
-				restauranteAtual = restauranteService.salvar(restauranteAtual);
-				return ResponseEntity.ok(restauranteAtual);
-			}
-			
-			return ResponseEntity.notFound().build();
-		
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.badRequest()
-					.body(e.getMessage());
-		}
+	public Restaurante atualizar(@PathVariable Long restauranteId, @RequestBody Restaurante restaurante) {
+		    //Busca o restaurante atual ou lança uma exception que esta com NOT.FOUND
+			Restaurante restauranteAtual = restauranteService.buscarOuFalhar(restauranteId);
+		        // Copia a instancia de restaurante para restauranteAtual, exceto o id, formasPagamento, endereco, dataCadastro
+				BeanUtils.copyProperties(restaurante, restauranteAtual, "id" , "formasPagamento", "endereco", "dataCadastro", "produtos");
+		        // Salva e retorna o corpo, e a resposta HTTP e enviada como 200 -> OK
+				return restauranteService.salvar(restauranteAtual);
 	}
-	
+
+
 	@PatchMapping("/{restauranteId}")
-	public ResponseEntity<?> atualizarParcial(@PathVariable Long restauranteId,
-			@RequestBody Map<String, Object> campos) {
-		Restaurante restauranteAtual = restauranteRepository
-				.findById(restauranteId).orElse(null);
-		
-		if (restauranteAtual == null) {
-			return ResponseEntity.notFound().build();
-		}
+	public Restaurante atualizarParcial(@PathVariable Long restauranteId, @RequestBody Map<String, Object> campos) {
+		//Busca o restaurante atual ou lança uma exception que esta com NOT.FOUND
+		Restaurante restauranteAtual = restauranteService.buscarOuFalhar(restauranteId);
+
 		// Atribui os valores do campos para dentro do restauranteAtual
 		merge(campos, restauranteAtual);
 		
