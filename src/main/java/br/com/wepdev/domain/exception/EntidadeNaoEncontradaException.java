@@ -10,14 +10,14 @@ import org.springframework.web.server.ResponseStatusException;
  * @author Waldir
  *
  */
-@ResponseStatus(value = HttpStatus.NOT_FOUND)
+@ResponseStatus(value = HttpStatus.NOT_FOUND)// 404 Not Found(o servidor não conseguiu encontrar o recurso solicitado)
 public class EntidadeNaoEncontradaException extends RuntimeException{
 	private static final long serialVersionUID = 1L;
 
 
 	/*
 	this -> esse construtor chama o construtor acima.
-	O status 404 é o padrão, mas pode ser chamado um outro qualquer no service por exemplo, embora no service nao seja recomendado
+	O status 404 NOT_FOUND é o padrão, mas pode ser chamado um outro qualquer no service por exemplo, embora no service nao seja recomendado
 	 */
 	public EntidadeNaoEncontradaException(String mensagem) {
 		super ( mensagem); // Chama o construtor do RuntimeException passando a mensagem recebida por parametro

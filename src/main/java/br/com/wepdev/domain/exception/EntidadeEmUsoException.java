@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Waldir
  *
  */
-@ResponseStatus(value = HttpStatus.CONFLICT)  // O Retorno dessa classe de exception quando for lançada e de CONFLITO
+@ResponseStatus(value = HttpStatus.CONFLICT)  // 409 -> CONFLICT(a solicitação atual conflitou com o recurso que está no servidor)
 public class EntidadeEmUsoException extends RuntimeException{
 	private static final long serialVersionUID = 1L;
 	
