@@ -3,6 +3,7 @@ package br.com.wepdev.api.controller;
 import java.util.List;
 import java.util.Optional;
 
+import br.com.wepdev.domain.exception.EstadoNaoEncontradoException;
 import br.com.wepdev.domain.exception.NegocioException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +55,8 @@ public class CidadeController {
 				Que retorna o status HTTP 400 -> BAD_REQUEST (Erro do cliente).
 				Dessa forma temos a representacao do erro (POSTMAN)
 			 */
-		}catch (EntidadeNaoEncontradaException e){
-			throw new NegocioException(e.getMessage());
+		}catch (EstadoNaoEncontradoException e){
+			throw new NegocioException(e.getMessage(), e);
 		}
 
 	}
@@ -63,20 +64,19 @@ public class CidadeController {
 
 	@PutMapping("/{cidadeId}")
 	public Cidade atualizar(@PathVariable Long cidadeId, @RequestBody Cidade cidade) {
-		    //Busca a cidade atual ou lança uma exception que esta com NOT.FOUND
-			Cidade cidadeAtual = cidadeService.buscarOuFalhar(cidadeId);
-			// Copia a instancia de cidade para cidadeAtual, exceto o id
-		    BeanUtils.copyProperties(cidade, cidadeAtual, "id");
-
 			try{
+				//Busca a cidade atual ou lança uma exception que esta com NOT.FOUND
+				Cidade cidadeAtual = cidadeService.buscarOuFalhar(cidadeId);
+				// Copia a instancia de cidade para cidadeAtual, exceto o id
+				BeanUtils.copyProperties(cidade, cidadeAtual, "id");
 				// Salva e retorna o corpo, e a resposta HTTP e enviada como 200 -> OK
 				return cidadeService.salvar(cidadeAtual);
 				/*
 				// Caso o erro seja ao adicionar uma cidade o estado passado nao exista, o erro sera enviado da classe customizada NegocioException,
 				Que retorna o status HTTP 400 -> BAD_REQUEST (Erro do cliente). Dessa forma temos a representacao do erro (POSTMAN)
 				 */
-			}catch (EntidadeNaoEncontradaException e){
-                throw new NegocioException(e.getMessage());
+			}catch (EstadoNaoEncontradoException e){
+                throw new NegocioException(e.getMessage(), e); // e -> mostra a causa, o motivo da excessao
 			}
 
 	}

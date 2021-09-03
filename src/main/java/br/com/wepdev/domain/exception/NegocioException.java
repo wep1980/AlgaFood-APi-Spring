@@ -18,5 +18,13 @@ public class NegocioException extends RuntimeException{
 		super ( mensagem); // Chama o construtor do RuntimeException passando a mensagem recebida por parametro
 	}
 
+	/**
+	 * Contrutor que passa a causa no qual a exception foi lançada
+	 * @param mensagem
+	 * @param causa
+	 */
+	public NegocioException(String mensagem, Throwable causa) {
+		super ( mensagem, causa); // Chama o construtor do RuntimeException passando a mensagem recebida por parametro
+	}
 
 }

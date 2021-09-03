@@ -1,6 +1,7 @@
 package br.com.wepdev.domain.service;
 
 import br.com.wepdev.domain.exception.EntidadeEmUsoException;
+import br.com.wepdev.domain.exception.RestauranteNaoEncontradoException;
 import br.com.wepdev.domain.model.Cidade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -66,8 +67,7 @@ public class RestauranteService {
 	 * ele lança a excessao
 	 */
 	public Restaurante buscarOuFalhar(Long restauranteId){
-		return restauranteRepository.findById(restauranteId).orElseThrow(() -> new EntidadeNaoEncontradaException(
-				String.format(MSG_ERRO_RESTAURANTE_NAO_ENCONTRADO, restauranteId)));
+		return restauranteRepository.findById(restauranteId).orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
 	}
 	
 

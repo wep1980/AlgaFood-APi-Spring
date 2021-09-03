@@ -1,5 +1,6 @@
 package br.com.wepdev.domain.service;
 
+import br.com.wepdev.domain.exception.EstadoNaoEncontradoException;
 import br.com.wepdev.domain.model.Cozinha;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,7 +22,7 @@ import br.com.wepdev.domain.repository.EstadoRepository;
 public class EstadoService {
 
 
-	public static final String MSG_ESTADO_CADASTRO_NAO_ENCONTRADO = "Não existe um cadastro de estado com código %d";
+	//public static final String MSG_ESTADO_CADASTRO_NAO_ENCONTRADO = "Não existe um cadastro de estado com código %d";
 	public static final String MSG_ERRO_ESTADO_USO = "Estado de código %d não pode ser removido, pois está em uso";
 
 
@@ -38,8 +39,7 @@ public class EstadoService {
 			estadoRepository.deleteById(estadoId);
 			
 		} catch (EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(
-				String.format(MSG_ESTADO_CADASTRO_NAO_ENCONTRADO, estadoId));
+			throw new EstadoNaoEncontradoException(estadoId);
 		
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
@@ -53,8 +53,7 @@ public class EstadoService {
 	 * ele lança a excessao
 	 */
 	public Estado buscarOuFalhar(Long estadoId){
-		return estadoRepository.findById(estadoId).orElseThrow(() -> new EntidadeNaoEncontradaException(
-				String.format(MSG_ESTADO_CADASTRO_NAO_ENCONTRADO, estadoId)));
+		return estadoRepository.findById(estadoId).orElseThrow(() -> new EstadoNaoEncontradoException(estadoId));
 	}
 
 }

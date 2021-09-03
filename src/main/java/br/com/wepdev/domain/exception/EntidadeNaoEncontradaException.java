@@ -5,13 +5,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- * Classe de exception customizada que extende de RuntimeException, uma exception em tempo de execução
+ * Classe de exception customizada que extende de NegocioException, uma exception em tempo de execução
  * E Lançada esse excessão quando uma cozinha não existe
  * @author Waldir
  *
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)// 404 Not Found(o servidor não conseguiu encontrar o recurso solicitado)
-public class EntidadeNaoEncontradaException extends RuntimeException{
+public abstract class EntidadeNaoEncontradaException extends NegocioException{
 	private static final long serialVersionUID = 1L;
 
 

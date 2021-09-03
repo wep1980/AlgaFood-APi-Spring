@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import br.com.wepdev.domain.exception.CozinhaNaoEncontradaException;
+import br.com.wepdev.domain.exception.NegocioException;
+import br.com.wepdev.domain.exception.RestauranteNaoEncontradoException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,18 +50,27 @@ public class RestauranteController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Restaurante adicionar(@RequestBody Restaurante restaurante) {
-	     return restauranteService.salvar(restaurante);
+		try {
+			return restauranteService.salvar(restaurante);
+		}catch (CozinhaNaoEncontradaException e) { // Exception caso a cozinha nao exista na hora de adicionar um restaurante
+			throw new NegocioException(e.getMessage());
+		}
 	}
 
 
 	@PutMapping("/{restauranteId}")
 	public Restaurante atualizar(@PathVariable Long restauranteId, @RequestBody Restaurante restaurante) {
-		    //Busca o restaurante atual ou lança uma exception que esta com NOT.FOUND
+		try {
+			//Busca o restaurante atual ou lança uma exception que esta com NOT.FOUND
 			Restaurante restauranteAtual = restauranteService.buscarOuFalhar(restauranteId);
-		        // Copia a instancia de restaurante para restauranteAtual, exceto o id, formasPagamento, endereco, dataCadastro
-				BeanUtils.copyProperties(restaurante, restauranteAtual, "id" , "formasPagamento", "endereco", "dataCadastro", "produtos");
-		        // Salva e retorna o corpo, e a resposta HTTP e enviada como 200 -> OK
-				return restauranteService.salvar(restauranteAtual);
+			// Copia a instancia de restaurante para restauranteAtual, exceto o id, formasPagamento, endereco, dataCadastro
+			BeanUtils.copyProperties(restaurante, restauranteAtual, "id" , "formasPagamento", "endereco", "dataCadastro", "produtos");
+			// Salva e retorna o corpo, e a resposta HTTP e enviada como 200 -> OK
+			return restauranteService.salvar(restauranteAtual);
+		} catch (CozinhaNaoEncontradaException e){ // Execessao lançada caso na hora de atualizar um restaurante a cozinha não exista
+			throw new NegocioException(e.getMessage(), e); // e -> Mostra a causa da exception na representacao(POSTMAN)
+		}
+
 	}
 
 
