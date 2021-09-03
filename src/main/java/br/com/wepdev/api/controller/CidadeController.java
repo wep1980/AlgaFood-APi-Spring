@@ -89,43 +89,6 @@ public class CidadeController {
 	}
 
 
-	/**
-	 * Metodo que trata excessoes dentro do proprio controlador
-	 * Quando a EntidadeNaoEncontradaException for tratada esse metodo vai ser automaticamente chamado pelo Spring, passando a
-	 * exception que foi lançada.
-	 *
-	 * Os erros que aparecem na representação (POSTMAN) estao customizados
-	 */
-	@ExceptionHandler(EntidadeNaoEncontradaException.class)
-	public ResponseEntity<?> tratarEntidadeNaoEncontradoException(EntidadeNaoEncontradaException e){
-
-		/**
-		 * Construtor feito com o @Builder do lombok.
-		 * Problema e a classe responsavel pelos atributos de erros mostrados na representação (POSTMAN)
-		 */
-        Problema problema = Problema.builder()
-				.dataHora(LocalDateTime.now())
-				.mensagem(e.getMessage())
-				.build();
-
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problema);
-
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
