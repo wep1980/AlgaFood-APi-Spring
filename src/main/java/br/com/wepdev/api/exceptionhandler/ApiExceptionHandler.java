@@ -6,6 +6,7 @@ import br.com.wepdev.domain.exception.NegocioException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -21,6 +22,39 @@ import java.time.LocalDateTime;
 @ControllerAdvice // Permite adicionar exceptions handlers do projeto inteiro
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
+    /**
+     * Metodo de exception usado para erro de sintaxe na requisição (POSTMAN)
+     * @param ex
+     * @param headers
+     * @param status
+     * @param request
+     * @return
+     */
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        /**
+         * Enumeracao onde fica as constantes dos tipos de problemas gerados pelas exceptions, novos problemas devem ser colocados dentro dela
+         * Nela possue descrições do titulo e da uri, que é um tipo de URL
+         */
+        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+        String detail = "O corpo da requisição esta inválido. Verifique erro de sintaxe."; // Pega a informacao do detalhe da mensagem
+
+        Problem problem = createProblemBuilder(status, problemType, detail) // Antes do builder podemos customizar mais propriedades adicionais
+                .build(); // Ao dar o build(), a instancia de Problem e criada
+
+        /**
+         * ex -> Exception
+         * body -> problem, e o corpo onde contem as propriedades
+         * new HttpHeaders() -> Instancia vazia de um Header, sem cabeçalho customizado na resposta
+         * status -> HttpStatus.NOT_FOUND -> status de nao encontrado, 404
+         * WebRequest resquest -> O Spring ja passa automaticamente , representa uma requisição WEB
+         *
+         * Não é mais nessario instanciar a Classe problema aqui, pois ja esta sendo instanciada no metodo handleExceptionInternal
+         */
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+
+    }
 
     /**
      * Metodo que trata excessoes customizado
