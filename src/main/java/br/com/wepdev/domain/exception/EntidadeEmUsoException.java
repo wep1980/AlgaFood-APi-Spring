@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Waldir
  *
  */
-@ResponseStatus(value = HttpStatus.CONFLICT)  // 409 -> CONFLICT(a solicitação atual conflitou com o recurso que está no servidor)
+//@ResponseStatus(value = HttpStatus.CONFLICT)  // 409 -> CONFLICT(a solicitação atual conflitou com o recurso que está no servidor)
+// O HTTP Status esta sendo passado dentro da classe global ApiExceptionHandler
 public class EntidadeEmUsoException extends NegocioException {
 	private static final long serialVersionUID = 1L;
 	

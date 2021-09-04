@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Waldir
  *
  */
-@ResponseStatus(value = HttpStatus.BAD_REQUEST) // 400 -> BAD_REQUEST (Erro do cliente).
+//@ResponseStatus(value = HttpStatus.BAD_REQUEST) // 400 -> BAD_REQUEST (Erro do cliente).
+// O HTTP Status esta sendo passado dentro da classe global ApiExceptionHandler
 public class NegocioException extends RuntimeException{
 	private static final long serialVersionUID = 1L;
 

@@ -52,8 +52,7 @@ public class RestauranteService {
 //			restauranteRepository.deleteById(restauranteId);
 //
 //		} catch (EmptyResultDataAccessException e) {
-//			throw new EntidadeNaoEncontradaException(
-//					String.format(MSG_ERRO_RESTAURANTE_NAO_ENCONTRADO, restauranteId));
+//			throw new RestauranteNaoEncontradoException(restauranteId);
 //
 //		} catch (DataIntegrityViolationException e) {
 //			throw new EntidadeEmUsoException(

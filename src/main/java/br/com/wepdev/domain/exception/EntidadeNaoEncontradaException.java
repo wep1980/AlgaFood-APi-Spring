@@ -10,7 +10,8 @@ import org.springframework.web.server.ResponseStatusException;
  * @author Waldir
  *
  */
-@ResponseStatus(value = HttpStatus.NOT_FOUND)// 404 Not Found(o servidor não conseguiu encontrar o recurso solicitado)
+//@ResponseStatus(value = HttpStatus.NOT_FOUND)// 404 Not Found(o servidor não conseguiu encontrar o recurso solicitado)
+// O HTTP Status esta sendo passado dentro da classe global ApiExceptionHandler
 public abstract class EntidadeNaoEncontradaException extends NegocioException{
 	private static final long serialVersionUID = 1L;
 
