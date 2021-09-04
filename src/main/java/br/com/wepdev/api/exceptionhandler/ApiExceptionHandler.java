@@ -6,7 +6,6 @@ import br.com.wepdev.domain.exception.NegocioException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -31,28 +30,37 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
      * Os erros que aparecem na representação (POSTMAN) estao customizados
      */
     @ExceptionHandler(EntidadeNaoEncontradaException.class) // WebRequest resquest -> É passado automaticamente pelo Spring implicitamente, ele so foi colocado explicitamente
-    public ResponseEntity<?> tratarEntidadeNaoEncontradoException(EntidadeNaoEncontradaException ex , WebRequest resquest){
+    public ResponseEntity<?> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex , WebRequest resquest){
+
+        HttpStatus status = HttpStatus.NOT_FOUND; //Entidade nao encontrada retorna sempre um NOT_FOUND 404
+        String detail = ex.getMessage(); // Pega a informacao do detalhe da mensagem
+
+        /**
+         * Enumeracao onde fica as constantes dos tipos de problemas gerados pelas exceptions, novos problemas devem ser colocados dentro dela
+         * Nela possue descrições do titulo e da uri, que é um tipo de URL
+         */
+        ProblemType problemType = ProblemType.ENTIDADE_NAO_ENCONTRADA;
+
+        Problem problem = createProblemBuilder(status, problemType, detail) // Antes do builder podemos customizar mais propriedades adicionais
+                .build(); // Ao dar o build(), a instancia de Problem e criada
+
+          // Forma de colocar informações sem utilizar o metedo acima
+//        Problem problem = Problem.builder() // Intanciando um problem com o construtor do lombok @Builder, implementando o corpo da Exception de acordo com a RFC 7807
+//                .status(status.value())
+//                .type("https://algafood.com.br/entidade-nao-encontrada") // Url da pagina que esta documentada com o tipo do problema e uma possivel solução, essa pagina nao precisa exatamente existir, mas o ideal é q exista
+//                .title("Entidade não encontrada")
+//                .detail(ex.getMessage())
+//                .build(); // Ao dar o build(), a instancia de Problem e criada
         /**
          * ex -> Exception
-         * body -> getMessage , a mensagem da exception
+         * body -> problem, e o corpo onde contem as propriedades
          * new HttpHeaders() -> Instancia vazia de um Header, sem cabeçalho customizado na resposta
          * status -> HttpStatus.NOT_FOUND -> status de nao encontrado, 404
          * WebRequest resquest -> O Spring ja passa automaticamente , representa uma requisição WEB
          *
          * Não é mais nessario instanciar a Classe problema aqui, pois ja esta sendo instanciada no metodo handleExceptionInternal
          */
-         return handleExceptionInternal(ex , ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, resquest);
-
-        /**
-         * Construtor feito com o @Builder do lombok.
-         * Problema e a classe responsavel pelos atributos de erros mostrados na representação (POSTMAN)
-         */
-//        Problema problema = Problema.builder()
-//                .dataHora(LocalDateTime.now())
-//                .mensagem(e.getMessage())
-//                .build();
-//
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problema);
+         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, resquest);
     }
 
 
@@ -60,34 +68,34 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
      * Metodo que trata excessoes customizado
      * Quando a NegocioException for tratada , esse metodo vai ser automaticamente chamado pelo Spring, passando a
      * exception que foi lançada.
-     * @param e
+     * @param
      * @return
      */
     @ExceptionHandler(NegocioException.class)
-    public ResponseEntity<?> tratarNegocioException(NegocioException ex ,  WebRequest resquest){
+    public ResponseEntity<?> handleNegocioException(NegocioException ex , WebRequest resquest){
+
+        HttpStatus status = HttpStatus.BAD_REQUEST; //Entidade nao encontrada retorna sempre um BAD_REQUEST 400
+        String detail = ex.getMessage(); // Pega a informacao do detalhe da mensagem
+
+        /**
+         * Enumeracao onde fica as constantes dos tipos de problemas gerados pelas exceptions, novos problemas devem ser colocados dentro dela
+         * Nela possue descrições do titulo e da uri, que é um tipo de URL
+         */
+        ProblemType problemType = ProblemType.ERRO_NEGOCIO;
+
+        Problem problem = createProblemBuilder(status, problemType, detail)  // Antes do builder podemos customizar mais propriedades adicionais
+                .build(); // Ao dar o build(), a instancia de Problem e criada
 
         /**
          * ex -> Exception
-         * body -> getMessage , a mensagem da exception
+         * body -> problem , e o corpo onde contem as propriedades
          * new HttpHeaders() -> Instancia vazia de um Header, sem cabeçalho customizado na resposta
          * status -> HttpStatus.BAD_REQUEST -> 400 , erro do cliente
          * WebRequest resquest -> O Spring ja passa automaticamente , representa uma requisição WEB
          *
          * Não é mais nessario instanciar a Classe problema aqui, pois ja esta sendo instanciada no metodo handleExceptionInternal
          */
-        return handleExceptionInternal(ex , ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, resquest);
-
-        /**
-         * Construtor feito com o @Builder do lombok.
-         * Problema e a classe responsavel pelos atributos de erros mostrados na representação (POSTMAN)
-         */
-//        Problema problema = Problema.builder()
-//                .dataHora(LocalDateTime.now())
-//                .mensagem(e.getMessage())
-//                .build();
-//
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problema);
-
+        return handleExceptionInternal(ex , problem, new HttpHeaders(), status, resquest);
     }
 
 
@@ -95,58 +103,36 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
      * Metodo que trata excessoes customizado
      * Quando a EntidadeEmUsoException for tratada , esse metodo vai ser automaticamente chamado pelo Spring, passando a
      * exception que foi lançada.
-     * @param e
+     * @param
      * @return
      */
     @ExceptionHandler(EntidadeEmUsoException.class)
-    public ResponseEntity<?> tratarEntidadeEmUsoException(EntidadeEmUsoException ex ,  WebRequest resquest){
+    public ResponseEntity<?> handleEntidadeEmUsoException(EntidadeEmUsoException ex , WebRequest resquest){
+
+        HttpStatus status = HttpStatus.CONFLICT; //Entidade nao encontrada retorna sempre um CONFLICT 409
+        String detail = ex.getMessage(); // Pega a informacao do detalhe da mensagem
+
+        /**
+         * Enumeracao onde fica as constantes dos tipos de problemas gerados pelas exceptions, novos problemas devem ser colocados dentro dela
+         * Nela possue descrições do titulo e da uri, que é um tipo de URL
+         */
+        ProblemType problemType = ProblemType.ENTIDADE_EM_USO;
+
+        Problem problem = createProblemBuilder(status, problemType, detail)  // Antes do builder podemos customizar mais propriedades adicionais
+                .build(); // Ao dar o build(), a instancia de Problem e criada
 
         /**
          * ex -> Exception
-         * body -> getMessage , a mensagem da exception
+         * body -> problem , a mensagem da exception
          * new HttpHeaders() -> Instancia vazia de um Header, sem cabeçalho customizado na resposta
          * status -> HttpStatus.BAD_REQUEST -> status de conflito, 403
          * WebRequest resquest -> O Spring ja passa automaticamente , representa uma requisição WEB
          *
          * Não é mais nessario instanciar a Classe problema aqui, pois ja esta sendo instanciada no metodo handleExceptionInternal
          */
-        return handleExceptionInternal(ex , ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, resquest);
-
-        /**
-         * Construtor feito com o @Builder do lombok.
-         * Problema e a classe responsavel pelos atributos de erros mostrados na representação (POSTMAN)
-         */
-//        Problema problema = Problema.builder()
-//                .dataHora(LocalDateTime.now())
-//                .mensagem(e.getMessage())
-//                .build();
-//
-//        return ResponseEntity.status(HttpStatus.CONFLICT).body(problema);
-
+        return handleExceptionInternal(ex , problem, new HttpHeaders(), status, resquest);
     }
 
-
-    /**
-     * Ao extender ResponseEntityExceptionHandler nao e mais necessario tratar exceptions interna do Spring
-     *
-     * Metodo de erro ao tentar enviar um tipo de midia diferente de JSON
-     * @return
-     */
-//    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-//    public ResponseEntity<?> tratarHttpMediaTypeNotSupportedException(){
-//
-//        /**
-//         * Construtor feito com o @Builder do lombok.
-//         * Problema e a classe responsavel pelos atributos de erros mostrados na representação (POSTMAN)
-//         */
-//        Problema problema = Problema.builder()
-//                .dataHora(LocalDateTime.now())
-//                .mensagem("O tipo de mídia não é aceito.")
-//                .build();
-//
-//        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(problema); // Retorna 415 -> Nao suporta o tipo de Midia
-//
-//    }
 
     /**
      * Metodo padrao do ResponseEntityExceptionHandler sobrestrito com customização.
@@ -164,22 +150,38 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         if(body == null){ // Retorna o corpo(body) com o getReasonPhrase() do status
-            body = Problema.builder()
-                    .dataHora(LocalDateTime.now())
-                    .mensagem(status.getReasonPhrase()) // Descreve o status que esta sendo retornado na resposta
+            body = Problem.builder()
+                    .title(status.getReasonPhrase()) // Descreve o status que esta sendo retornado na resposta
+                    .status(status.value()) // Pega o HTTP.Status que é uma enumercao
                     .build();
 
         } else if(body instanceof String){ // Se o corpo(body) for uma instancia de uma String
-            body = Problema.builder()
-                    .dataHora(LocalDateTime.now())
-                    .mensagem((String) body) // Faz o cast do Object(body) para String
+            body = Problem.builder()
+                    .title((String) body) // Faz o cast do Object(body) para String
+                    .status(status.value()) // Pega o HTTP.Status que é uma enumercao
                     .build();
         }
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
+    /**
+     * Metodo auxiliar que ajuda na hora de criar um tipo de problema , que pode ser uma EntidadeNaoEncontrada, EntidadeEmUso ...etc
+     * @param status -> Retorna um HttpStatus
+     * @param problemType -> Retorna uma instancia do enum ProblemType, classe criada com os tipos de problemas que podem ocorrer nas exceptions
+     * @param detail -> Mensagem de detalhe
+     * @return // Retorna a instancia de um builder de um problema, nao uma instancia do Problem,
+     * Na classe Problem e utilizado o @Builder do lombok, que criar um construtor de uma forma diferente.
+     * Problem.ProblemBuilder -> cria a classe ProblemBuilder dentro de Problem
+     */
+    private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail){
 
-
+        return Problem.builder()
+                .status(status.value()) // Pega o valor do status
+                .type(problemType.getUri()) // Pega o valor da uri que esta dentro do enum ProblemType
+                .title(problemType.getTitle()) // Pega o valor do title que esta dentro do enum ProblemType
+                .detail(detail); // Passa do detalhe do problema
+              //.build(); -> O Builde nao e feito pq é para ser construido nesse momento a instancia do problem
+    }
 
 
 

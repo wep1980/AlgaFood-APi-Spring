@@ -1,20 +1,14 @@
 package br.com.wepdev.api.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
-import br.com.wepdev.api.exceptionhandler.Problema;
 import br.com.wepdev.domain.exception.EstadoNaoEncontradoException;
 import br.com.wepdev.domain.exception.NegocioException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import br.com.wepdev.domain.exception.EntidadeEmUsoException;
-import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wepdev.domain.model.Cidade;
 import br.com.wepdev.domain.repository.CidadeRepository;
 import br.com.wepdev.domain.service.CidadeService;
