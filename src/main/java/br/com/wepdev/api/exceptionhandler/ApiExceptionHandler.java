@@ -3,6 +3,8 @@ package br.com.wepdev.api.exceptionhandler;
 import br.com.wepdev.domain.exception.EntidadeEmUsoException;
 import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wepdev.domain.exception.NegocioException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 /**
  * Classe global de tratamento de excessao customizada para representação.
@@ -21,6 +24,48 @@ import java.time.LocalDateTime;
 // ResponseEntityExceptionHandler -> implementação padrão que trata exceptions internas do Spring
 @ControllerAdvice // Permite adicionar exceptions handlers do projeto inteiro
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+
+
+
+    @ExceptionHandler(InvalidFormatException.class)
+    public ResponseEntity<?> handleInvalidFormatException(InvalidFormatException ex, WebRequest request){
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        /**
+         * Throwable -> Super tipo de todas as exceptions.
+         *
+         * ExceptionUtils -> 	<dependency>
+         * 			<groupId>org.apache.commons</groupId>
+         * 			<artifactId>commons-lang3</artifactId>
+         * 			<version>3.1</version>
+         * 		</dependency> Dependencia adionada ao pom.xml
+         *
+         * 	getRootCause() -> metodo que mostra a causa raiz, ele percorre toda a pilha de excessões
+         */
+        Throwable rootCause = ExceptionUtils.getRootCause(ex);
+
+        /**
+         * ex.getPath() -> Retorna uma lista de referencia, ou seja uma lista com as propriedades
+         * stream() -> Cria um fluxo de reference
+         * map(ref -> ref.getFieldName()) -> retornando a stream com o resultado do filedName para cada resuultado dentro Path
+         * collect(Collectors.joining(".") -> Reduz os elementos, o coletor concatena os elementos usando o delimitador "." Exp : cozinha.id
+         *
+         */
+        String path = ex.getPath().stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
+
+        Problem problem = Problem.builder()
+                .status(status.value())
+                .type("http://algofood.com.br/mensagem-incompreensivel")
+                .title("Mensagem incompreensível")
+                .detail(String.format("A propriedade '%s' recebeu o valor '%s' ," + " que é de um tipo inválido. Corrija e informe um valor compatível com " +
+                        "o tipo %s.", path , ex.getValue(), ex.getTargetType().getSimpleName()))
+                        // path -> nome do campo da propriedade no qual o valor foi digitado errado
+                        // ex.getValue() -> Pega o valor digitado na representação -- ex.getTargetType().getSimpleName() -> Avisa o formato correto que o campo aceita
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
 
     /**
      * Metodo de exception usado para erro de sintaxe na requisição (POSTMAN)
