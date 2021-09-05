@@ -4,6 +4,7 @@ import br.com.wepdev.domain.exception.EntidadeEmUsoException;
 import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wepdev.domain.exception.NegocioException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,6 @@ import java.util.stream.Collectors;
 // ResponseEntityExceptionHandler -> implementação padrão que trata exceptions internas do Spring
 @ControllerAdvice // Permite adicionar exceptions handlers do projeto inteiro
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
-
 
 
     @ExceptionHandler(InvalidFormatException.class)
@@ -61,6 +61,28 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                         "o tipo %s.", path , ex.getValue(), ex.getTargetType().getSimpleName()))
                         // path -> nome do campo da propriedade no qual o valor foi digitado errado
                         // ex.getValue() -> Pega o valor digitado na representação -- ex.getTargetType().getSimpleName() -> Avisa o formato correto que o campo aceita
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    /**
+     * Capturando erro conforme o metodo mais detalhado acima
+     * @param ex
+     * @param request
+     * @return
+     */
+    @ExceptionHandler(UnrecognizedPropertyException.class)
+    public ResponseEntity<?> handleUnrecognizedPropertyException(UnrecognizedPropertyException ex, WebRequest request){
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        String path = ex.getPath().stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
+        Problem problem = Problem.builder()
+                .status(status.value())
+                .type("http://algofood.com.br/mensagem-incompreensivel")
+                .title("Mensagem incompreensível")
+                .detail(String.format("A propriedade '%s' não existe.", path ))
                 .build();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
