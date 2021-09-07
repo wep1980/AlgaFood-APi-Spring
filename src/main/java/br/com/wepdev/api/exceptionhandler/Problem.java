@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 
 /**
  * Classe que customiza as informacoes dos erros que vao aparecer na representção (POSTMAN)
@@ -17,5 +19,8 @@ public class Problem {
     private String type;
     private String title;
     private String detail;
+
+    private String mensagemParaUsuario;
+    private LocalDateTime timestamp;
 
 }
