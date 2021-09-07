@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import br.com.wepdev.Grupos;
 import br.com.wepdev.domain.exception.CozinhaNaoEncontradaException;
 import br.com.wepdev.domain.exception.NegocioException;
 import br.com.wepdev.domain.exception.RestauranteNaoEncontradoException;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,13 +57,16 @@ public class RestauranteController {
 
 
 	/**
-	 * @Valid -> a validação da instancia de Restaurante e feita antes de o metodo ser chamado
+	 * @Valid -> a validação da instancia de Restaurante e feita antes de o metodo ser chamado, ele sempre valida as propriedades que possuem
+	 * as anotações para validações e essas anotações por padrão fazem parte de um grupo default, exemplo : @NotBlank(groups = Default.class)
+	 * @Validated(Grupos.CadastroRestaurante.class) -> Valida Restaurante pelo grupo CadastroRestaurante.class, que é um grupo criado para validar somente algumas
+	 * propriedades que fazem parte desse grupo (Grupos.CadastroRestaurante.class).
 	 * @param restaurante
 	 * @return
 	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante) {
+	public Restaurante adicionar(@RequestBody @Validated(Grupos.CadastroRestaurante.class) Restaurante restaurante) {
 		try {
 			return restauranteService.salvar(restaurante);
 		}catch (CozinhaNaoEncontradaException e) { // Exception caso a cozinha nao exista na hora de adicionar um restaurante

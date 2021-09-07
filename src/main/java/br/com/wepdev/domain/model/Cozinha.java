@@ -10,8 +10,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import br.com.wepdev.Grupos;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
@@ -23,7 +25,11 @@ import lombok.EqualsAndHashCode;
 @Entity
 public class Cozinha {
 
-	@NotNull
+	/**
+	 * Em todas as anotações de validações de constraints existe uma propriedade chamada (groups = {}) que por padrão o grupo e default, @NotBlack(groups =)
+	 * Um group recebe qualquer tipo de classe para indicar grupos para validação
+	 */
+	@NotNull(groups = Grupos.CadastroRestaurante.class)// como o id faz parte do Grupos.CadastroRestaurante.class ele passa por esse grupo de validação
 	@EqualsAndHashCode.Include // O Campo id sera o unico utilizado no equals e hashcode
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) //Quem gera a chave e o provedor do banco de dados
@@ -32,6 +38,7 @@ public class Cozinha {
 	//@JsonIgnore // Igona esse campo na hora de gerar a representacao(POSTMAN)
 	//@JsonProperty(value = "nomeJsonProperty") // Nome que aparecera na representação(POSTMAN)
 	@Column(nullable = false)
+	@NotBlank// Nao aceita nulo, nem vazio, nem espaços
 	private String nome;
 	
 

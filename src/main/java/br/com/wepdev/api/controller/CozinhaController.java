@@ -22,6 +22,8 @@ import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.repository.CozinhaRepository;
 import br.com.wepdev.domain.service.CozinhaService;
 
+import javax.validation.Valid;
+
 
 //@ResponseBody // As Respostas dos metedos desse controlador devem ir na resposta da requisicao
 //@Controller // Controlador REST
@@ -52,9 +54,14 @@ public class CozinhaController {
 	}
 
 
+	/**
+	 * @Valid -> Valida cozinha na chamada do metodo
+	 * @param cozinha
+	 * @return
+	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Cozinha adicionar(@RequestBody Cozinha cozinha) {
+	public Cozinha adicionar(@RequestBody @Valid Cozinha cozinha) {
 		return cozinhaService.salvar(cozinha);
 	}
 

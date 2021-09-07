@@ -20,6 +20,7 @@ import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
+import br.com.wepdev.Grupos;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -63,12 +64,14 @@ public class Restaurante {
 
 	//@NotNull // O bean validation e executado antes de fazer as validações no banco de dados, aceita o valor vazio
 	//@NotEmpty // Nao aceita nulu nem vazio, mas aceita com espaços
-	@NotBlank // Nao aceita nulo, nem vazio, nem espaços
+	//@NotBlank -> Nao aceita nulo, nem vazio, nem espaços.
+	@NotBlank(groups = Grupos.CadastroRestaurante.class) // como o nome faz parte do Grupos.CadastroRestaurante.class ele passa por essa validação
 	@Column(nullable = false)
 	private String nome;
 	
     //@DecimalMin("0") // Valor minimo da taxa frete e 0 zero
-	@PositiveOrZero// O valor tem ser positivo ou zero 0
+	// @PositiveOrZero -> O valor tem ser positivo ou zero 0
+	@PositiveOrZero(groups = Grupos.CadastroRestaurante.class) // como o taxaFrete faz parte do Grupos.CadastroRestaurante.class ele passa por esse validação
 	@Column(name = "taxa_frete" , nullable = false) // Nao aceita valor nulo
 	private BigDecimal taxaFrete;
 	
@@ -95,9 +98,10 @@ public class Restaurante {
 	//@JsonIgnore 
 	@ManyToOne//(fetch = FetchType.LAZY) // Muitos - many(*) RESTAURANTES possuem uma - one(1) COZINHA.
 	@JoinColumn(name = "cozinha_id", nullable = false) // A classe dona da associação e Restaurante, pois é onde fica a coluna cozinha_id
-	@NotNull // Tem que existir uma instancia de cozinha
+	//(groups=Grupos.CadastroRestaurante.class) -> Cozinha tb faz parte do Grupos.CadastroRestaurante.class as propriedades dela com (grupo = ), tb passam pela validação
+	@NotNull(groups = Grupos.CadastroRestaurante.class) // @NotNull nesse caso nao poder ser nula pq tem que existir uma instancia de cozinha.
 	@Valid // Valida as propriedades de cozinha, validação em cascata
-	private Cozinha cozinha; // Um restaurante possui 1 cozinha
+	private Cozinha cozinha;//Um restaurante possui 1 cozinha
 	
 	@Embedded // Esta classe esta sendo incorporada em Restaurante
 	@JsonIgnore// Na hora de serializar a propriedade endereço sera ignorada
