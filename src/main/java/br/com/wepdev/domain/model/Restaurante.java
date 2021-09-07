@@ -17,6 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -94,6 +95,8 @@ public class Restaurante {
 	//@JsonIgnore 
 	@ManyToOne//(fetch = FetchType.LAZY) // Muitos - many(*) RESTAURANTES possuem uma - one(1) COZINHA.
 	@JoinColumn(name = "cozinha_id", nullable = false) // A classe dona da associação e Restaurante, pois é onde fica a coluna cozinha_id
+	@NotNull // Tem que existir uma instancia de cozinha
+	@Valid // Valida as propriedades de cozinha, validação em cascata
 	private Cozinha cozinha; // Um restaurante possui 1 cozinha
 	
 	@Embedded // Esta classe esta sendo incorporada em Restaurante
