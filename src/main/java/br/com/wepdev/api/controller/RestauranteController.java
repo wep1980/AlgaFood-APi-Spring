@@ -27,6 +27,7 @@ import br.com.wepdev.domain.repository.RestauranteRepository;
 import br.com.wepdev.domain.service.RestauranteService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/restaurantes")
@@ -53,9 +54,14 @@ public class RestauranteController {
 	}
 
 
+	/**
+	 * @Valid -> a validação da instancia de Restaurante e feita antes de o metodo ser chamado
+	 * @param restaurante
+	 * @return
+	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Restaurante adicionar(@RequestBody Restaurante restaurante) {
+	public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante) {
 		try {
 			return restauranteService.salvar(restaurante);
 		}catch (CozinhaNaoEncontradaException e) { // Exception caso a cozinha nao exista na hora de adicionar um restaurante
