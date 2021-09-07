@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 
@@ -243,7 +244,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
          * Enumeracao onde fica as constantes dos tipos de problemas gerados pelas exceptions, novos problemas devem ser colocados dentro dela
          * Nela possue descrições do titulo e da uri, que é um tipo de URL
          */
-        ProblemType problemType = ProblemType.ENTIDADE_NAO_ENCONTRADA;
+        ProblemType problemType = ProblemType.RECURSO_NAO_ENCONTRADO;
 
         Problem problem = createProblemBuilder(status, problemType, detail) // Antes do builder podemos customizar mais propriedades adicionais
                 .build(); // Ao dar o build(), a instancia de Problem e criada
@@ -437,6 +438,47 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         Problem problem = createProblemBuilder(status, problemType, detail).build();
 
         return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+
+    /**
+     * Metodo de exception que trata o erro caso seja passado uma URL invalida
+     * @param ex
+     * @param headers
+     * @param status
+     * @param request
+     * @return
+     */
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        ProblemType problemType = ProblemType.RECURSO_NAO_ENCONTRADO;
+        String detail = String.format("O recurso %s, que você tentou acessar, é inexistente.",
+                ex.getRequestURL());
+
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        ProblemType problemType = ProblemType.ERRO_DE_SISTEMA;
+        String detail = "Ocorreu um erro interno inesperado no sistema. "
+                + "Tente novamente e se o problema persistir, entre em contato "
+                + "com o administrador do sistema.";
+
+        // Importante colocar o printStackTrace (pelo menos por enquanto, que não estamos
+        // fazendo logging) para mostrar a stacktrace no console
+        // Se não fizer isso, você não vai ver a stacktrace de exceptions que seriam importantes
+        // para você durante, especialmente na fase de desenvolvimento
+        ex.printStackTrace();
+
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
 }
