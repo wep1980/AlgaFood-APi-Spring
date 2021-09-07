@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**
@@ -22,5 +23,22 @@ public class Problem {
 
     private String mensagemParaUsuario;
     private LocalDateTime timestamp;
+
+    /**
+     * Lista de propriedades(Campos) onde vai ter o nome da propriedade que esta o erro
+     */
+    private List<Campo> campos;
+
+
+
+    // Classe static so para os campos
+    @Getter
+    @Builder
+    public static class Campo{
+
+        private String nome;
+        private String mensagemParaUsuario;
+    }
+
 
 }

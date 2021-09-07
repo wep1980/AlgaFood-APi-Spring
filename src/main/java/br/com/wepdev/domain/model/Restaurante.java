@@ -17,7 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -60,11 +60,14 @@ public class Restaurante {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) //Quem gera a chave e o provedor do banco de dados
 	private Long id;
 
-	@NotNull // O bean validation e executado antes de fazer as validações no banco de dados
+	//@NotNull // O bean validation e executado antes de fazer as validações no banco de dados, aceita o valor vazio
+	//@NotEmpty // Nao aceita nulu nem vazio, mas aceita com espaços
+	@NotBlank // Nao aceita nulo, nem vazio, nem espaços
 	@Column(nullable = false)
 	private String nome;
 	
-
+    //@DecimalMin("0") // Valor minimo da taxa frete e 0 zero
+	@PositiveOrZero// O valor tem ser positivo ou zero 0
 	@Column(name = "taxa_frete" , nullable = false) // Nao aceita valor nulo
 	private BigDecimal taxaFrete;
 	

@@ -13,6 +13,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -496,6 +498,41 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         Problem problem = createProblemBuilder(status, problemType, detail).build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
+
+
+    /**
+     * Classe que captura a exception quando na representação uma propriedade e passada nula
+     * @param ex
+     * @param headers
+     * @param status
+     * @param request
+     * @return
+     */
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        ProblemType problemType = ProblemType.DADOS_INVALIDOS;
+        String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
+
+        BindingResult bindingResult = ex.getBindingResult(); // Armazena as violações de constraints, acesso as propriedades violadas
+
+        /**
+         * Transformando a lista de erros que e do tipo BindingResult em uma lista de Problem.Campo
+         * Problem.Campo.builder() -> chamando o builder do Campo, pegando o resultando dos campos, fazendo o build e trasnformando em uma lista de Problem.Campo
+         */
+        List<Problem.Campo> problemCampos = bindingResult.getFieldErrors().stream().map(fieldError -> Problem.Campo.builder()
+                .nome(fieldError.getField()) // Pegando o nome da propriedade
+                .mensagemParaUsuario(fieldError.getDefaultMessage()) // Pegando
+                .build())
+                .collect(Collectors.toList()); // Transformando a stream() na lista de Problem.Campo, com as propriedade preenchidas
+
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .campos(problemCampos)
+                .mensagemParaUsuario(detail)
+                .build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
     }
 
 }
