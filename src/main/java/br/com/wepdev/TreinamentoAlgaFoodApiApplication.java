@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguratio
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import br.com.wepdev.infrastructure.repository.CustomJpaRepositoryImpl;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryBaseClass = CustomJpaRepositoryImpl.class) // Configuracao do Repository base da aplicacao

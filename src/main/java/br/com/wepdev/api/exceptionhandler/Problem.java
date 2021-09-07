@@ -3,10 +3,7 @@ package br.com.wepdev.api.exceptionhandler;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.bytecode.enhance.spi.interceptor.EnhancementHelper;
 
-import java.time.LocalDateTime;
 
 /**
  * Classe que customiza as informacoes dos erros que vao aparecer na representção (POSTMAN)

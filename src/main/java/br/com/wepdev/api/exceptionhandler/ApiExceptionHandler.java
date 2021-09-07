@@ -1,11 +1,13 @@
 package br.com.wepdev.api.exceptionhandler;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import br.com.wepdev.domain.exception.EntidadeEmUsoException;
 import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wepdev.domain.exception.NegocioException;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +15,13 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.time.LocalDateTime;
-import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.JsonMappingException.Reference;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 
 /**
  * Classe global de tratamento de excessao customizada para representação.
@@ -27,66 +32,93 @@ import java.util.stream.Collectors;
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 
-    @ExceptionHandler(InvalidFormatException.class)
-    public ResponseEntity<?> handleInvalidFormatException(InvalidFormatException ex, WebRequest request){
-
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        /**
-         * Throwable -> Super tipo de todas as exceptions.
-         *
-         * ExceptionUtils -> 	<dependency>
-         * 			<groupId>org.apache.commons</groupId>
-         * 			<artifactId>commons-lang3</artifactId>
-         * 			<version>3.1</version>
-         * 		</dependency> Dependencia adionada ao pom.xml
-         *
-         * 	getRootCause() -> metodo que mostra a causa raiz, ele percorre toda a pilha de excessões
-         */
-        Throwable rootCause = ExceptionUtils.getRootCause(ex);
-
-        /**
-         * ex.getPath() -> Retorna uma lista de referencia, ou seja uma lista com as propriedades
-         * stream() -> Cria um fluxo de reference
-         * map(ref -> ref.getFieldName()) -> retornando a stream com o resultado do filedName para cada resuultado dentro Path
-         * collect(Collectors.joining(".") -> Reduz os elementos, o coletor concatena os elementos usando o delimitador "." Exp : cozinha.id
-         *
-         */
-        String path = ex.getPath().stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
-
-        Problem problem = Problem.builder()
-                .status(status.value())
-                .type("http://algofood.com.br/mensagem-incompreensivel")
-                .title("Mensagem incompreensível")
-                .detail(String.format("A propriedade '%s' recebeu o valor '%s' ," + " que é de um tipo inválido. Corrija e informe um valor compatível com " +
-                        "o tipo %s.", path , ex.getValue(), ex.getTargetType().getSimpleName()))
-                        // path -> nome do campo da propriedade no qual o valor foi digitado errado
-                        // ex.getValue() -> Pega o valor digitado na representação -- ex.getTargetType().getSimpleName() -> Avisa o formato correto que o campo aceita
-                .build();
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
-    }
-
-    /**
-     * Capturando erro conforme o metodo mais detalhado acima
-     * @param ex
-     * @param request
-     * @return
-     */
-    @ExceptionHandler(UnrecognizedPropertyException.class)
-    public ResponseEntity<?> handleUnrecognizedPropertyException(UnrecognizedPropertyException ex, WebRequest request){
-
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-
-        String path = ex.getPath().stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
-        Problem problem = Problem.builder()
-                .status(status.value())
-                .type("http://algofood.com.br/mensagem-incompreensivel")
-                .title("Mensagem incompreensível")
-                .detail(String.format("A propriedade '%s' não existe.", path ))
-                .build();
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
-    }
+//    /**
+//     *
+//     * @param ex
+//     * @param request
+//     * @return
+//     */
+//    @ExceptionHandler(InvalidFormatException.class)
+//    public ResponseEntity<?> handleInvalidFormatException(InvalidFormatException ex, WebRequest request){
+//
+//        HttpStatus status = HttpStatus.BAD_REQUEST;
+//        /**
+//         * Throwable -> Super tipo de todas as exceptions.
+//         *
+//         * ExceptionUtils -> 	<dependency>
+//         * 			<groupId>org.apache.commons</groupId>
+//         * 			<artifactId>commons-lang3</artifactId>
+//         * 			<version>3.1</version>
+//         * 		</dependency> Dependencia adionada ao pom.xml
+//         *
+//         * 	getRootCause() -> metodo que mostra a causa raiz, ele percorre toda a pilha de excessões
+//         */
+//        //Throwable rootCause = ExceptionUtils.getRootCause(ex);
+//
+//        /**
+//         * ex.getPath() -> Retorna uma lista de referencia, ou seja uma lista com as propriedades
+//         * stream() -> Cria um fluxo de reference
+//         * map(ref -> ref.getFieldName()) -> retornando a stream com o resultado do filedName para cada resuultado dentro Path
+//         * collect(Collectors.joining(".") -> Reduz os elementos, o coletor concatena os elementos usando o delimitador "." Exp : cozinha.id
+//         *
+//         */
+//        String path = ex.getPath().stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
+//        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+//
+//        String detail = String.format( "A propriedade '%s' recebeu o valor '%s' ," + " que é de um tipo inválido. Corrija e informe um valor compatível com " +
+//                       "o tipo %s.", path , ex.getValue(), ex.getTargetType().getSimpleName()); // Pega a informacao do detalhe da mensagem
+//
+//        Problem problem = createProblemBuilder(status, problemType, detail) // Antes do builder podemos customizar mais propriedades adicionais
+//                .build(); // Ao dar o build(), a instancia de Problem e cria
+//
+////        Problem problem = Problem.builder()
+////                .status(status.value())
+////                .type("http://algofood.com.br/mensagem-incompreensivel")
+////                .title("Mensagem incompreensível")
+////                .detail(String.format("A propriedade '%s' recebeu o valor '%s' ," + " que é de um tipo inválido. Corrija e informe um valor compatível com " +
+////                        "o tipo %s.", path , ex.getValue(), ex.getTargetType().getSimpleName()))
+////                        // path -> nome do campo da propriedade no qual o valor foi digitado errado
+////                        // ex.getValue() -> Pega o valor digitado na representação -- ex.getTargetType().getSimpleName() -> Avisa o formato correto que o campo aceita
+////                .build();
+//
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+//    }
+//
+//    /**
+//     * Metodo de excessao gerado ao colocar uma propriedade na representação que não existe
+//     * Capturando erro conforme o metodo mais detalhado acima
+//     * @param ex
+//     * @param request
+//     * @return
+//     */
+//    @ExceptionHandler(UnrecognizedPropertyException.class)
+//    public ResponseEntity<?> handleUnrecognizedPropertyException(UnrecognizedPropertyException ex, WebRequest request){
+//
+//        HttpStatus status = HttpStatus.BAD_REQUEST;
+//        /**
+//         * ex.getPath() -> Retorna uma lista de referencia, ou seja uma lista com as propriedades
+//         * stream() -> Cria um fluxo de reference
+//         * map(ref -> ref.getFieldName()) -> retornando a stream com o resultado do filedName para cada resuultado dentro Path
+//         * collect(Collectors.joining(".") -> Reduz os elementos, o coletor concatena os elementos usando o delimitador "." Exp : cozinha.id
+//         *
+//         */
+//        String path = ex.getPath().stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
+//
+//        String detail = String.format("A propriedade '%s' não existe.", path ); // Pega a informacao do detalhe da mensagem
+//        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+//
+//        Problem problem = createProblemBuilder(status, problemType, detail) // Antes do builder podemos customizar mais propriedades adicionais
+//                .build(); // Ao dar o build(), a instancia de Problem e cria
+//
+////        Problem problem = Problem.builder()
+////                .status(status.value())
+////                .type("http://algofood.com.br/mensagem-incompreensivel")
+////                .title("Mensagem incompreensível")
+////                .detail(detail)
+////                .build();
+//
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+//    }
 
 
     /**
@@ -99,6 +131,19 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        /**
+         * Throwable ->  Super tipo de todas as exceptions
+         * ExceptionUtils -> metodo do pacote commons-lang3, dependencia adicionada no pom.xml
+         * getRootCause(ex) -> metodo que mostra a causa raiz, ele percorre toda a pilha de excessões
+         */
+        Throwable rootCause = ExceptionUtils.getRootCause(ex); // Pega a causa da exception na raiz, na pilha das exceptions
+
+        if(rootCause instanceof InvalidFormatException){
+            return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status,request);
+        } else if(rootCause instanceof PropertyBindingException){ // PropertyBindingException trata IgnoredPropertyException e tambem UnrecognizedPropertyException
+            return handlePropertyBindingException((PropertyBindingException) rootCause, headers, status, request);
+        }
 
         /**
          * Enumeracao onde fica as constantes dos tipos de problemas gerados pelas exceptions, novos problemas devem ser colocados dentro dela
@@ -119,9 +164,67 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
          *
          * Não é mais nessario instanciar a Classe problema aqui, pois ja esta sendo instanciada no metodo handleExceptionInternal
          */
-        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
-
+        return handleExceptionInternal(ex, problem, headers, status, request);
     }
+
+    /**
+     * Metodo que captura as a exceptions IgnoredPropertyException e UnrecognizedPropertyException.
+     *
+     * IgnoredPropertyException -> execption gerada ao adicionar uma propriedade qye nao existe na representação
+     *
+     * UnrecognizedPropertyException -> execption gerada ao adicionar uma propriedade que existe na representação porem esta anotada com @JsonIgnore na sua classe
+     * @param ex
+     * @param headers
+     * @param status
+     * @param request
+     * @return
+     */
+    private ResponseEntity<Object> handlePropertyBindingException(PropertyBindingException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        // Criei o método joinPath para reaproveitar em todos os métodos que precisam
+        // concatenar os nomes das propriedades (separando por ".")
+        String path = joinPath(ex.getPath());
+
+        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+        String detail = String.format("A propriedade '%s' não existe. "
+                + "Corrija ou remova essa propriedade e tente novamente.", path);
+
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+    /**
+     * Metodo que captura excessão ao digitar um tipo de valor invalido da propriedade na representação
+     * @param ex
+     * @param headers
+     * @param status
+     * @param request
+     * @return
+     */
+    private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        String path = joinPath(ex.getPath());
+
+        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+        String detail = String.format("A propriedade '%s' recebeu o valor '%s', " + "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
+                path, ex.getValue(), ex.getTargetType().getSimpleName());
+
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+
+    /**
+     * Metodo que retorna a propriedade que recebeu o tipo de valor invalido, e qual e o tipo certo valido para ser digitado
+     * @param references
+     * @return
+     */
+    private String joinPath(List<Reference> references) {
+        return references.stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
+    }
+
 
     /**
      * Metodo que trata excessoes customizado
@@ -252,13 +355,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         if(body == null){ // Retorna o corpo(body) com o getReasonPhrase() do status
             body = Problem.builder()
-                    .title(status.getReasonPhrase()) // Descreve o status que esta sendo retornado na resposta
+                    .title(status.getReasonPhrase()) // Descreve o titulo do erro que
                     .status(status.value()) // Pega o HTTP.Status que é uma enumercao
                     .build();
 
         } else if(body instanceof String){ // Se o corpo(body) for uma instancia de uma String
             body = Problem.builder()
-                    .title((String) body) // Faz o cast do Object(body) para String
+                    .title((String) body) // Faz o cast do Object(body) para String com o titulo do erro
                     .status(status.value()) // Pega o HTTP.Status que é uma enumercao
                     .build();
         }
@@ -285,5 +388,55 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
+    /**
+     * Metodo que trata as Exceptions do tipo TypeMismatchExceptione seus subtipos, como por exemplo a MethodArgumentTypeMismatchException.
+     *
+     * MethodArgumentTypeMismatchException é um subtipo de TypeMismatchException
+     * ResponseEntityExceptionHandler já trata TypeMismatchException de forma mais abrangente
+     * Então, especializamos o método handleTypeMismatch e verificamos se a exception é uma instância de MethodArgumentTypeMismatchException
+     * Se for, chamamos um método especialista em tratar esse tipo de exception
+     * @param ex
+     * @param headers
+     * @param status
+     * @param request
+     * @return
+     */
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
+                                                        HttpStatus status, WebRequest request) {
+
+        if (ex instanceof MethodArgumentTypeMismatchException) {
+            return handleMethodArgumentTypeMismatch(
+                    (MethodArgumentTypeMismatchException) ex, headers, status, request);
+        }
+
+        return super.handleTypeMismatch(ex, headers, status, request);
+    }
+
+
+    /**
+     * Metodo que trata a exception especifica MethodArgumentTypeMismatchException que faz parte da exception super TypeMismatchException.
+     *
+     * Quando e passado um valor errado na URL, gera esse erro.
+     *
+     * @param ex
+     * @param headers
+     * @param status
+     * @param request
+     * @return
+     */
+    private ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex, HttpHeaders headers,
+            HttpStatus status, WebRequest request) {
+
+        ProblemType problemType = ProblemType.PARAMETRO_INVALIDO;
+
+        String detail = String.format("O parâmetro de URL '%s' recebeu o valor '%s', "
+                        + "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
+                ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
+
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
 
 }
