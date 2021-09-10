@@ -65,7 +65,7 @@ public class Restaurante {
 	//@NotNull // O bean validation e executado antes de fazer as validações no banco de dados, aceita o valor vazio
 	//@NotEmpty // Nao aceita nulu nem vazio, mas aceita com espaços
 	//@NotBlank -> Nao aceita nulo, nem vazio, nem espaços.
-	@NotBlank(message = "Nome é obrigatório") // como o nome faz parte do Grupos.CadastroRestaurante.class ele passa por essa validação
+	@NotBlank // como o nome faz parte do Grupos.CadastroRestaurante.class ele passa por essa validação
 	@Column(nullable = false)
 	private String nome;
 	

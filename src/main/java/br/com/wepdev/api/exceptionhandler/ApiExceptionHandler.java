@@ -9,6 +9,9 @@ import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wepdev.domain.exception.NegocioException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,93 +43,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             "Tente novamente e se o problema persistir, entre em contato com o administrador do sistema.";
 
 
-//    /**
-//     *
-//     * @param ex
-//     * @param request
-//     * @return
-//     */
-//    @ExceptionHandler(InvalidFormatException.class)
-//    public ResponseEntity<?> handleInvalidFormatException(InvalidFormatException ex, WebRequest request){
-//
-//        HttpStatus status = HttpStatus.BAD_REQUEST;
-//        /**
-//         * Throwable -> Super tipo de todas as exceptions.
-//         *
-//         * ExceptionUtils -> 	<dependency>
-//         * 			<groupId>org.apache.commons</groupId>
-//         * 			<artifactId>commons-lang3</artifactId>
-//         * 			<version>3.1</version>
-//         * 		</dependency> Dependencia adionada ao pom.xml
-//         *
-//         * 	getRootCause() -> metodo que mostra a causa raiz, ele percorre toda a pilha de excessões
-//         */
-//        //Throwable rootCause = ExceptionUtils.getRootCause(ex);
-//
-//        /**
-//         * ex.getPath() -> Retorna uma lista de referencia, ou seja uma lista com as propriedades
-//         * stream() -> Cria um fluxo de reference
-//         * map(ref -> ref.getFieldName()) -> retornando a stream com o resultado do filedName para cada resuultado dentro Path
-//         * collect(Collectors.joining(".") -> Reduz os elementos, o coletor concatena os elementos usando o delimitador "." Exp : cozinha.id
-//         *
-//         */
-//        String path = ex.getPath().stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
-//        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
-//
-//        String detail = String.format( "A propriedade '%s' recebeu o valor '%s' ," + " que é de um tipo inválido. Corrija e informe um valor compatível com " +
-//                       "o tipo %s.", path , ex.getValue(), ex.getTargetType().getSimpleName()); // Pega a informacao do detalhe da mensagem
-//
-//        Problem problem = createProblemBuilder(status, problemType, detail) // Antes do builder podemos customizar mais propriedades adicionais
-//                .build(); // Ao dar o build(), a instancia de Problem e cria
-//
-////        Problem problem = Problem.builder()
-////                .status(status.value())
-////                .type("http://algofood.com.br/mensagem-incompreensivel")
-////                .title("Mensagem incompreensível")
-////                .detail(String.format("A propriedade '%s' recebeu o valor '%s' ," + " que é de um tipo inválido. Corrija e informe um valor compatível com " +
-////                        "o tipo %s.", path , ex.getValue(), ex.getTargetType().getSimpleName()))
-////                        // path -> nome do campo da propriedade no qual o valor foi digitado errado
-////                        // ex.getValue() -> Pega o valor digitado na representação -- ex.getTargetType().getSimpleName() -> Avisa o formato correto que o campo aceita
-////                .build();
-//
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
-//    }
-//
-//    /**
-//     * Metodo de excessao gerado ao colocar uma propriedade na representação que não existe
-//     * Capturando erro conforme o metodo mais detalhado acima
-//     * @param ex
-//     * @param request
-//     * @return
-//     */
-//    @ExceptionHandler(UnrecognizedPropertyException.class)
-//    public ResponseEntity<?> handleUnrecognizedPropertyException(UnrecognizedPropertyException ex, WebRequest request){
-//
-//        HttpStatus status = HttpStatus.BAD_REQUEST;
-//        /**
-//         * ex.getPath() -> Retorna uma lista de referencia, ou seja uma lista com as propriedades
-//         * stream() -> Cria um fluxo de reference
-//         * map(ref -> ref.getFieldName()) -> retornando a stream com o resultado do filedName para cada resuultado dentro Path
-//         * collect(Collectors.joining(".") -> Reduz os elementos, o coletor concatena os elementos usando o delimitador "." Exp : cozinha.id
-//         *
-//         */
-//        String path = ex.getPath().stream().map(ref -> ref.getFieldName()).collect(Collectors.joining("."));
-//
-//        String detail = String.format("A propriedade '%s' não existe.", path ); // Pega a informacao do detalhe da mensagem
-//        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
-//
-//        Problem problem = createProblemBuilder(status, problemType, detail) // Antes do builder podemos customizar mais propriedades adicionais
-//                .build(); // Ao dar o build(), a instancia de Problem e cria
-//
-////        Problem problem = Problem.builder()
-////                .status(status.value())
-////                .type("http://algofood.com.br/mensagem-incompreensivel")
-////                .title("Mensagem incompreensível")
-////                .detail(detail)
-////                .build();
-//
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
-//    }
+    @Autowired
+    private MessageSource messageSource; // Instancia injetada, é uma interface que resolve mensagens
 
 
     /**
@@ -502,7 +420,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     /**
-     * Classe que captura a exception quando na representação uma propriedade e passada nula
+     * Metodo que captura exception lançada quando uma regra da validação e violada.
      * @param ex
      * @param headers
      * @param status
@@ -520,11 +438,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         /**
          * Transformando a lista de erros que e do tipo BindingResult em uma lista de Problem.Campo
          * Problem.Campo.builder() -> chamando o builder do Campo, pegando o resultando dos campos, fazendo o build e trasnformando em uma lista de Problem.Campo
+         *
+         * Foi criado um bloco de codigo dentro da stream(), o bloco começa em fieldError -> {   e termina depois do build() }, esse bloco foi criado
+         * por conta do String message
          */
-        List<Problem.Campo> problemCampos = bindingResult.getFieldErrors().stream().map(fieldError -> Problem.Campo.builder()
-                .nome(fieldError.getField()) // Pegando o nome da propriedade
-                .mensagemParaUsuario(fieldError.getDefaultMessage()) // Pegando
-                .build())
+        List<Problem.Campo> problemCampos = bindingResult.getFieldErrors().stream().map(fieldError -> {
+
+                    /**
+                     * Pegando a mensagem do erro com fieldError e passando a região local para as mesagens serem enviadas em portugues.
+                     * Foi necessario configurar o UTF-8 no settings -> file encodings
+                     */
+            String message = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+                return Problem.Campo.builder()
+                            .nome(fieldError.getField()) // Pegando o nome da propriedade
+                            //.mensagemParaUsuario(fieldError.getDefaultMessage()) // Nao retorna as msgs customizadas do arquivo messages.properties
+                            .mensagemParaUsuario(message) // Informando a mensagem para cada tipo de violação
+                            .build();
+                })
                 .collect(Collectors.toList()); // Transformando a stream() na lista de Problem.Campo, com as propriedade preenchidas
 
         Problem problem = createProblemBuilder(status, problemType, detail)
