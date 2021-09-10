@@ -72,7 +72,7 @@ public class CozinhaController {
 	 * @return
 	 */
 	@PutMapping("/{cozinhaId}")
-	public Cozinha atualizar(@PathVariable Long cozinhaId, @RequestBody Cozinha cozinha) {
+	public Cozinha atualizar(@PathVariable  Long cozinhaId, @RequestBody @Valid Cozinha cozinha) {
 		//Busca a cozinha atual ou lança uma exception que esta com NOT.FOUND
 		Cozinha cozinhaAtual = cozinhaService.buscarOuFalhar(cozinhaId);
             // Copia a instancia de cozinha para cozinhaAtual, exceto o id

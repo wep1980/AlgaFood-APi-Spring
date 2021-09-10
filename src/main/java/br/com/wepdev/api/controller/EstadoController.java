@@ -23,6 +23,8 @@ import br.com.wepdev.domain.model.Estado;
 import br.com.wepdev.domain.repository.EstadoRepository;
 import br.com.wepdev.domain.service.EstadoService;
 
+import javax.validation.Valid;
+
 
 //@ResponseBody // As Respostas dos metedos desse controlador devem ir na resposta da requisicao
 //@Controller // Controlador REST
@@ -52,13 +54,13 @@ public class EstadoController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Estado adicionar(@RequestBody Estado estado) {
+	public Estado adicionar(@RequestBody @Valid Estado estado) {
 		return estadoService.salvar(estado);
 	}
 
 
 	@PutMapping("/{estadoId}")
-	public Estado atualizar(@PathVariable Long estadoId, @RequestBody Estado estado) {
+	public Estado atualizar(@PathVariable Long estadoId, @RequestBody @Valid Estado estado) {
 		    //Busca o estado atual ou lança uma exception que esta com NOT.FOUND
 		    Estado estadoAtual = estadoService.buscarOuFalhar(estadoId);
 			// Copia a instancia de estado para estadoAtual, exceto o id

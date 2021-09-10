@@ -8,7 +8,6 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,13 +18,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import javax.validation.groups.ConvertGroup;
+import javax.validation.groups.Default;
 
 import br.com.wepdev.Grupos;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -65,13 +65,13 @@ public class Restaurante {
 	//@NotNull // O bean validation e executado antes de fazer as validações no banco de dados, aceita o valor vazio
 	//@NotEmpty // Nao aceita nulu nem vazio, mas aceita com espaços
 	//@NotBlank -> Nao aceita nulo, nem vazio, nem espaços.
-	@NotBlank(groups = Grupos.CadastroRestaurante.class) // como o nome faz parte do Grupos.CadastroRestaurante.class ele passa por essa validação
+	@NotBlank // como o nome faz parte do Grupos.CadastroRestaurante.class ele passa por essa validação
 	@Column(nullable = false)
 	private String nome;
 	
     //@DecimalMin("0") // Valor minimo da taxa frete e 0 zero
 	// @PositiveOrZero -> O valor tem ser positivo ou zero 0
-	@PositiveOrZero(groups = Grupos.CadastroRestaurante.class) // como o taxaFrete faz parte do Grupos.CadastroRestaurante.class ele passa por esse validação
+	@PositiveOrZero// como o taxaFrete faz parte do Grupos.CadastroRestaurante.class ele passa por esse validação
 	@Column(name = "taxa_frete" , nullable = false) // Nao aceita valor nulo
 	private BigDecimal taxaFrete;
 	
@@ -99,8 +99,14 @@ public class Restaurante {
 	@ManyToOne//(fetch = FetchType.LAZY) // Muitos - many(*) RESTAURANTES possuem uma - one(1) COZINHA.
 	@JoinColumn(name = "cozinha_id", nullable = false) // A classe dona da associação e Restaurante, pois é onde fica a coluna cozinha_id
 	//(groups=Grupos.CadastroRestaurante.class) -> Cozinha tb faz parte do Grupos.CadastroRestaurante.class as propriedades dela com (grupo = ), tb passam pela validação
-	@NotNull(groups = Grupos.CadastroRestaurante.class) // @NotNull nesse caso nao poder ser nula pq tem que existir uma instancia de cozinha.
+	@NotNull// @NotNull nesse caso nao poder ser nula pq tem que existir uma instancia de cozinha.
 	@Valid // Valida as propriedades de cozinha, validação em cascata
+	/**
+	 * Converte do grupo default para o grupo CozinhaId.class, na hora de validar cozinha, os propriedades na cozinha que tiverem o group CadastroRestaurante
+	 * serao as unicas validadas por esse group. Resolve erros de validacão como por exemplo adicionar uma nova cozinha sem a necessidade de passar um id, ja que o id
+	 * e gerado automaticamente pelo banco
+	 */
+	@ConvertGroup(from = Default.class, to = Grupos.CozinhaId.class)
 	private Cozinha cozinha;//Um restaurante possui 1 cozinha
 	
 	@Embedded // Esta classe esta sendo incorporada em Restaurante

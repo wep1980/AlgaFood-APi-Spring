@@ -12,5 +12,6 @@ public interface Grupos {
      * @NotBlank( group = Grupo.CadastroRestaurante.class)
      *  Id
      */
-    public interface CadastroRestaurante {}
+    public interface CozinhaId {}
+    public interface EstadoId {}
 }

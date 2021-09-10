@@ -13,6 +13,8 @@ import br.com.wepdev.domain.model.Cidade;
 import br.com.wepdev.domain.repository.CidadeRepository;
 import br.com.wepdev.domain.service.CidadeService;
 
+import javax.validation.Valid;
+
 
 //@ResponseBody // As Respostas dos metedos desse controlador devem ir na resposta da requisicao
 //@Controller // Controlador REST
@@ -43,7 +45,7 @@ public class CidadeController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Cidade adicionar(@RequestBody Cidade cidade) {
+	public Cidade adicionar(@RequestBody @Valid Cidade cidade) {
 		try {
 			return cidadeService.salvar(cidade);
 			/*
@@ -59,7 +61,7 @@ public class CidadeController {
 
 
 	@PutMapping("/{cidadeId}")
-	public Cidade atualizar(@PathVariable Long cidadeId, @RequestBody Cidade cidade) {
+	public Cidade atualizar(@PathVariable Long cidadeId, @RequestBody @Valid Cidade cidade) {
 			try{
 				//Busca a cidade atual ou lança uma exception que esta com NOT.FOUND
 				Cidade cidadeAtual = cidadeService.buscarOuFalhar(cidadeId);

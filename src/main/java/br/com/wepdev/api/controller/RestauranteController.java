@@ -59,14 +59,14 @@ public class RestauranteController {
 	/**
 	 * @Valid -> a validação da instancia de Restaurante e feita antes de o metodo ser chamado, ele sempre valida as propriedades que possuem
 	 * as anotações para validações e essas anotações por padrão fazem parte de um grupo default, exemplo : @NotBlank(groups = Default.class)
-	 * @Validated(Grupos.CadastroRestaurante.class) -> Valida Restaurante pelo grupo CadastroRestaurante.class, que é um grupo criado para validar somente algumas
-	 * propriedades que fazem parte desse grupo (Grupos.CadastroRestaurante.class).
+	 * @Validated(Grupos.CadastroRestaurante.class) -> Valida Restaurante todas as propriedades que possuem o groups CadastroRestaurante.class,
+	 * é um grupo criado para validar somente as propriedades que fazem parte desse grupo (Grupos.CadastroRestaurante.class).
 	 * @param restaurante
 	 * @return
 	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Restaurante adicionar(@RequestBody @Validated(Grupos.CadastroRestaurante.class) Restaurante restaurante) {
+	public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante) {
 		try {
 			return restauranteService.salvar(restaurante);
 		}catch (CozinhaNaoEncontradaException e) { // Exception caso a cozinha nao exista na hora de adicionar um restaurante
@@ -76,7 +76,7 @@ public class RestauranteController {
 
 
 	@PutMapping("/{restauranteId}")
-	public Restaurante atualizar(@PathVariable Long restauranteId, @RequestBody Restaurante restaurante) {
+	public Restaurante atualizar(@PathVariable Long restauranteId, @RequestBody @Valid Restaurante restaurante) {
 		try {
 			//Busca o restaurante atual ou lança uma exception que esta com NOT.FOUND
 			Restaurante restauranteAtual = restauranteService.buscarOuFalhar(restauranteId);
