@@ -22,6 +22,7 @@ import javax.validation.groups.ConvertGroup;
 import javax.validation.groups.Default;
 
 import br.com.wepdev.core.validation.Grupos;
+import br.com.wepdev.core.validation.TaxaFrete;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -71,7 +72,8 @@ public class Restaurante {
 	
     //@DecimalMin("0") // Valor minimo da taxa frete e 0 zero
 	// @PositiveOrZero -> O valor tem ser positivo ou zero 0
-	@PositiveOrZero(message = "{TaxaFrete.invalida}")// como o taxaFrete faz parte do Grupos.CadastroRestaurante.class ele passa por esse validação
+	//@PositiveOrZero// como o taxaFrete faz parte do Grupos.CadastroRestaurante.class ele passa por esse validação
+	@TaxaFrete
 	@Column(name = "taxa_frete" , nullable = false) // Nao aceita valor nulo
 	@NotNull
 	private BigDecimal taxaFrete;
