@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import br.com.wepdev.Grupos;
+import br.com.wepdev.core.validation.Grupos;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

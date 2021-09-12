@@ -1,4 +1,4 @@
-package br.com.wepdev;
+package br.com.wepdev.core.validation;
 
 /**
  * Interface que contem os grupos para validações, assim evita validações em propriedades que nao deve existir.

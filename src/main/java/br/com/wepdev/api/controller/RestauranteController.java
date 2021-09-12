@@ -3,27 +3,21 @@ package br.com.wepdev.api.controller;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import br.com.wepdev.Grupos;
 import br.com.wepdev.domain.exception.CozinhaNaoEncontradaException;
 import br.com.wepdev.domain.exception.NegocioException;
-import br.com.wepdev.domain.exception.RestauranteNaoEncontradoException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wepdev.domain.model.Restaurante;
 import br.com.wepdev.domain.repository.RestauranteRepository;
 import br.com.wepdev.domain.service.RestauranteService;

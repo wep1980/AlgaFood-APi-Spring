@@ -13,7 +13,7 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import br.com.wepdev.Grupos;
+import br.com.wepdev.core.validation.Grupos;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
