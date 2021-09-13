@@ -22,6 +22,7 @@ import javax.validation.groups.ConvertGroup;
 import javax.validation.groups.Default;
 
 import br.com.wepdev.core.validation.Grupos;
+import br.com.wepdev.core.validation.Multiplo;
 import br.com.wepdev.core.validation.TaxaFrete;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -76,6 +77,7 @@ public class Restaurante {
 	@TaxaFrete
 	@Column(name = "taxa_frete" , nullable = false) // Nao aceita valor nulo
 	@NotNull
+	@Multiplo(numero = 5) // Anotacao customizada com codigo java(Regras)
 	private BigDecimal taxaFrete;
 	
 	/**
