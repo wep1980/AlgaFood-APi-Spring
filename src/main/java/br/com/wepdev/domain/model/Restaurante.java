@@ -24,6 +24,7 @@ import javax.validation.groups.Default;
 import br.com.wepdev.core.validation.Grupos;
 import br.com.wepdev.core.validation.Multiplo;
 import br.com.wepdev.core.validation.TaxaFrete;
+import br.com.wepdev.core.validation.ValorZeroIncluiDescricao;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -50,10 +51,14 @@ import lombok.EqualsAndHashCode;
 	Nos bancos de dados relacioanais todos os relacionamentos que possuem muitos para muitos (*..*) precisam de uma tabela adicional.
 	 * Deve ser sempre levado em conta o impacto dos relacionametos de muitos para muitos em uma REST APi
 	 * Ao utilizar o jsonIgnore a formaPagamento nao aparece na representacao(POSTMAN) mas os selects continuam sendo feitos
-	 *                         
- * @author Waldir
+	 *
+ *
+ * @ValorZeroIncluiDescricao -> Anotação de classe customizada, onde 2 ou mais propriedades precisa ser validadas,
+ * Verifica Se taxa frete for igual a 0, se for, verifica se nome possui a descrição -> Frete Grátis
  *
  */
+
+@ValorZeroIncluiDescricao(valorField = "taxaFrete" , descricaoField = "nome" , descricaoObrigatoria = "Frete Grátis")
 @Data // Anotacao do LOMBOK que possui gets , sets , equals&HashCode e ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true) // Habilita os campos explicidamente que serao utilizados no Equals e hashcode
 @Entity

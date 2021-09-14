@@ -5,6 +5,7 @@ import javax.validation.ConstraintValidatorContext;
 import java.math.BigDecimal;
 
 /**
+ * A Validação e por um Number
  * Number -> Suporta qualquer tipo de numero, Integer, BigDecimal, Double, Long.... etc
  */
 public class MultiploValidator implements ConstraintValidator<Multiplo, Number> {
@@ -40,30 +41,7 @@ public class MultiploValidator implements ConstraintValidator<Multiplo, Number> 
 
             valido = BigDecimal.ZERO.compareTo(resto) == 0;// compareTo -> compara um BigDecimal com outro BigDecimal
         }
-
         return valido;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
