@@ -87,6 +87,7 @@ public class RestauranteController {
 
 	/**
 	 * HttpServletRequest request -> O Spring ja passa para o metodo automaticamente implicitamente.
+	 * Esse endpoint nao recebe uma classe, e sim um map<String, Object>, dessa forma o spring nao consegue fazer um binding
 	 * @param restauranteId
 	 * @param campos
 	 * @param request

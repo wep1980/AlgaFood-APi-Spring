@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -442,15 +443,25 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
          * Foi criado um bloco de codigo dentro da stream(), o bloco começa em fieldError -> {   e termina depois do build() }, esse bloco foi criado
          * por conta do String message
          */
-        List<Problem.Campo> problemCampos = bindingResult.getFieldErrors().stream().map(fieldError -> {
+        List<Problem.Objeto> problemObjetos = bindingResult.getAllErrors().stream().map(objectError -> {
 
                     /**
                      * Pegando a mensagem do erro com fieldError e passando a região local para as mesagens serem enviadas em portugues.
                      * Foi necessario configurar o UTF-8 no settings -> file encodings
                      */
-            String message = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
-                return Problem.Campo.builder()
-                            .nome(fieldError.getField()) // Pegando o nome da propriedade
+            String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
+
+            /*
+             Pegando o nome da classe na qual ocorreu o erro de validação, no exemplo o erro ocorre quando e usada a validação de classe customizada,
+             @ValorZeroIncluiDescricao que de acordo com a regra se o frete e igual a zero, no campo nome deve contem a frase frete gratis
+             */
+            String name = objectError.getObjectName();
+
+            if(objectError instanceof FieldError){
+                name = ((FieldError) objectError).getField();
+            }
+                return Problem.Objeto.builder()
+                            .nome(name) // Pegando o nome da propriedade
                             //.mensagemParaUsuario(fieldError.getDefaultMessage()) // Nao retorna as msgs customizadas do arquivo messages.properties
                             .mensagemParaUsuario(message) // Informando a mensagem para cada tipo de violação
                             .build();
@@ -458,7 +469,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .collect(Collectors.toList()); // Transformando a stream() na lista de Problem.Campo, com as propriedade preenchidas
 
         Problem problem = createProblemBuilder(status, problemType, detail)
-                .campos(problemCampos)
+                .objetos(problemObjetos)
                 .mensagemParaUsuario(detail)
                 .build();
 
