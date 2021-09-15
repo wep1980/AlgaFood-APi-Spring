@@ -1,5 +1,7 @@
 package br.com.wepdev;
 
+import br.com.wepdev.domain.exception.CozinhaNaoEncontradaException;
+import br.com.wepdev.domain.exception.EntidadeEmUsoException;
 import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.service.CozinhaService;
 
@@ -30,7 +32,7 @@ public class CadastroCozinhaIntegrationTests {
 
 
     @Test
-    public void testarCadastroCozinhaComSucesso(){
+    public void deveAtribuirId_QuandocadastrarCozinhaComDadosCorretos(){
 
         // Cenario
         Cozinha novaCozinha = new Cozinha();
@@ -46,11 +48,26 @@ public class CadastroCozinhaIntegrationTests {
 
 
     @Test(expected = ConstraintViolationException.class) // Exception que tem que ser gerada
-    public void testarCadastroCozinhaSemNome(){
+    public void deveFalhar_QuandoCadastrarCozinhaSemNome(){
+
         Cozinha novaCozinha = new Cozinha();
+
         novaCozinha.setNome(null);
 
         novaCozinha = cozinhaService.salvar(novaCozinha);
     }
+
+
+    @Test(expected = EntidadeEmUsoException.class)
+    public void deveFalhar_QuandoExcluirCozinhaEmUso() {
+        cozinhaService.excluir(1L);
+    }
+
+
+    @Test(expected = CozinhaNaoEncontradaException.class)
+    public void deveFalhar_QuandoExcluirCozinhaInexistente() {
+        cozinhaService.excluir(100L);
+    }
+
 
 }
