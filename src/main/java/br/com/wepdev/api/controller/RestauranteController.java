@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
+import br.com.wepdev.core.validation.ValidacaoException;
 import br.com.wepdev.domain.exception.CozinhaNaoEncontradaException;
 import br.com.wepdev.domain.exception.NegocioException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -14,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +27,7 @@ import br.com.wepdev.domain.service.RestauranteService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 
 @RestController
 @RequestMapping(value = "/restaurantes")
@@ -34,6 +38,13 @@ public class RestauranteController {
 	
 	@Autowired 
 	private RestauranteRepository restauranteRepository;
+
+
+	/*
+	SmartValidator -> Api do beanValidation, recebe uma instancia para validação
+	 */
+	@Autowired
+	private SmartValidator validato;
 
 	
 	
@@ -86,8 +97,12 @@ public class RestauranteController {
 
 
 	/**
+	 * Metodo que atualiza apenas propriedades selecionadas, nao o objeto inteiro.
 	 * HttpServletRequest request -> O Spring ja passa para o metodo automaticamente implicitamente.
-	 * Esse endpoint nao recebe uma classe, e sim um map<String, Object>, dessa forma o spring nao consegue fazer um binding
+	 *
+	 * Esse endpoint nao recebe uma classe, e sim um map<String, Object>, dessa forma o spring nao consegue fazer um binding e chamar o bean validation para fazer a validação
+	 * do objeto
+	 *
 	 * @param restauranteId
 	 * @param campos
 	 * @param request
@@ -95,17 +110,47 @@ public class RestauranteController {
 	 */
 	@PatchMapping("/{restauranteId}")
 	public Restaurante atualizarParcial(@PathVariable Long restauranteId, @RequestBody Map<String, Object> campos, HttpServletRequest request) {
+
 		//Busca o restaurante atual ou lança uma exception que esta com NOT.FOUND
 		Restaurante restauranteAtual = restauranteService.buscarOuFalhar(restauranteId);
 
 		// Atribui os valores do campos para dentro do restauranteAtual
 		merge(campos, restauranteAtual, request);
+
+		/*
+		metodo para validação dos campos que estao sendo atualizados. Recebe como parametro o objeto que sera validado(restauranteAtual) e o nome
+		do objeto(restaurante)
+		 */
+		validate(restauranteAtual, "restaurante");
 		
 		return atualizar(restauranteId, restauranteAtual);
 	}
 
-	
-	   /**
+
+	private void validate(Restaurante restauranteAtual, String objectName) {
+
+		/*
+         BeanPropertyBindingResult -> classe que implementa BindingResult que extende errors.
+         Com essa instancia e possivel passar os erros caso ocorra.
+         Recebe como parametro o objeto que sera validado(restauranteAtual) e o objectName(nome do objeto)
+		 */
+		BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restauranteAtual, objectName);
+
+		/*
+		restauranteAtual -> objeto que vai ser validado.
+		No segundo parametro e necessario informar errors, o bindingResult extende errors, e é ele que sera passado no segundo
+		parametro
+
+		 */
+		validato.validate(restauranteAtual, bindingResult);
+
+		if(bindingResult.hasErrors()){ // Verifica se tem erros dentro do bindingResult
+          throw new ValidacaoException(bindingResult); // Lança uma exception customizada
+		}
+	}
+
+
+	/**
 	     * Metodo que mescla os valores do postman com os valores armazendos no Banco de dados
 		 * Expressao Lambda
 		 * nomePropriedade -> String do Map
