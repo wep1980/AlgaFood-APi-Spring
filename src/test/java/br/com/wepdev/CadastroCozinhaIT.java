@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.flywaydb.core.Flyway;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +42,10 @@ public class CadastroCozinhaIT {
     @LocalServerPort
     private int port; // Variavel que recebe o numero da porta que foi levantado pelo servidor para teste
 
+    // Instancia da classe flyWay, usada para ser feito o migrate(), que limpa e injeta os dados no banco de dados. Sera usado no metodo que é executado antes de cada teste
+    @Autowired
+    private Flyway flyway;
+
 
     /**
      * Metodo executado antes de cada teste.
@@ -51,6 +56,12 @@ public class CadastroCozinhaIT {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(); // Habilita o logging-> log , quando falha o teste. -- Para nao ficar duplicando em todos os testes
         RestAssured.port = port; // Porta gerada para os testes web. -- Para nao ficar duplicando em todos os testes
         RestAssured.basePath = "/cozinhas"; // Caminho. -- Para nao ficar duplicando em todos os testes
+
+        /**
+         * Executa o arquivo afeterMigrate.sql que esta dentro da pasta db.migration/testdata, esse arquivo limpa o banco e injeta eles novamente.
+         * afeterMigrate.sql -> E um arquivo de callBack, ja que ele zera o banco e reinsere os dados
+         */
+        flyway.migrate();
 
     }
 
