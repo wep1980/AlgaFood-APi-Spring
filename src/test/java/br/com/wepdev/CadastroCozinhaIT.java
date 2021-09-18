@@ -28,6 +28,8 @@ import javax.validation.ConstraintViolationException;
 
 /**
  * Classe de testes de integração e testes de APi
+ *
+ * Um Teste nao pode dependender da execução de um outro teste, os testes devem ser independentes
  */
 //Fornece as funcionalidades do spring para os testes. webEnvironment -> levanta um servidor para uso dos testes, em uma porta aleatoria
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -83,6 +85,21 @@ public class CadastroCozinhaIT {
                 .then() // Então
                 .body("", Matchers.hasSize(5)) // Verifica no corpo se tem 4 objs. Matchers -> biblioteca para inscrever expressoes com regras de correspondencia entre objetos
                 .body("nome" , Matchers.hasItems("Tailandesa", "Indiana")); // Verifica se no corpo os objetos possuem esses nomes
+
+    }
+
+
+    @Test
+    public void deveRetornarStatus201_QuandoCadastrarCozinha(){
+        RestAssured.given() // Dado que
+                    .body("{ \"nome\": \"Australiana\" }") // no corpo
+                    .contentType(ContentType.JSON) // Tipo de conteudo passado na requisição
+                    .accept(ContentType.JSON) // aceita de volta um Json
+                .when() // Quando
+                    .post() // for feito um POST
+                .then() // então
+                    .statusCode(HttpStatus.CREATED.value()); // O status deve ser criado
+
 
     }
 
