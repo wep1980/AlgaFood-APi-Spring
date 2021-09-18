@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -39,15 +40,27 @@ public class CadastroCozinhaIT {
     private int port; // Variavel que recebe o numero da porta que foi levantado pelo servidor para teste
 
 
+    /**
+     * Metodo executado antes de cada teste.
+     * Evita repetição de codigo que era colocado em cada metodo de teste
+     */
+    @Before
+    public void setUp(){
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(); // Habilita o logging-> log , quando falha o teste. -- Para nao ficar duplicando em todos os testes
+        RestAssured.port = port; // Porta gerada para os testes web. -- Para nao ficar duplicando em todos os testes
+        RestAssured.basePath = "/cozinhas"; // Caminho. -- Para nao ficar duplicando em todos os testes
+
+    }
+
 
     @Test
     public void deveRetornarStatus200_QuandoConsultarCozinhas(){
 
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(); // Habilita o logging
+        //RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(); // Habilita o logging
 
         RestAssured.given() // Dado que
-                    .basePath("/cozinhas") // eu tenho basePath
-                    .port(port) // na porta
+                    //.basePath("/cozinhas") // eu tenho basePath
+                    //.port(port) // na porta
                     .accept(ContentType.JSON) // aceita o retorno em Json
                 .when() // Quando
                     .get() // for feita uma requisição GET
@@ -59,11 +72,11 @@ public class CadastroCozinhaIT {
     @Test
     public void deveConter4Cozinhas_QuandoConsultarCozinhas() {
 
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(); // Habilita o logging
+        //RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(); // Habilita o logging
 
         RestAssured.given() // Dado que
-                .basePath("/cozinhas") // eu tenho basePath
-                .port(port) // na porta
+                //.basePath("/cozinhas") // eu tenho basePath
+                //.port(port) // na porta
                 .accept(ContentType.JSON) // aceita o retorno em Json
                 .when() // Quando
                 .get() // for feita uma requisição GET
@@ -72,6 +85,8 @@ public class CadastroCozinhaIT {
                 .body("nome" , Matchers.hasItems("Tailandesa", "Indiana")); // Verifica se no corpo os objetos possuem esses nomes
 
     }
+
+
 
 //    @Autowired
 //    private CozinhaService cozinhaService;
