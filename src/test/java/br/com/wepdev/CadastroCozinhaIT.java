@@ -9,6 +9,7 @@ import br.com.wepdev.domain.service.CozinhaService;
 //import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import static org.hamcrest.Matchers.equalTo;
 import br.com.wepdev.util.DatabaseCleaner;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -123,8 +124,33 @@ public class CadastroCozinhaIT {
                     .post() // for feito um POST
                 .then() // então
                     .statusCode(HttpStatus.CREATED.value()); // O status deve ser criado
+    }
 
 
+    @Test
+    public void deveRetornarRespostaEStatusCorretos_QuandoConsultarCozinhaExistente() {
+
+        RestAssured.given() // Dado que
+                .pathParam("cozinhaId", 2) // o parametro de caminho, que é cozinhaId
+                    .accept(ContentType.JSON) // aceita o retorno em Json
+                .when() // Quando
+                    .get("/{cozinhaId}") // for feita uma requisição GET
+                .then() // Então
+                .statusCode(HttpStatus.OK.value()) // // O status deve ser 200 ok
+                .body("nome", equalTo("Americana")); // o nome deve Americana
+    }
+
+
+    @Test
+    public void deveRetornarStatus404_QuandoConsultarCozinhaInexistente() {
+
+        RestAssured.given() // Dado que
+                .pathParam("cozinhaId", 100) // o parametro de caminho, que é cozinhaId
+                .accept(ContentType.JSON) // aceita o retorno em Json
+                .when() // Quando
+                .get("/{cozinhaId}") // for feita uma requisição GET
+                .then() // Então
+                .statusCode(HttpStatus.NOT_FOUND.value()); // // O status deve ser 200 ok
     }
 
 
