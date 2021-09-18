@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -32,8 +33,12 @@ import javax.validation.ConstraintViolationException;
 @RunWith(SpringRunner.class) // levanta o contexto do spring na hora dos testes
 public class CadastroCozinhaIT {
 
+
+
     @LocalServerPort
     private int port; // Variavel que recebe o numero da porta que foi levantado pelo servidor para teste
+
+
 
     @Test
     public void deveRetornarStatus200_QuandoConsultarCozinhas(){
@@ -48,6 +53,24 @@ public class CadastroCozinhaIT {
                     .get() // for feita uma requisição GET
                     .then() // Então
                     .statusCode(HttpStatus.OK.value()); // O status precisa ser 200
+    }
+
+
+    @Test
+    public void deveConter4Cozinhas_QuandoConsultarCozinhas() {
+
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(); // Habilita o logging
+
+        RestAssured.given() // Dado que
+                .basePath("/cozinhas") // eu tenho basePath
+                .port(port) // na porta
+                .accept(ContentType.JSON) // aceita o retorno em Json
+                .when() // Quando
+                .get() // for feita uma requisição GET
+                .then() // Então
+                .body("", Matchers.hasSize(5)) // Verifica no corpo se tem 4 objs. Matchers -> biblioteca para inscrever expressoes com regras de correspondencia entre objetos
+                .body("nome" , Matchers.hasItems("Tailandesa", "Indiana")); // Verifica se no corpo os objetos possuem esses nomes
+
     }
 
 //    @Autowired
