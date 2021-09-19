@@ -25,6 +25,7 @@ import br.com.wepdev.core.validation.Grupos;
 import br.com.wepdev.core.validation.Multiplo;
 import br.com.wepdev.core.validation.TaxaFrete;
 import br.com.wepdev.core.validation.ValorZeroIncluiDescricao;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -117,6 +118,13 @@ public class Restaurante {
 	 * e gerado automaticamente pelo banco
 	 */
 	@ConvertGroup(from = Default.class, to = Grupos.CozinhaId.class)
+	/**
+	 * No momento de serializar e desserializar(Usar no postman) um restaurante, ignora o nome de cozinha
+	 * serializar -> converte um objeto para um Json
+	 * desserializar -> converte o Json para um objeto
+	 * allowGetters = true -> permite que o nome apareça em GETs
+	 */
+	@JsonIgnoreProperties(value = "nome" , allowGetters = true)
 	private Cozinha cozinha;//Um restaurante possui 1 cozinha
 
 	
