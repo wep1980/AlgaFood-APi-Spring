@@ -1,10 +1,7 @@
 package br.com.wepdev;
 
-import br.com.wepdev.domain.exception.CozinhaNaoEncontradaException;
-import br.com.wepdev.domain.exception.EntidadeEmUsoException;
 import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.repository.CozinhaRepository;
-import br.com.wepdev.domain.service.CozinhaService;
 
 //import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,7 +11,6 @@ import br.com.wepdev.util.DatabaseCleaner;
 import br.com.wepdev.util.ResourceUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.flywaydb.core.Flyway;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,9 +24,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.validation.ConstraintViolationException;
-
-
 
 /**
  * Classe de testes de integração e testes de APi
@@ -42,7 +35,6 @@ import javax.validation.ConstraintViolationException;
 @RunWith(SpringRunner.class) // levanta o contexto do spring na hora dos testes
 @TestPropertySource("/application-test.properties")// Configurando o application-properties de teste
 public class CadastroCozinhaIT {
-
 
 
     @LocalServerPort
@@ -61,6 +53,8 @@ public class CadastroCozinhaIT {
     private int quantidadeCozinhasCadastradas; // Registra a quantidade cozinhas cadastradas
     private String jsonCorretoCozinhaChinesa;
 
+
+
     /**
      * Metodo executado antes de cada teste.
      * Evita repetição de codigo que era colocado em cada metodo de teste
@@ -77,7 +71,6 @@ public class CadastroCozinhaIT {
 
         databaseCleaner.clearTables(); // metodo que vai limpar os dados de todas as tabelas
         prepararDados();
-
     }
 
 
@@ -111,7 +104,7 @@ public class CadastroCozinhaIT {
                 .then() // Então
                 .body("", Matchers.hasSize(quantidadeCozinhasCadastradas)) // Verifica no corpo se tem a quantidade de cozinhas correta.
                 // Matchers -> biblioteca para inscrever expressoes com regras de correspondencia entre objetos
-                .body("nome" , Matchers.hasItems("Australiana", "Americana")); // Verifica se no corpo os objetos possuem esses nomes
+                .body("nome" , Matchers.hasItems("Tailandesa", "Americana")); // Verifica se no corpo os objetos possuem esses nomes
 
     }
 
@@ -175,50 +168,5 @@ public class CadastroCozinhaIT {
         quantidadeCozinhasCadastradas = (int) cozinhaRepository.count(); // Armazena na variavel a quantidade de novas cozinhas criadas
 
     }
-
-
-
-//    @Autowired
-//    private CozinhaService cozinhaService;
-//
-//
-//    @Test
-//    public void deveAtribuirId_QuandocadastrarCozinhaComDadosCorretos(){
-//
-//        // Cenario
-//        Cozinha novaCozinha = new Cozinha();
-//        novaCozinha.setNome("Chinesa");
-//
-//        // Ação
-//        novaCozinha = cozinhaService.salvar(novaCozinha);
-//
-//        // validação
-//        assertThat(novaCozinha).isNotNull();
-//        assertThat(novaCozinha.getId()).isNotNull();
-//    }
-//
-//
-//    @Test(expected = ConstraintViolationException.class) // Exception que tem que ser gerada
-//    public void deveFalhar_QuandoCadastrarCozinhaSemNome(){
-//
-//        Cozinha novaCozinha = new Cozinha();
-//
-//        novaCozinha.setNome(null);
-//
-//        novaCozinha = cozinhaService.salvar(novaCozinha);
-//    }
-//
-//
-//    @Test(expected = EntidadeEmUsoException.class)
-//    public void deveFalhar_QuandoExcluirCozinhaEmUso() {
-//        cozinhaService.excluir(1L);
-//    }
-//
-//
-//    @Test(expected = CozinhaNaoEncontradaException.class)
-//    public void deveFalhar_QuandoExcluirCozinhaInexistente() {
-//        cozinhaService.excluir(100L);
-//    }
-
 
 }

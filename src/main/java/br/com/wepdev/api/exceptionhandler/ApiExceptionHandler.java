@@ -49,6 +49,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private MessageSource messageSource; // Instancia injetada, é uma interface que resolve mensagens
 
 
+    public static Throwable getRootException(Throwable exception){
+        Throwable rootException=exception;
+        while(rootException.getCause()!=null){
+            rootException = rootException.getCause();
+        }
+        return rootException;
+    }
+
+
     /**
      * Metodo de exception usado para erro de sintaxe na requisição (POSTMAN)
      * @param ex
@@ -67,21 +76,26 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
          */
         Throwable rootCause = ExceptionUtils.getRootCause(ex); // Pega a causa da exception na raiz, na pilha das exceptions
 
+        rootCause = getRootException(ex);
+
         if(rootCause instanceof InvalidFormatException){
-            return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status,request);
+            return handleInvalidFormat((InvalidFormatException) rootCause, headers, status,request);
         } else if(rootCause instanceof PropertyBindingException){ // PropertyBindingException trata IgnoredPropertyException e tambem UnrecognizedPropertyException
-            return handlePropertyBindingException((PropertyBindingException) rootCause, headers, status, request);
+            return handlePropertyBinding((PropertyBindingException) rootCause, headers, status, request);
+        } else if (rootCause instanceof NegocioException){
+
         }
+
 
         /**
          * Enumeracao onde fica as constantes dos tipos de problemas gerados pelas exceptions, novos problemas devem ser colocados dentro dela
          * Nela possue descrições do titulo e da uri, que é um tipo de URL
          */
-        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+        ProblemType problemType = ProblemType.DADOS_INVALIDOS;
         String detail = "O corpo da requisição esta inválido. Verifique erro de sintaxe."; // Pega a informacao do detalhe da mensagem
 
         Problem problem = createProblemBuilder(status, problemType, detail) // Antes do builder podemos customizar mais propriedades adicionais
-                .mensagemParaUsuario(MSG_ERRO_GENERICA_USUARIO_FINAL) // Mensagem que pode ser utilizada para um usuario final
+                .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL) // Mensagem que pode ser utilizada para um usuario final
                 .build(); // Ao dar o build(), a instancia de Problem e criada
 
         /**
@@ -96,6 +110,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problem, headers, status, request);
     }
 
+
+
     /**
      * Metodo que captura as a exceptions IgnoredPropertyException e UnrecognizedPropertyException.
      *
@@ -108,7 +124,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
      * @param request
      * @return
      */
-    private ResponseEntity<Object> handlePropertyBindingException(PropertyBindingException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    private ResponseEntity<Object> handlePropertyBinding(PropertyBindingException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         // Criei o método joinPath para reaproveitar em todos os métodos que precisam
         // concatenar os nomes das propriedades (separando por ".")
@@ -118,7 +134,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = String.format("A propriedade '%s' não existe. " + "Corrija ou remova essa propriedade e tente novamente.", path);
 
         Problem problem = createProblemBuilder(status, problemType, detail)
-                .mensagemParaUsuario(MSG_ERRO_GENERICA_USUARIO_FINAL) // Mensagem que pode ser utilizada para um usuario final
+                .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL) // Mensagem que pode ser utilizada para um usuario final
                 .build();
 
         return handleExceptionInternal(ex, problem, headers, status, request);
@@ -132,7 +148,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
      * @param request
      * @return
      */
-    private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         String path = joinPath(ex.getPath());
 
@@ -141,7 +157,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 path, ex.getValue(), ex.getTargetType().getSimpleName());
 
         Problem problem = createProblemBuilder(status, problemType, detail)
-                .mensagemParaUsuario(MSG_ERRO_GENERICA_USUARIO_FINAL) // Mensagem que pode ser utilizada para um usuario final
+                .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL) // Mensagem que pode ser utilizada para um usuario final
                 .build();
 
         return handleExceptionInternal(ex, problem, headers, status, request);
@@ -166,7 +182,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
      * Os erros que aparecem na representação (POSTMAN) estao customizados
      */
     @ExceptionHandler(EntidadeNaoEncontradaException.class) // WebRequest resquest -> É passado automaticamente pelo Spring implicitamente, ele so foi colocado explicitamente
-    public ResponseEntity<?> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex , WebRequest resquest){
+    public ResponseEntity<?> handleEntidadeNaoEncontrada(EntidadeNaoEncontradaException ex , WebRequest resquest){
 
         HttpStatus status = HttpStatus.NOT_FOUND; //Entidade nao encontrada retorna sempre um NOT_FOUND 404
         String detail = ex.getMessage(); // Pega a informacao do detalhe da mensagem
@@ -178,10 +194,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemType problemType = ProblemType.RECURSO_NAO_ENCONTRADO;
 
         Problem problem = createProblemBuilder(status, problemType, detail) // Antes do builder podemos customizar mais propriedades adicionais
-                .mensagemParaUsuario(detail) // Mensagem que pode ser utilizada para um usuario final
+                .userMessage(detail) // Mensagem que pode ser utilizada para um usuario final
                 .build(); // Ao dar o build(), a instancia de Problem e criada
 
-          // Forma de colocar informações sem utilizar o metedo acima
+        // Forma de colocar informações sem utilizar o metedo acima
 //        Problem problem = Problem.builder() // Intanciando um problem com o construtor do lombok @Builder, implementando o corpo da Exception de acordo com a RFC 7807
 //                .status(status.value())
 //                .type("https://algafood.com.br/entidade-nao-encontrada") // Url da pagina que esta documentada com o tipo do problema e uma possivel solução, essa pagina nao precisa exatamente existir, mas o ideal é q exista
@@ -197,7 +213,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
          *
          * Não é mais nessario instanciar a Classe problema aqui, pois ja esta sendo instanciada no metodo handleExceptionInternal
          */
-         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, resquest);
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, resquest);
     }
 
 
@@ -209,7 +225,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
      * @return
      */
     @ExceptionHandler(NegocioException.class)
-    public ResponseEntity<?> handleNegocioException(NegocioException ex , WebRequest resquest){
+    public ResponseEntity<?> handleNegocio(NegocioException ex , WebRequest resquest){
 
         HttpStatus status = HttpStatus.BAD_REQUEST; //Entidade nao encontrada retorna sempre um BAD_REQUEST 400
         String detail = ex.getMessage(); // Pega a informacao do detalhe da mensagem
@@ -221,7 +237,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemType problemType = ProblemType.ERRO_NEGOCIO;
 
         Problem problem = createProblemBuilder(status, problemType, detail)  // Antes do builder podemos customizar mais propriedades adicionais
-                .mensagemParaUsuario(detail) // Mensagem que pode ser utilizada para um usuario final
+                .userMessage(detail) // Mensagem que pode ser utilizada para um usuario final
                 .build(); // Ao dar o build(), a instancia de Problem e criada
 
         /**
@@ -245,7 +261,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
      * @return
      */
     @ExceptionHandler(EntidadeEmUsoException.class)
-    public ResponseEntity<?> handleEntidadeEmUsoException(EntidadeEmUsoException ex , WebRequest resquest){
+    public ResponseEntity<?> handleEntidadeEmUso(EntidadeEmUsoException ex , WebRequest resquest){
 
         HttpStatus status = HttpStatus.CONFLICT; //Entidade nao encontrada retorna sempre um CONFLICT 409
         String detail = ex.getMessage(); // Pega a informacao do detalhe da mensagem
@@ -257,7 +273,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemType problemType = ProblemType.ENTIDADE_EM_USO;
 
         Problem problem = createProblemBuilder(status, problemType, detail)  // Antes do builder podemos customizar mais propriedades adicionais
-                .mensagemParaUsuario(detail) // Mensagem que pode ser utilizada para um usuario final
+                .userMessage(detail) // Mensagem que pode ser utilizada para um usuario final
                 .build(); // Ao dar o build(), a instancia de Problem e criada
 
         /**
@@ -292,14 +308,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             body = Problem.builder()
                     .title(status.getReasonPhrase()) // Descreve o titulo do erro que
                     .status(status.value()) // Pega o HTTP.Status que é uma enumercao
-                    .mensagemParaUsuario(MSG_ERRO_GENERICA_USUARIO_FINAL)
+                    .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
                     .build();
 
         } else if(body instanceof String){ // Se o corpo(body) for uma instancia de uma String
             body = Problem.builder()
                     .title((String) body) // Faz o cast do Object(body) para String com o titulo do erro
                     .status(status.value()) // Pega o HTTP.Status que é uma enumercao
-                    .mensagemParaUsuario(MSG_ERRO_GENERICA_USUARIO_FINAL)
+                    .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
                     .build();
         }
         return super.handleExceptionInternal(ex, body, headers, status, request);
@@ -322,7 +338,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .type(problemType.getUri()) // Pega o valor da uri que esta dentro do enum ProblemType
                 .title(problemType.getTitle()) // Pega o valor do title que esta dentro do enum ProblemType
                 .detail(detail); // Passa do detalhe do problema
-              //.build(); -> O Builde nao e feito pq é para ser construido nesse momento a instancia do problem
+        //.build(); -> O Builde nao e feito pq é para ser construido nesse momento a instancia do problem
     }
 
 
@@ -364,7 +380,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
      * @return
      */
     private ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
+                                                                    HttpStatus status, WebRequest request) {
 
         ProblemType problemType = ProblemType.PARAMETRO_INVALIDO;
 
@@ -373,7 +389,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
 
         Problem problem = createProblemBuilder(status, problemType, detail)
-                .mensagemParaUsuario(MSG_ERRO_GENERICA_USUARIO_FINAL) // Mensagem que pode ser utilizada para um usuario final
+                .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL) // Mensagem que pode ser utilizada para um usuario final
                 .build();
 
         return handleExceptionInternal(ex, problem, headers, status, request);
@@ -396,7 +412,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getRequestURL());
 
         Problem problem = createProblemBuilder(status, problemType, detail)
-                .mensagemParaUsuario(MSG_ERRO_GENERICA_USUARIO_FINAL) // Mensagem que pode ser utilizada para um usuario final
+                .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL) // Mensagem que pode ser utilizada para um usuario final
                 .build();
 
         return handleExceptionInternal(ex, problem, headers, status, request);
@@ -405,6 +421,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
+
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         ProblemType problemType = ProblemType.ERRO_DE_SISTEMA;
         String detail = MSG_ERRO_GENERICA_USUARIO_FINAL;
@@ -415,7 +432,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         // para você durante, especialmente na fase de desenvolvimento
         ex.printStackTrace();
 
-        Problem problem = createProblemBuilder(status, problemType, detail).build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(detail)
+                .build();
+
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
@@ -450,28 +470,28 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                      * Pegando a mensagem do erro com fieldError e passando a região local para as mesagens serem enviadas em portugues.
                      * Foi necessario configurar o UTF-8 no settings -> file encodings
                      */
-            String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
+                    String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
 
             /*
              Pegando o nome da classe na qual ocorreu o erro de validação, no exemplo o erro ocorre quando e usada a validação de classe customizada,
              @ValorZeroIncluiDescricao que de acordo com a regra se o frete e igual a zero, no campo nome deve contem a frase frete gratis
              */
-            String name = objectError.getObjectName();
+                    String name = objectError.getObjectName();
 
-            if(objectError instanceof FieldError){
-                name = ((FieldError) objectError).getField();
-            }
-                return Problem.Objeto.builder()
-                            .nome(name) // Pegando o nome da propriedade
+                    if(objectError instanceof FieldError){
+                        name = ((FieldError) objectError).getField();
+                    }
+                    return Problem.Objeto.builder()
+                            .name(name) // Pegando o nome da propriedade
                             //.mensagemParaUsuario(fieldError.getDefaultMessage()) // Nao retorna as msgs customizadas do arquivo messages.properties
-                            .mensagemParaUsuario(message) // Informando a mensagem para cada tipo de violação
+                            .userMessage(message) // Informando a mensagem para cada tipo de violação
                             .build();
                 })
                 .collect(Collectors.toList()); // Transformando a stream() na lista de Problem.Campo, com as propriedade preenchidas
 
         Problem problem = createProblemBuilder(status, problemType, detail)
                 .objetos(problemObjetos)
-                .mensagemParaUsuario(detail)
+                .userMessage(detail)
                 .build();
 
         return handleExceptionInternal(ex, problem, headers, status, request);
@@ -504,14 +524,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                     }
 
                     return Problem.Objeto.builder()
-                            .nome(name)
-                            .mensagemParaUsuario(message)
+                            .name(name)
+                            .userMessage(message)
                             .build();
                 })
                 .collect(Collectors.toList());
 
         Problem problem = createProblemBuilder(status, problemType, detail)
-                .mensagemParaUsuario(detail)
+                .userMessage(detail)
                 .objetos(problemObjects)
                 .build();
 
@@ -525,5 +545,4 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         // utilizando o metodo auxiliar que poderia ser usado tambem no metodo handleMethodArgumentNotValid()
         return handleValidationInternal(ex, ex.getBindingResult(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
-
 }

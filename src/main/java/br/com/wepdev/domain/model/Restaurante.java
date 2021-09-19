@@ -75,14 +75,14 @@ public class Restaurante {
 	@NotBlank // como o nome faz parte do Grupos.CadastroRestaurante.class ele passa por essa validação
 	@Column(nullable = false)
 	private String nome;
-	
+
+	//@Multiplo(numero = 5) // Anotacao customizada com codigo java(Regras)
+	//@TaxaFrete
     //@DecimalMin("0") // Valor minimo da taxa frete e 0 zero
 	// @PositiveOrZero -> O valor tem ser positivo ou zero 0
-	//@PositiveOrZero// como o taxaFrete faz parte do Grupos.CadastroRestaurante.class ele passa por esse validação
-	@TaxaFrete
+	@PositiveOrZero// como o taxaFrete faz parte do Grupos.CadastroRestaurante.class ele passa por esse validação
 	@Column(name = "taxa_frete" , nullable = false) // Nao aceita valor nulo
 	@NotNull
-	@Multiplo(numero = 5) // Anotacao customizada com codigo java(Regras)
 	private BigDecimal taxaFrete;
 	
 	/**
@@ -118,6 +118,7 @@ public class Restaurante {
 	 */
 	@ConvertGroup(from = Default.class, to = Grupos.CozinhaId.class)
 	private Cozinha cozinha;//Um restaurante possui 1 cozinha
+
 	
 	@Embedded // Esta classe esta sendo incorporada em Restaurante
 	@JsonIgnore// Na hora de serializar a propriedade endereço sera ignorada
@@ -164,27 +165,6 @@ public class Restaurante {
 	@JsonIgnore// Na hora de serializar a propriedade cozinha sera ignorada
 	@OneToMany(mappedBy = "restaurante") // Um restaurante possue muitos produtos
 	private List<Produto> produtos = new ArrayList<>();
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 
 }

@@ -72,6 +72,7 @@ public class RestauranteController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante) {
+
 		try {
 			return restauranteService.salvar(restaurante);
 		}catch (CozinhaNaoEncontradaException e) { // Exception caso a cozinha nao exista na hora de adicionar um restaurante

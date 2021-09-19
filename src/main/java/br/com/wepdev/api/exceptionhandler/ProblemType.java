@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public enum ProblemType {
 
-                       // Recebe o titulo do problema ---- Caminho que esta concatenado com o que ja tem dentro da uri
+    // Recebe o titulo do problema ---- Caminho que esta concatenado com o que ja tem dentro da uri
     RECURSO_NAO_ENCONTRADO("Recurso não encontrado", "/recurso-nao-encontrado"),
     ENTIDADE_EM_USO("Entidade em uso", "/entidade-em-uso"),
     ERRO_NEGOCIO("Violação de regra de negócio", "/erro-negocio"),
@@ -27,4 +27,5 @@ public enum ProblemType {
         this.title = title;
         this.uri = "https://algafood.com.br" + path;
     }
+
 }

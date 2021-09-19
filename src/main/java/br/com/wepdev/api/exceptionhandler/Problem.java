@@ -17,12 +17,11 @@ import java.util.List;
 public class Problem {
 
     private Integer status;
+    private LocalDateTime timestamp;
     private String type;
     private String title;
     private String detail;
-
-    private String mensagemParaUsuario;
-    private LocalDateTime timestamp;
+    private String userMessage;
 
     /**
      * Lista de propriedades(objetos) onde vai ter o nome da propriedade que esta o erro
@@ -36,8 +35,8 @@ public class Problem {
     @Builder
     public static class Objeto {
 
-        private String nome;
-        private String mensagemParaUsuario;
+        private String name;
+        private String userMessage;
     }
 
 
