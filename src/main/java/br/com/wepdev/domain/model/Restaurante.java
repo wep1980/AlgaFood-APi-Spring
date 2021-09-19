@@ -22,14 +22,8 @@ import javax.validation.groups.ConvertGroup;
 import javax.validation.groups.Default;
 
 import br.com.wepdev.core.validation.Grupos;
-import br.com.wepdev.core.validation.Multiplo;
-import br.com.wepdev.core.validation.TaxaFrete;
-import br.com.wepdev.core.validation.ValorZeroIncluiDescricao;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -57,9 +51,10 @@ import lombok.EqualsAndHashCode;
  * @ValorZeroIncluiDescricao -> Anotação de classe customizada, onde 2 ou mais propriedades precisa ser validadas,
  * Verifica Se taxa frete for igual a 0, se for, verifica se nome possui a descrição -> Frete Grátis
  *
+ * RestauranteMixin -> classe de configuracao das propriedades aqui de restaurante que possum anotações do Jackson
  */
 
-@ValorZeroIncluiDescricao(valorField = "taxaFrete" , descricaoField = "nome" , descricaoObrigatoria = "Frete Grátis")
+//@ValorZeroIncluiDescricao(valorField = "taxaFrete" , descricaoField = "nome" , descricaoObrigatoria = "Frete Grátis")
 @Data // Anotacao do LOMBOK que possui gets , sets , equals&HashCode e ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true) // Habilita os campos explicidamente que serao utilizados no Equals e hashcode
 @Entity
@@ -118,18 +113,10 @@ public class Restaurante {
 	 * e gerado automaticamente pelo banco
 	 */
 	@ConvertGroup(from = Default.class, to = Grupos.CozinhaId.class)
-	/**
-	 * No momento de serializar e desserializar(Usar no postman) um restaurante, ignora o nome de cozinha
-	 * serializar -> converte um objeto para um Json
-	 * desserializar -> converte o Json para um objeto
-	 * allowGetters = true -> permite que o nome apareça em GETs
-	 */
-	@JsonIgnoreProperties(value = "nome" , allowGetters = true)
 	private Cozinha cozinha;//Um restaurante possui 1 cozinha
 
 	
 	@Embedded // Esta classe esta sendo incorporada em Restaurante
-	@JsonIgnore// Na hora de serializar a propriedade endereço sera ignorada
 	private Endereco endereco;
 
 	/*
@@ -141,7 +128,6 @@ public class Restaurante {
 	 * lazy e um carregamento por demanda, preguiçoso
 	 * 
 	 */
-	@JsonIgnore // Na hora de serializar a propriedade cozinha sera ignorada
 	@ManyToMany // Muitos restaurantes possuem muitas formas de pagamento, -- Dificilmente no ToMany e alterado o padrao que é Lazy para Eager
 	@JoinTable(name = "restaurante_forma_pagamento",  // Customozindo o nome da tabela criada em relacoes de muitos para muitos
 	           joinColumns = @JoinColumn(name ="restaurante_id"), // Customozindo o nome da coluna que é a chave estrangeira que referencia a tabela restaurante
@@ -154,7 +140,6 @@ public class Restaurante {
 	 * nullable = false ->  Propriedade obrigatoria
 	 * Ao utilizar o jsonIgnore a dataCadastro nao aparece na representacao(POSTMAN) mas os selects continuam sendo feitos
 	 */
-	@JsonIgnore// Na hora de serializar a propriedade cozinha sera ignorada
 	@CreationTimestamp // No momento em que a entidade for criada pela primeira vez sera atribuida uma data e hora atual
 	@Column(nullable = false, columnDefinition = "datetime") // Retira a precisao dos milisegundos
 	private LocalDateTime dataCadastro;
@@ -164,13 +149,12 @@ public class Restaurante {
 	 * nullable = false ->  Propriedade obrigatoria
 	 * Ao utilizar o jsonIgnore a dataAtualizacao nao aparece na representacao(POSTMAN) mas os selects continuam sendo feitos
 	 */
-	@JsonIgnore// Na hora de serializar a propriedade cozinha sera ignorada
 	@UpdateTimestamp // Atualiza a data Hora atual sempre que a entidade for atualizada
 	@Column(nullable = false, columnDefinition = "datetime") // Retira a precisao dos milisegundos
 	private LocalDateTime dataAtualizacao;
 	
 	
-	@JsonIgnore// Na hora de serializar a propriedade cozinha sera ignorada
+
 	@OneToMany(mappedBy = "restaurante") // Um restaurante possue muitos produtos
 	private List<Produto> produtos = new ArrayList<>();
 
