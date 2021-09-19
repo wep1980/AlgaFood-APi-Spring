@@ -11,6 +11,7 @@ import br.com.wepdev.domain.exception.EntidadeEmUsoException;
 import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wepdev.domain.model.Estado;
 import br.com.wepdev.domain.repository.EstadoRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -29,11 +30,16 @@ public class EstadoService {
 	@Autowired
 	private EstadoRepository estadoRepository;
 
-     
+
+
+	@Transactional
 	public Estado salvar(Estado estado) {
 		return estadoRepository.save(estado);
 	}
-	
+
+
+
+	@Transactional
 	public void excluir(Long estadoId) {
 		try {
 			estadoRepository.deleteById(estadoId);

@@ -12,6 +12,7 @@ import br.com.wepdev.domain.model.Cidade;
 import br.com.wepdev.domain.model.Estado;
 import br.com.wepdev.domain.repository.CidadeRepository;
 import br.com.wepdev.domain.repository.EstadoRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CidadeService {
@@ -29,9 +30,10 @@ public class CidadeService {
 
 	@Autowired
 	private EstadoService estadoService;
-    
-    
-    
+
+
+
+	@Transactional
 	public Cidade salvar(Cidade cidade) {
 		Long estadoId = cidade.getEstado().getId();
 
@@ -42,7 +44,8 @@ public class CidadeService {
 		return cidadeRepository.save(cidade);
 	}
 
-	
+
+	@Transactional
 	public void excluir(Long cidadeId) {
 		try {
 			cidadeRepository.deleteById(cidadeId);

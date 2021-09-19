@@ -10,6 +10,7 @@ import br.com.wepdev.domain.exception.EntidadeEmUsoException;
 import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.repository.CozinhaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -26,13 +27,16 @@ public class CozinhaService {
 
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
-	
-	
-	
+
+
+
+	@Transactional
 	public Cozinha salvar(Cozinha cozinha) {
 		return cozinhaRepository.save(cozinha);
 	}
-	
+
+
+	@Transactional
 	public void excluir(Long cozinhaId) {
 		try {
 			cozinhaRepository.deleteById(cozinhaId);

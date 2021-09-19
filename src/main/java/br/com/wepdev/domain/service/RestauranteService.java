@@ -13,6 +13,7 @@ import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.model.Restaurante;
 import br.com.wepdev.domain.repository.CozinhaRepository;
 import br.com.wepdev.domain.repository.RestauranteRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -34,8 +35,10 @@ public class RestauranteService {
 
 	@Autowired
 	private CozinhaService cozinhaService;
-	
-	
+
+
+
+	@Transactional
 	public Restaurante salvar(Restaurante restaurante) {
 		Long cozinhaId = restaurante.getCozinha().getId();
 		

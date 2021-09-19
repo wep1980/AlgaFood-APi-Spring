@@ -49,13 +49,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private MessageSource messageSource; // Instancia injetada, é uma interface que resolve mensagens
 
 
-    public static Throwable getRootException(Throwable exception){
-        Throwable rootException=exception;
-        while(rootException.getCause()!=null){
-            rootException = rootException.getCause();
-        }
-        return rootException;
-    }
+//    public static Throwable getRootException(Throwable exception){
+//        Throwable rootException=exception;
+//        while(rootException.getCause()!=null){
+//            rootException = rootException.getCause();
+//        }
+//        return rootException;
+//    }
 
 
     /**
@@ -76,7 +76,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
          */
         Throwable rootCause = ExceptionUtils.getRootCause(ex); // Pega a causa da exception na raiz, na pilha das exceptions
 
-        rootCause = getRootException(ex);
+        //rootCause = getRootException(ex);
 
         if(rootCause instanceof InvalidFormatException){
             return handleInvalidFormat((InvalidFormatException) rootCause, headers, status,request);
@@ -91,6 +91,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
          * Enumeracao onde fica as constantes dos tipos de problemas gerados pelas exceptions, novos problemas devem ser colocados dentro dela
          * Nela possue descrições do titulo e da uri, que é um tipo de URL
          */
+        //todo O ExceptionUtils.getRootCause(ex) nao esta pegando as exceptions devidas de erros
         ProblemType problemType = ProblemType.DADOS_INVALIDOS;
         String detail = "O corpo da requisição esta inválido. Verifique erro de sintaxe."; // Pega a informacao do detalhe da mensagem
 
