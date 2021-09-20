@@ -1,6 +1,7 @@
 package br.com.wepdev.api.exceptionhandler;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -308,6 +309,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         if(body == null){ // Retorna o corpo(body) com o getReasonPhrase() do status
             body = Problem.builder()
                     .title(status.getReasonPhrase()) // Descreve o titulo do erro que
+                    .timestamp(OffsetDateTime.now())
                     .status(status.value()) // Pega o HTTP.Status que é uma enumercao
                     .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
                     .build();
@@ -315,6 +317,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         } else if(body instanceof String){ // Se o corpo(body) for uma instancia de uma String
             body = Problem.builder()
                     .title((String) body) // Faz o cast do Object(body) para String com o titulo do erro
+                    .timestamp(OffsetDateTime.now())
                     .status(status.value()) // Pega o HTTP.Status que é uma enumercao
                     .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
                     .build();
@@ -334,7 +337,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail){
 
         return Problem.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(OffsetDateTime.now())
                 .status(status.value()) // Pega o valor do status
                 .type(problemType.getUri()) // Pega o valor da uri que esta dentro do enum ProblemType
                 .title(problemType.getTitle()) // Pega o valor do title que esta dentro do enum ProblemType

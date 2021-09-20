@@ -1,6 +1,7 @@
 package br.com.wepdev.domain.model;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class Usuario {
 	@JsonIgnore// Na hora de serializar a propriedade cozinha sera ignorada
 	@CreationTimestamp // No momento em que a entidade for criada pela primeira vez sera atribuida uma data e hora atual
 	@Column(nullable = false, columnDefinition = "datetime") // Retira a precisao dos milisegundos
-	private LocalDateTime dataCadastro;
+	private OffsetDateTime dataCadastro;
 	
 	
 	
