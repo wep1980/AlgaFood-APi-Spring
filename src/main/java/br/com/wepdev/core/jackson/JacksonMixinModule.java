@@ -1,6 +1,10 @@
 package br.com.wepdev.core.jackson;
 
+import br.com.wepdev.api.mixin.CidadeMixin;
+import br.com.wepdev.api.mixin.CozinhaMixin;
 import br.com.wepdev.api.mixin.RestauranteMixin;
+import br.com.wepdev.domain.model.Cidade;
+import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.model.Restaurante;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.stereotype.Component;
@@ -17,5 +21,7 @@ public class JacksonMixinModule extends SimpleModule {
      */
     public JacksonMixinModule(){
         setMixInAnnotation(Restaurante.class, RestauranteMixin.class);
+        setMixInAnnotation(Cidade.class, CidadeMixin.class);
+        setMixInAnnotation(Cozinha.class, CozinhaMixin.class);
     }
 }

@@ -53,7 +53,6 @@ public class Cozinha {
 	//@JsonIgnore // Na hora de serializar a propriedade cozinha sera ignorada
 	//@OneToMany(mappedBy = "cozinha") // mappedBy = "cozinha" -> Nome da propriedade onde foi feito o mapeamento em Restaurante para cozinha
 	//private List<Restaurante> restaurantes = new ArrayList<>(); // Quando se cria uma instancia da lista, se evita o nullpointerexception ao instanciar uam cozinha
-	@JsonIgnore
 	@OneToMany(mappedBy = "cozinha") // Uma cozinha para varios restaurantes
 	private List<Restaurante> restaurantes = new ArrayList<>();
 

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,17 +33,17 @@ public abstract class RestauranteMixin {
 
 
     @JsonIgnore // Na hora de serializar(GET) a propriedade cozinha sera ignorada
-    private List<FormaPagamento> formasPagamento = new ArrayList<>();
+    private List<FormaPagamento> formasPagamento;
+
+
+    //@JsonIgnore// Na hora de serializar(GET) a propriedade cozinha sera ignorada
+    private OffsetDateTime dataCadastro;
+
+
+    //@JsonIgnore// Na hora de serializar(GET) a propriedade cozinha sera ignorada
+    private OffsetDateTime dataAtualizacao;
 
 
     @JsonIgnore// Na hora de serializar(GET) a propriedade cozinha sera ignorada
-    private LocalDateTime dataCadastro;
-
-
-    @JsonIgnore// Na hora de serializar(GET) a propriedade cozinha sera ignorada
-    private LocalDateTime dataAtualizacao;
-
-
-    @JsonIgnore// Na hora de serializar(GET) a propriedade cozinha sera ignorada
-    private List<Produto> produtos = new ArrayList<>();
+    private List<Produto> produtos;
 }

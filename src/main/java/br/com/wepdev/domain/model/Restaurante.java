@@ -2,6 +2,7 @@ package br.com.wepdev.domain.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -142,7 +143,7 @@ public class Restaurante {
 	 */
 	@CreationTimestamp // No momento em que a entidade for criada pela primeira vez sera atribuida uma data e hora atual
 	@Column(nullable = false, columnDefinition = "datetime") // Retira a precisao dos milisegundos
-	private LocalDateTime dataCadastro;
+	private OffsetDateTime dataCadastro; // OffsetDateTime possui o offset em relação ao UTC
 	
 	/*
 	 * LocalDateTime -> Representa uma data hora sem fuso horario(Sem TimeStamp)
@@ -151,7 +152,7 @@ public class Restaurante {
 	 */
 	@UpdateTimestamp // Atualiza a data Hora atual sempre que a entidade for atualizada
 	@Column(nullable = false, columnDefinition = "datetime") // Retira a precisao dos milisegundos
-	private LocalDateTime dataAtualizacao;
+	private OffsetDateTime dataAtualizacao; // OffsetDateTime possui o offset em relação ao UTC
 	
 	
 
