@@ -4,7 +4,6 @@ import br.com.wepdev.api.mixin.CidadeMixin;
 import br.com.wepdev.api.mixin.CozinhaMixin;
 import br.com.wepdev.domain.model.Cidade;
 import br.com.wepdev.domain.model.Cozinha;
-import br.com.wepdev.domain.model.Restaurante;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.springframework.stereotype.Component;
 
