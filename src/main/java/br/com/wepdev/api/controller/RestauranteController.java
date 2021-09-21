@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.com.wepdev.api.DTO.INPUT.RestauranteINPUT;
 import br.com.wepdev.api.DTO.RestauranteDTO;
+import br.com.wepdev.api.converter.RestInputConverterRestaurante;
 import br.com.wepdev.api.converter.RestauranteConverterDTO;
 import br.com.wepdev.domain.exception.CozinhaNaoEncontradaException;
 import br.com.wepdev.domain.exception.NegocioException;
@@ -32,6 +33,9 @@ public class RestauranteController {
 
 	@Autowired
 	private RestauranteConverterDTO restauranteConverterDTO;
+
+	@Autowired
+	private RestInputConverterRestaurante restInputConverterRestaurante;
 
 
 	/*
@@ -69,7 +73,7 @@ public class RestauranteController {
 	public RestauranteDTO adicionar(@RequestBody @Valid RestauranteINPUT restauranteInput) {
 
 		try {
-			Restaurante restaurante = toDomainObject(restauranteInput); // Transformando um restauranteInput para um Restaurante
+			Restaurante restaurante = restInputConverterRestaurante.toDomainObject(restauranteInput); // Transformando um restauranteInput para um Restaurante
 
 			return restauranteConverterDTO.toModel(restauranteService.salvar(restaurante));
 		}catch (CozinhaNaoEncontradaException e) { // Exception caso a cozinha nao exista na hora de adicionar um restaurante
@@ -78,29 +82,11 @@ public class RestauranteController {
 	}
 
 
-	/**
-	 * Metodo que transforma RestauranteInput para Restaurante
-	 * @param restauranteInput
-	 * @return
-	 */
-	private Restaurante toDomainObject(RestauranteINPUT restauranteInput){
-		Restaurante restaurante = new Restaurante();
-		restaurante.setNome(restauranteInput.getNome());
-		restaurante.setTaxaFrete(restauranteInput.getTaxaFrete());
-
-		Cozinha cozinha = new Cozinha();
-		cozinha.setId(restauranteInput.getCozinha().getId());
-
-		restaurante.setCozinha(cozinha);
-
-		return restaurante;
-	}
-
 
 	@PutMapping("/{restauranteId}")
 	public RestauranteDTO atualizar(@PathVariable Long restauranteId, @RequestBody @Valid RestauranteINPUT restauranteInput) {
 		try {
-			Restaurante restaurante = toDomainObject(restauranteInput); // Transformando um restauranteInput para um Restaurante
+			Restaurante restaurante = restInputConverterRestaurante.toDomainObject(restauranteInput); // Transformando um restauranteInput para um Restaurante
 			//Busca o restaurante atual ou lança uma exception que esta com NOT.FOUND
 			Restaurante restauranteAtual = restauranteService.buscarOuFalhar(restauranteId);
 			// Copia a instancia de restaurante para restauranteAtual, exceto o id, formasPagamento, endereco, dataCadastro
