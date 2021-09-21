@@ -3,6 +3,8 @@ package br.com.wepdev.api.converter;
 import br.com.wepdev.api.DTO.INPUT.RestauranteINPUT;
 import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.model.Restaurante;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,6 +14,14 @@ import org.springframework.stereotype.Component;
 public class RestInputConverterRestaurante {
 
 
+    /*
+    Biblioteca que faz conversões de um tipo para outro.
+    Essa biblioteca não é nativa do Spring, dentro do pacote core/modelmapper foi criada uma instancia dentro do Spring com @Bean
+    */
+    @Autowired
+    private ModelMapper modelMapper;
+
+
 
     /**
      * Metodo que transforma RestauranteInput para Restaurante
@@ -19,15 +29,7 @@ public class RestInputConverterRestaurante {
      * @return
      */
     public Restaurante toDomainObject(RestauranteINPUT restauranteInput){
-        Restaurante restaurante = new Restaurante();
-        restaurante.setNome(restauranteInput.getNome());
-        restaurante.setTaxaFrete(restauranteInput.getTaxaFrete());
+        return modelMapper.map(restauranteInput, Restaurante.class);
 
-        Cozinha cozinha = new Cozinha();
-        cozinha.setId(restauranteInput.getCozinha().getId());
-
-        restaurante.setCozinha(cozinha);
-
-        return restaurante;
     }
 }

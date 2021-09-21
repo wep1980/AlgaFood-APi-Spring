@@ -3,6 +3,8 @@ package br.com.wepdev.api.converter;
 import br.com.wepdev.api.DTO.CozinhaDTO;
 import br.com.wepdev.api.DTO.RestauranteDTO;
 import br.com.wepdev.domain.model.Restaurante;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,22 +17,21 @@ import java.util.stream.Collectors;
 public class RestauranteConverterDTO {
 
 
+    /*
+    Biblioteca que faz conversões de um tipo para outro.
+    Essa biblioteca não é nativa do Spring, dentro do pacote core/modelmapper foi criada uma instancia dentro do Spring com @Bean
+     */
+    @Autowired
+    private ModelMapper modelMapper;
+
+
     /**
      * Metodo que converte Restaurante em RestauranteDTO
      * @param restaurante
      * @return
      */
     public RestauranteDTO toModel(Restaurante restaurante) {
-        CozinhaDTO cozinhaDTO = new CozinhaDTO();
-        cozinhaDTO.setId(restaurante.getCozinha().getId());
-        cozinhaDTO.setNome(restaurante.getCozinha().getNome());
-
-        RestauranteDTO restauranteDTO = new RestauranteDTO();
-        restauranteDTO.setId(restaurante.getId());
-        restauranteDTO.setNome(restaurante.getNome());
-        restauranteDTO.setTaxaFrete(restaurante.getTaxaFrete());
-        restauranteDTO.setCozinha(cozinhaDTO);
-        return restauranteDTO;
+        return modelMapper.map(restaurante, RestauranteDTO.class);
     }
 
 
