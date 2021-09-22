@@ -86,12 +86,14 @@ public class RestauranteController {
 	@PutMapping("/{restauranteId}")
 	public RestauranteDTO atualizar(@PathVariable Long restauranteId, @RequestBody @Valid RestauranteINPUT restauranteInput) {
 		try {
-			Restaurante restaurante = restInputConverterRestaurante.toDomainObject(restauranteInput); // Transformando um restauranteInput para um Restaurante
+			//Restaurante restaurante = restInputConverterRestaurante.toDomainObject(restauranteInput); // Transformando um restauranteInput para um Restaurante
 			//Busca o restaurante atual ou lança uma exception que esta com NOT.FOUND
 			Restaurante restauranteAtual = restauranteService.buscarOuFalhar(restauranteId);
+
+			restInputConverterRestaurante.copyToDomainObject(restauranteInput, restauranteAtual);
 			// Copia a instancia de restaurante para restauranteAtual, exceto o id, formasPagamento, endereco, dataCadastro
-			BeanUtils.copyProperties(restaurante, restauranteAtual, "id" , "formasPagamento", "endereco", "dataCadastro", "produtos");
-			// Salva e retorna o corpo, e a resposta HTTP e enviada como 200 -> OK
+//			BeanUtils.copyProperties(restaurante, restauranteAtual, "id" , "formasPagamento", "endereco", "dataCadastro", "produtos");
+//			// Salva e retorna o corpo, e a resposta HTTP e enviada como 200 -> OK
 			return restauranteConverterDTO.toModel(restauranteService.salvar(restauranteAtual));
 		} catch (CozinhaNaoEncontradaException e){ // Execessao lançada caso na hora de atualizar um restaurante a cozinha não exista
 			throw new NegocioException(e.getMessage(), e); // e -> Mostra a causa da exception na representacao(POSTMAN)
