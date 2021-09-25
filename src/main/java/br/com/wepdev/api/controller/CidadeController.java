@@ -6,11 +6,8 @@ import br.com.wepdev.api.DTO.CidadeDTO;
 import br.com.wepdev.api.DTO.INPUT.CidadeINPUT;
 import br.com.wepdev.api.converter.CidadeConverterDTO;
 import br.com.wepdev.api.converter.CidadeInputConverterCidade;
-import br.com.wepdev.api.converter.EstadoConverterDTO;
-import br.com.wepdev.api.converter.EstadoInputConverterEstado;
 import br.com.wepdev.domain.exception.EstadoNaoEncontradoException;
 import br.com.wepdev.domain.exception.NegocioException;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -46,14 +43,14 @@ public class CidadeController {
 	@GetMapping
 	public List<CidadeDTO> listar() {
 		List<Cidade> todasCidades = cidadeRepository.findAll();
-		return cidadeConverterDTO.toCollectionModel(todasCidades);
+		return cidadeConverterDTO.converteListaEntidadeParaListaDto(todasCidades);
 	}
 
 
 	@GetMapping("/{cidadeId}")
 	public CidadeDTO buscar(@PathVariable Long cidadeId) {
 		Cidade cidade = cidadeService.buscarOuFalhar(cidadeId);
-	    return cidadeConverterDTO.toModel(cidade);
+	    return cidadeConverterDTO.converteEntidadeParaDto(cidade);
 	}
 
 
@@ -61,10 +58,10 @@ public class CidadeController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeDTO adicionar(@RequestBody @Valid CidadeINPUT cidadeInput) {
 		try {
-			Cidade cidade = cidadeInputConverterCidade.toDomainObject(cidadeInput);
+			Cidade cidade = cidadeInputConverterCidade.converteInputParaEntidade(cidadeInput);
 			cidade = cidadeService.salvar(cidade);
 
-			return cidadeConverterDTO.toModel(cidade);
+			return cidadeConverterDTO.converteEntidadeParaDto(cidade);
 		}catch (EstadoNaoEncontradoException e){
 			throw new NegocioException(e.getMessage(), e);
 		}
@@ -77,10 +74,10 @@ public class CidadeController {
 			try{
 				Cidade cidadeAtual = cidadeService.buscarOuFalhar(cidadeId);
 
-				cidadeInputConverterCidade.copyToDomainObject(cidadeInput, cidadeAtual);
+				cidadeInputConverterCidade.copiaInputParaEntidade(cidadeInput, cidadeAtual);
 				cidadeAtual = cidadeService.salvar(cidadeAtual);
 
-				return cidadeConverterDTO.toModel(cidadeAtual);
+				return cidadeConverterDTO.converteEntidadeParaDto(cidadeAtual);
 
 			}catch (EstadoNaoEncontradoException e){
                 throw new NegocioException(e.getMessage(), e);

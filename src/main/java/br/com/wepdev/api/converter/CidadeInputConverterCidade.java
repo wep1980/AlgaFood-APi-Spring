@@ -31,7 +31,7 @@ public class CidadeInputConverterCidade {
      * @param cidadeInput
      * @return
      */
-    public Cidade toDomainObject(CidadeINPUT cidadeInput){
+    public Cidade converteInputParaEntidade(CidadeINPUT cidadeInput){
         return modelMapper.map(cidadeInput, Cidade.class);
     }
 
@@ -41,7 +41,7 @@ public class CidadeInputConverterCidade {
      * @param cidadeInput
      * @param cidade
      */
-    public void copyToDomainObject(CidadeINPUT cidadeInput, Cidade cidade){
+    public void copiaInputParaEntidade(CidadeINPUT cidadeInput, Cidade cidade){
 
         /**
          * E necessario instanciar uma nova cidade, para evitar o problema de no momento da copia, o jpa entender que exista uma tentativa de troca de id

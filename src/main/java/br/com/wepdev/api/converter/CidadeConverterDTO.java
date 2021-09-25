@@ -1,9 +1,7 @@
 package br.com.wepdev.api.converter;
 
 import br.com.wepdev.api.DTO.CidadeDTO;
-import br.com.wepdev.api.DTO.EstadoDTO;
 import br.com.wepdev.domain.model.Cidade;
-import br.com.wepdev.domain.model.Estado;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,7 +29,7 @@ public class CidadeConverterDTO {
      * @param cidade
      * @return
      */
-    public CidadeDTO toModel(Cidade cidade) {
+    public CidadeDTO converteEntidadeParaDto(Cidade cidade) {
         return modelMapper.map(cidade, CidadeDTO.class);
     }
 
@@ -41,10 +39,10 @@ public class CidadeConverterDTO {
      * @param cidades
      * @return
      */
-    public List<CidadeDTO> toCollectionModel(List<Cidade> cidades){
+    public List<CidadeDTO> converteListaEntidadeParaListaDto(List<Cidade> cidades){
 
         // Convertendo uma lista de Restaurantes para uma lista de RestauranteDTO
-        return cidades.stream().map(cidade -> toModel(cidade))
+        return cidades.stream().map(cidade -> converteEntidadeParaDto(cidade))
                 .collect(Collectors.toList());
     }
 }

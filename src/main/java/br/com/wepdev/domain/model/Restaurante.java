@@ -66,59 +66,31 @@ public class Restaurante {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) //Quem gera a chave e o provedor do banco de dados
 	private Long id;
 
-	//@NotNull // O bean validation e executado antes de fazer as validações no banco de dados, aceita o valor vazio
-	//@NotEmpty // Nao aceita nulu nem vazio, mas aceita com espaços
-	//@NotBlank -> Nao aceita nulo, nem vazio, nem espaços.
-	@NotBlank // como o nome faz parte do Grupos.CadastroRestaurante.class ele passa por essa validação
+
+	//@NotBlank -> essa validação esta sendo feita no DTO de Input
 	@Column(nullable = false)
 	private String nome;
 
-	//@Multiplo(numero = 5) // Anotacao customizada com codigo java(Regras)
-	//@TaxaFrete
-    //@DecimalMin("0") // Valor minimo da taxa frete e 0 zero
-	// @PositiveOrZero -> O valor tem ser positivo ou zero 0
-	@PositiveOrZero// como o taxaFrete faz parte do Grupos.CadastroRestaurante.class ele passa por esse validação
+
+	//@PositiveOrZero -> essa validação esta sendo feita no DTO de Input
+	//@NotNull -> essa validação esta sendo feita no DTO de Input
 	@Column(name = "taxa_frete" , nullable = false) // Nao aceita valor nulo
-	@NotNull
 	private BigDecimal taxaFrete;
 	
-	/**
-	 * @JsonIgnore -> Ao utilizar o jsonIgnore a cozinha nao aparece na representacao(POSTMAN) mas os selects continuam sendo feitos
-	 * A estrategia EagerLoad por padrão é utilizada quando as associacoes terminam com ToOne, exemplo manyToOne.
-	 * EagerLoad -> carregamento ancioso, carregamento antecipado, toda vez que uma instancia de restaurante e carregada a partir do banco de dados ele carrega tb as 
-	 * associacoes que contem EagerLoad.
-	 * 
-	 * Diferença entre inner join e left outer join -> 
-	 * **** inner join : e feito quando se tem certeza que a tabela de associação não vai retornar valor null(nullable = false) ou seja no banco de dados esta notNull. No caso abaixo,
-	 * sempre vai exister uma cozinha para restaurante. O nullable por padrão e true.
-	 * **** left outer join : e feito quando a tabela de associacao recebe um nullable = true(Valor padrão) ou seja pode vim no resultado um valor null que mesmo assim o select sera
-	 * realizado, exameplo: @ManyToOne
-	                        @JoinColumn(name = "endereco_cidade_id") aqui ele recebe um nullable padrão, que é true. nullable = true
-	                        private Cidade cidade;
-	 */
+
 	
 	
-	/*
-	 * Por padrao todas as anotações terminadas com ToOne utilizam Eager, com Lazy as cozinhas so serao carregadas caso seja necessario.
-	 * Como cozinha possui um @JsonIgnore e em nenhum lugar esta sendo feito um getCozinha().getQualquerMetodo(), nao vai mas ser feito o select cozinha
-	 */
-	//@JsonIgnore 
+
+	//@NotNull -> essa validação esta sendo feita no DTO de Input
 	@ManyToOne//(fetch = FetchType.LAZY) // Muitos - many(*) RESTAURANTES possuem uma - one(1) COZINHA.
 	@JoinColumn(name = "cozinha_id", nullable = false) // A classe dona da associação e Restaurante, pois é onde fica a coluna cozinha_id
-	//(groups=Grupos.CadastroRestaurante.class) -> Cozinha tb faz parte do Grupos.CadastroRestaurante.class as propriedades dela com (grupo = ), tb passam pela validação
-	@NotNull// @NotNull nesse caso nao poder ser nula pq tem que existir uma instancia de cozinha.
-	@Valid // Valida as propriedades de cozinha, validação em cascata
-	/**
-	 * Converte do grupo default para o grupo CozinhaId.class, na hora de validar cozinha, os propriedades na cozinha que tiverem o group CadastroRestaurante
-	 * serao as unicas validadas por esse group. Resolve erros de validacão como por exemplo adicionar uma nova cozinha sem a necessidade de passar um id, ja que o id
-	 * e gerado automaticamente pelo banco
-	 */
-	@ConvertGroup(from = Default.class, to = Grupos.CozinhaId.class)
 	private Cozinha cozinha;//Um restaurante possui 1 cozinha
 
 	
 	@Embedded // Esta classe esta sendo incorporada em Restaurante
 	private Endereco endereco;
+
+	private Boolean ativo = Boolean.TRUE; // Sempre que um novo restaurante for instanciado por padrao ele seta ativo
 
 	/*
 	 * Nos bancos de dados relacioanais todos os relacionamentos que possuem muitos para muitos (*..*) precisam de uma tabela adicional.
@@ -158,6 +130,16 @@ public class Restaurante {
 
 	@OneToMany(mappedBy = "restaurante") // Um restaurante possue muitos produtos
 	private List<Produto> produtos = new ArrayList<>();
+
+
+
+	public void ativar(){
+		setAtivo(true);
+	}
+
+	public void inativar(){
+		setAtivo(false);
+	}
 
 
 }

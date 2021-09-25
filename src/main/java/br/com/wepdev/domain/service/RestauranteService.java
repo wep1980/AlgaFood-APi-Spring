@@ -49,19 +49,45 @@ public class RestauranteService {
 		return restauranteRepository.save(restaurante);
 	}
 
+	/**
+	 * Metodo que ativa um restaurante
+	 * @param restauranteId
+	 */
+	@Transactional
+	public void ativar(Long restauranteId){
+		Restaurante restauranteAtual = buscarOuFalhar(restauranteId);
 
-//	public void excluir(Long restauranteId) {
-//		try {
-//			restauranteRepository.deleteById(restauranteId);
-//
-//		} catch (EmptyResultDataAccessException e) {
-//			throw new RestauranteNaoEncontradoException(restauranteId);
-//
-//		} catch (DataIntegrityViolationException e) {
-//			throw new EntidadeEmUsoException(
-//					String.format(MSG_ERRO_RESTAURANTE_USO, restauranteId));
-//		}
-//	}
+        /*
+         Nao e preciso salvar o restaurante, pois essa instancia de restaurante esta no estado de gerenciada pelo JPA, ou seja
+         qualquer modificacao que for feita durante essa transação ela sera sincronizada com o banco de dados,
+         ou seja e feito um update
+         */
+		//restauranteAtual.setAtivo(true);
+
+		// Metodo criado na Entidade Restaurante, deixa mais legivel e se no futuro for necessario implementar mais alguma coisa, dentro desse metodo fica mais facil
+		restauranteAtual.ativar();
+	}
+
+
+	/**
+	 * Metodo que inativa um restaurante
+	 * @param restauranteId
+	 */
+	@Transactional
+	public void inativar(Long restauranteId){
+		Restaurante restauranteAtual = buscarOuFalhar(restauranteId);
+
+        /*
+         Nao e preciso salvar o restaurante, pois essa instancia de restaurante esta no estado de gerenciada pelo JPA, ou seja
+         qualquer modificacao que for feita durante essa transação ela sera sincronizada com o banco de dados,
+         ou seja e feito um update
+         */
+		//restauranteAtual.setAtivo(false);
+
+		// Metodo criado na Entidade Restaurante, deixa mais legivel e se no futuro for necessario implementar mais alguma coisa, dentro desse metodo fica mais facil
+		restauranteAtual.inativar();
+	}
+
 
 	/**
 	 * Optional -> E o tipo de objeto que o findById retorna, que pode ser qualquer entidade.
