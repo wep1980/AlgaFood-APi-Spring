@@ -1,6 +1,7 @@
 package br.com.wepdev.api.converter;
 
 import br.com.wepdev.api.DTO.INPUT.RestauranteINPUT;
+import br.com.wepdev.domain.model.Cidade;
 import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
@@ -47,6 +48,16 @@ public class RestauranteInputConverterRestaurante {
          * com.algaworks.algafood.domain.model.Cozinha was altered from 1 to 2
          */
         restaurante.setCozinha(new Cozinha());
+
+        /**
+         * E necessario instanciar uma novo Endereco, para evitar o problema de no momento da copia, o jpa entender que exista uma tentativa de troca de id
+         * no id da cidade, ao inves de uma nova referencia em uma cidade para o Endereco.
+         * Para evitar org.hibernate.HibernateException: identifier of an instance of
+         * com.algaworks.algafood.domain.model.Cozinha was altered from 1 to 2
+         */
+        if(restaurante.getEndereco() != null){
+            restaurante.getEndereco().setCidade(new Cidade());
+        }
 
         modelMapper.map(restauranteInput, restaurante);
 

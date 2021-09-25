@@ -20,8 +20,12 @@ public class RestauranteINPUT {
     @PositiveOrZero //O valor tem ser positivo ou zero 0
     private BigDecimal taxaFrete;
 
-    @Valid
-    @NotNull
+    @Valid // Valida os campos que estao em CozinhaIdINPUT
+    @NotNull // Nao pode ser nulo
     private CozinhaIdINPUT cozinha;
+
+    @Valid // Valida os campos que estao em enderecpINPUT
+    @NotNull // O endereço nao pode ser nulo
+    private EnderecoINPUT endereco;
 
 }

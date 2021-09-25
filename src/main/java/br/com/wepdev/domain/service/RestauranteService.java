@@ -36,15 +36,22 @@ public class RestauranteService {
 	@Autowired
 	private CozinhaService cozinhaService;
 
+	@Autowired
+	private CidadeService cidadeService;
+
 
 
 	@Transactional
 	public Restaurante salvar(Restaurante restaurante) {
+
 		Long cozinhaId = restaurante.getCozinha().getId();
+		Long cidadeId = restaurante.getEndereco().getCidade().getId();
 		
 		Cozinha cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
+		Cidade cidade = cidadeService.buscarOuFalhar(cidadeId);
 		
 		restaurante.setCozinha(cozinha);
+		restaurante.getEndereco().setCidade(cidade);
 		
 		return restauranteRepository.save(restaurante);
 	}

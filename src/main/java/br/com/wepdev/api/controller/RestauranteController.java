@@ -2,10 +2,12 @@ package br.com.wepdev.api.controller;
 
 import java.util.List;
 
+import br.com.wepdev.api.DTO.INPUT.CidadeIdINPUT;
 import br.com.wepdev.api.DTO.INPUT.RestauranteINPUT;
 import br.com.wepdev.api.DTO.RestauranteDTO;
 import br.com.wepdev.api.converter.RestauranteInputConverterRestaurante;
 import br.com.wepdev.api.converter.RestauranteConverterDTO;
+import br.com.wepdev.domain.exception.CidadeNaoEncontradaException;
 import br.com.wepdev.domain.exception.CozinhaNaoEncontradaException;
 import br.com.wepdev.domain.exception.NegocioException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +77,7 @@ public class RestauranteController {
 
 			return restauranteConverterDTO.toModel(restauranteService.salvar(restaurante));
 
-		}catch (CozinhaNaoEncontradaException e) {
+		}catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
 	}
@@ -91,7 +93,7 @@ public class RestauranteController {
 
 			return restauranteConverterDTO.toModel(restauranteService.salvar(restauranteAtual));
 
-		} catch (CozinhaNaoEncontradaException e){
+		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e){
 			throw new NegocioException(e.getMessage(), e);
 		}
 	}
