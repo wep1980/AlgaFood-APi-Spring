@@ -2,6 +2,12 @@ package br.com.wepdev.api.controller;
 
 import java.util.List;
 
+import br.com.wepdev.api.DTO.CidadeDTO;
+import br.com.wepdev.api.DTO.INPUT.CidadeINPUT;
+import br.com.wepdev.api.converter.CidadeConverterDTO;
+import br.com.wepdev.api.converter.CidadeInputConverterCidade;
+import br.com.wepdev.api.converter.EstadoConverterDTO;
+import br.com.wepdev.api.converter.EstadoInputConverterEstado;
 import br.com.wepdev.domain.exception.EstadoNaoEncontradoException;
 import br.com.wepdev.domain.exception.NegocioException;
 import org.springframework.beans.BeanUtils;
@@ -29,30 +35,36 @@ public class CidadeController {
 	@Autowired
 	private CidadeService cidadeService;
 
+	@Autowired
+	private CidadeConverterDTO cidadeConverterDTO;
+
+	@Autowired
+	private CidadeInputConverterCidade cidadeInputConverterCidade;
+
 	
 	
 	@GetMapping
-	public List<Cidade> listar() {
-		return cidadeRepository.findAll();
+	public List<CidadeDTO> listar() {
+		List<Cidade> todasCidades = cidadeRepository.findAll();
+		return cidadeConverterDTO.toCollectionModel(todasCidades);
 	}
 
 
 	@GetMapping("/{cidadeId}")
-	public Cidade buscar(@PathVariable Long cidadeId) {
-	    return cidadeService.buscarOuFalhar(cidadeId);
+	public CidadeDTO buscar(@PathVariable Long cidadeId) {
+		Cidade cidade = cidadeService.buscarOuFalhar(cidadeId);
+	    return cidadeConverterDTO.toModel(cidade);
 	}
 
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Cidade adicionar(@RequestBody @Valid Cidade cidade) {
+	public CidadeDTO adicionar(@RequestBody @Valid CidadeINPUT cidadeInput) {
 		try {
-			return cidadeService.salvar(cidade);
-			/*
-			Se no momento de salvar uma cidade o estado nao existir, o erro sera enviado da classe customizada NegocioException,
-				Que retorna o status HTTP 400 -> BAD_REQUEST (Erro do cliente).
-				Dessa forma temos a representacao do erro (POSTMAN)
-			 */
+			Cidade cidade = cidadeInputConverterCidade.toDomainObject(cidadeInput);
+			cidade = cidadeService.salvar(cidade);
+
+			return cidadeConverterDTO.toModel(cidade);
 		}catch (EstadoNaoEncontradoException e){
 			throw new NegocioException(e.getMessage(), e);
 		}
@@ -61,20 +73,17 @@ public class CidadeController {
 
 
 	@PutMapping("/{cidadeId}")
-	public Cidade atualizar(@PathVariable Long cidadeId, @RequestBody @Valid Cidade cidade) {
+	public CidadeDTO atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeINPUT cidadeInput) {
 			try{
-				//Busca a cidade atual ou lança uma exception que esta com NOT.FOUND
 				Cidade cidadeAtual = cidadeService.buscarOuFalhar(cidadeId);
-				// Copia a instancia de cidade para cidadeAtual, exceto o id
-				BeanUtils.copyProperties(cidade, cidadeAtual, "id");
-				// Salva e retorna o corpo, e a resposta HTTP e enviada como 200 -> OK
-				return cidadeService.salvar(cidadeAtual);
-				/*
-				// Caso o erro seja ao adicionar uma cidade o estado passado nao exista, o erro sera enviado da classe customizada NegocioException,
-				Que retorna o status HTTP 400 -> BAD_REQUEST (Erro do cliente). Dessa forma temos a representacao do erro (POSTMAN)
-				 */
+
+				cidadeInputConverterCidade.copyToDomainObject(cidadeInput, cidadeAtual);
+				cidadeAtual = cidadeService.salvar(cidadeAtual);
+
+				return cidadeConverterDTO.toModel(cidadeAtual);
+
 			}catch (EstadoNaoEncontradoException e){
-                throw new NegocioException(e.getMessage(), e); // e -> mostra a causa, o motivo da excessao
+                throw new NegocioException(e.getMessage(), e);
 			}
 
 	}

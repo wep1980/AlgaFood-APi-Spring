@@ -36,10 +36,17 @@ public class CozinhaService {
 	}
 
 
+	/**
+	 * A Transação por padrao ele termina quando o metodo do jpa deleteById e terminado, e como colocamos um @Transactional nesse metodo
+	 * inteiro a exception que colocamos para tratamento de erro nao esta sendo utilizada, para resolver isso se utiliza um flush(), que
+	 * compila todas as linhas do metodo antes de commitar no banco de dados
+	 * @param cozinhaId
+	 */
 	@Transactional
 	public void excluir(Long cozinhaId) {
 		try {
 			cozinhaRepository.deleteById(cozinhaId);
+			cozinhaRepository.flush(); // Executa todas as linhas de codigo do metodo, antes de commitar no banco de dados
 			
 		} catch (EmptyResultDataAccessException e) {
 			throw new CozinhaNaoEncontradaException(cozinhaId);

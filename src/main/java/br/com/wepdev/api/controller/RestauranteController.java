@@ -4,12 +4,10 @@ import java.util.List;
 
 import br.com.wepdev.api.DTO.INPUT.RestauranteINPUT;
 import br.com.wepdev.api.DTO.RestauranteDTO;
-import br.com.wepdev.api.converter.RestInputConverterRestaurante;
+import br.com.wepdev.api.converter.RestauranteInputConverterRestaurante;
 import br.com.wepdev.api.converter.RestauranteConverterDTO;
 import br.com.wepdev.domain.exception.CozinhaNaoEncontradaException;
 import br.com.wepdev.domain.exception.NegocioException;
-import br.com.wepdev.domain.model.Cozinha;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.SmartValidator;
@@ -35,8 +33,7 @@ public class RestauranteController {
 	private RestauranteConverterDTO restauranteConverterDTO;
 
 	@Autowired
-	private RestInputConverterRestaurante restInputConverterRestaurante;
-
+	private RestauranteInputConverterRestaurante restInputConverterRestaurante;
 
 	/*
 	SmartValidator -> Api do beanValidation, recebe uma instancia para validação
@@ -54,6 +51,7 @@ public class RestauranteController {
 	
 	@GetMapping("/{restauranteId}")
 	public RestauranteDTO buscar(@PathVariable Long restauranteId) {
+
 		Restaurante  restaurante = restauranteService.buscarOuFalhar(restauranteId);
 
 		return restauranteConverterDTO.toModel(restaurante);
@@ -73,10 +71,11 @@ public class RestauranteController {
 	public RestauranteDTO adicionar(@RequestBody @Valid RestauranteINPUT restauranteInput) {
 
 		try {
-			Restaurante restaurante = restInputConverterRestaurante.toDomainObject(restauranteInput); // Transformando um restauranteInput para um Restaurante
+			Restaurante restaurante = restInputConverterRestaurante.toDomainObject(restauranteInput);
 
 			return restauranteConverterDTO.toModel(restauranteService.salvar(restaurante));
-		}catch (CozinhaNaoEncontradaException e) { // Exception caso a cozinha nao exista na hora de adicionar um restaurante
+
+		}catch (CozinhaNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
 		}
 	}
@@ -86,17 +85,14 @@ public class RestauranteController {
 	@PutMapping("/{restauranteId}")
 	public RestauranteDTO atualizar(@PathVariable Long restauranteId, @RequestBody @Valid RestauranteINPUT restauranteInput) {
 		try {
-			//Restaurante restaurante = restInputConverterRestaurante.toDomainObject(restauranteInput); // Transformando um restauranteInput para um Restaurante
-			//Busca o restaurante atual ou lança uma exception que esta com NOT.FOUND
 			Restaurante restauranteAtual = restauranteService.buscarOuFalhar(restauranteId);
 
 			restInputConverterRestaurante.copyToDomainObject(restauranteInput, restauranteAtual);
-			// Copia a instancia de restaurante para restauranteAtual, exceto o id, formasPagamento, endereco, dataCadastro
-//			BeanUtils.copyProperties(restaurante, restauranteAtual, "id" , "formasPagamento", "endereco", "dataCadastro", "produtos");
-//			// Salva e retorna o corpo, e a resposta HTTP e enviada como 200 -> OK
+
 			return restauranteConverterDTO.toModel(restauranteService.salvar(restauranteAtual));
-		} catch (CozinhaNaoEncontradaException e){ // Execessao lançada caso na hora de atualizar um restaurante a cozinha não exista
-			throw new NegocioException(e.getMessage(), e); // e -> Mostra a causa da exception na representacao(POSTMAN)
+
+		} catch (CozinhaNaoEncontradaException e){
+			throw new NegocioException(e.getMessage(), e);
 		}
 
 	}

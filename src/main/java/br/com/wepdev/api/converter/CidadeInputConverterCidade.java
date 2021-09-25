@@ -1,7 +1,10 @@
 package br.com.wepdev.api.converter;
 
+import br.com.wepdev.api.DTO.INPUT.CidadeINPUT;
 import br.com.wepdev.api.DTO.INPUT.RestauranteINPUT;
+import br.com.wepdev.domain.model.Cidade;
 import br.com.wepdev.domain.model.Cozinha;
+import br.com.wepdev.domain.model.Estado;
 import br.com.wepdev.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +14,7 @@ import org.springframework.stereotype.Component;
  * Classe que contem os metodos que convertem os Inputs do controller para Entidades
  */
 @Component
-public class RestInputConverterRestaurante {
+public class CidadeInputConverterCidade {
 
 
     /*
@@ -25,30 +28,30 @@ public class RestInputConverterRestaurante {
 
     /**
      * Metodo que transforma RestauranteInput para Restaurante, utilizado no
-     * @param restauranteInput
+     * @param cidadeInput
      * @return
      */
-    public Restaurante toDomainObject(RestauranteINPUT restauranteInput){
-        return modelMapper.map(restauranteInput, Restaurante.class);
+    public Cidade toDomainObject(CidadeINPUT cidadeInput){
+        return modelMapper.map(cidadeInput, Cidade.class);
     }
 
 
     /**
      * Metodo que copia as propriedades de RestauranteINPUT para Restaurante, utilizado no atualizar()
-     * @param restauranteInput
-     * @param restaurante
+     * @param cidadeInput
+     * @param cidade
      */
-    public void copyToDomainObject(RestauranteINPUT restauranteInput, Restaurante restaurante){
+    public void copyToDomainObject(CidadeINPUT cidadeInput, Cidade cidade){
 
         /**
-         * E necessario instanciar uma nova cozinha, para evitar o problema de no momento da copia, o jpa entender que exista uma tentativa de troca de id
-         * no id da cozinha, ao inves de um referencia de tipo de cozinha para o Restaurante.
+         * E necessario instanciar uma nova cidade, para evitar o problema de no momento da copia, o jpa entender que exista uma tentativa de troca de id
+         * no id da cidade, ao inves de um referencia de tipo de cidade para o Estado.
          * Para evitar org.hibernate.HibernateException: identifier of an instance of
          * com.algaworks.algafood.domain.model.Cozinha was altered from 1 to 2
          */
-        restaurante.setCozinha(new Cozinha());
+        cidade.setEstado(new Estado());
 
-        modelMapper.map(restauranteInput, restaurante);
+        modelMapper.map(cidadeInput, cidade);
 
     }
 

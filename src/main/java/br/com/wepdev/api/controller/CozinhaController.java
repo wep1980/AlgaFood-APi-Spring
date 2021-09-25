@@ -3,6 +3,12 @@ package br.com.wepdev.api.controller;
 import java.util.List;
 import java.util.Optional;
 
+import br.com.wepdev.api.DTO.CozinhaDTO;
+import br.com.wepdev.api.DTO.INPUT.CozinhaINPUT;
+import br.com.wepdev.api.converter.CidadeConverterDTO;
+import br.com.wepdev.api.converter.CidadeInputConverterCidade;
+import br.com.wepdev.api.converter.CozinhaConverterDTO;
+import br.com.wepdev.api.converter.CozinhaInputConverterCozinha;
 import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,48 +43,59 @@ public class CozinhaController {
 	
 	@Autowired
 	private CozinhaService cozinhaService;
+
+	@Autowired
+	private CozinhaConverterDTO cozinhaConverterDTO;
+
+	@Autowired
+	private CozinhaInputConverterCozinha cozinhaInputConverterCozinha;
 	
 
 
 	@GetMapping
-	public List<Cozinha> listar() {
-		return cozinhaRepository.findAll();
+	public List<CozinhaDTO> listar() {
+		List<Cozinha> todasCozinha = cozinhaRepository.findAll();
+		return cozinhaConverterDTO.toCollectionModel(todasCozinha);
 	}
 
 
 
 	@GetMapping("/{cozinhaId}")
-	public Cozinha buscar(@PathVariable Long cozinhaId) {
+	public CozinhaDTO buscar(@PathVariable Long cozinhaId) {
+		Cozinha cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
 
-		return cozinhaService.buscarOuFalhar(cozinhaId);
+		return cozinhaConverterDTO.toModel(cozinha);
 	}
 
 
 	/**
 	 * @Valid -> Valida cozinha na chamada do metodo
-	 * @param cozinha
+	 * @param cozinhaInput
 	 * @return
 	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Cozinha adicionar(@RequestBody @Valid Cozinha cozinha) {
-		return cozinhaService.salvar(cozinha);
+	public CozinhaDTO adicionar(@RequestBody @Valid CozinhaINPUT cozinhaInput) {
+		Cozinha cozinha = cozinhaInputConverterCozinha.toDomainObject(cozinhaInput);
+		cozinha = cozinhaService.salvar(cozinha);
+		return cozinhaConverterDTO.toModel(cozinha);
 	}
 
 	/**
 	 *
 	 * @param cozinhaId
-	 * @param cozinha
+	 * @param cozinhaInput
 	 * @return
 	 */
 	@PutMapping("/{cozinhaId}")
-	public Cozinha atualizar(@PathVariable  Long cozinhaId, @RequestBody @Valid Cozinha cozinha) {
-		//Busca a cozinha atual ou lança uma exception que esta com NOT.FOUND
+	public CozinhaDTO atualizar(@PathVariable  Long cozinhaId, @RequestBody @Valid CozinhaINPUT cozinhaInput) {
+
 		Cozinha cozinhaAtual = cozinhaService.buscarOuFalhar(cozinhaId);
-            // Copia a instancia de cozinha para cozinhaAtual, exceto o id
-			BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
-			// Salva e retorna o corpo, e a resposta HTTP e enviada como 200 -> OK
-			return cozinhaService.salvar(cozinhaAtual);
+
+		 cozinhaInputConverterCozinha.copyToDomainObject(cozinhaInput, cozinhaAtual);
+		 cozinhaAtual = cozinhaService.salvar(cozinhaAtual);
+
+		 return cozinhaConverterDTO.toModel(cozinhaAtual);
 	}
 
 
