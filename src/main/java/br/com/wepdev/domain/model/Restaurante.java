@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -105,7 +107,7 @@ public class Restaurante {
 	@JoinTable(name = "restaurante_forma_pagamento",  // Customozindo o nome da tabela criada em relacoes de muitos para muitos
 	           joinColumns = @JoinColumn(name ="restaurante_id"), // Customozindo o nome da coluna que é a chave estrangeira que referencia a tabela restaurante
 	           inverseJoinColumns = @JoinColumn(name ="forma_pagamento_id"))  // Customozindo o nome da coluna que é a chave estrangeira que referencia a tabela formaPagamento
-	private List<FormaPagamento> formasPagamento = new ArrayList<>(); // Quando se cria uma instancia da lista, se evita o nullpointerexception ao instanciar uam cozinha
+	private Set<FormaPagamento> formasPagamento = new HashSet<>(); // Set -> É um conjunto que não aceita elementos duplicados, ou seja o mesmo id
 	
 	
 	/*
@@ -141,5 +143,14 @@ public class Restaurante {
 		setAtivo(false);
 	}
 
+
+	public boolean removerFormaPagamento(FormaPagamento formaPagamento){
+		return getFormasPagamento().remove(formaPagamento);
+	}
+
+
+	public boolean adicionarFormaPagamento(FormaPagamento formaPagamento){
+		return getFormasPagamento().add(formaPagamento);
+	}
 
 }

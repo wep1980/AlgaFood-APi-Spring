@@ -1,17 +1,13 @@
 package br.com.wepdev.domain.service;
 
-import br.com.wepdev.domain.exception.EntidadeEmUsoException;
 import br.com.wepdev.domain.exception.RestauranteNaoEncontradoException;
 import br.com.wepdev.domain.model.Cidade;
+import br.com.wepdev.domain.model.FormaPagamento;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.model.Restaurante;
-import br.com.wepdev.domain.repository.CozinhaRepository;
 import br.com.wepdev.domain.repository.RestauranteRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +34,9 @@ public class RestauranteService {
 
 	@Autowired
 	private CidadeService cidadeService;
+
+	@Autowired
+	private FormaPagamentoService formaPagamentoService;
 
 
 
@@ -105,5 +104,32 @@ public class RestauranteService {
 		return restauranteRepository.findById(restauranteId).orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
 	}
 	
+
+	@Transactional
+	public void desassociarFormaPagamento(Long restauranteId, Long formaPagamentoId){
+
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(formaPagamentoId);
+
+		// Metodo criado na entidade de Restaurante
+		restaurante.removerFormaPagamento(formaPagamento);
+	}
+
+
+
+	@Transactional
+	public void associarFormaPagamento(Long restauranteId, Long formaPagamentoId){
+
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(formaPagamentoId);
+
+		// Metodo criado na entidade de Restaurante
+		restaurante.adicionarFormaPagamento(formaPagamento);
+	}
+
+
+
+
+
 
 }
