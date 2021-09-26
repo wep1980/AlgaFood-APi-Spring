@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class EstadoIdINPUT {
+public class CidadeIdInputDTO {
 
 
     @NotNull

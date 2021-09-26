@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class CozinhaIdINPUT {
+public class CozinhaIdInputDTO {
 
 
     @NotNull

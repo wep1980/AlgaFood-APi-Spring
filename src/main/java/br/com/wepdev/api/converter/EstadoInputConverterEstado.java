@@ -1,12 +1,7 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.DTO.EstadoDTO;
-import br.com.wepdev.api.DTO.INPUT.EstadoINPUT;
-import br.com.wepdev.api.DTO.INPUT.EstadoIdINPUT;
-import br.com.wepdev.api.DTO.INPUT.RestauranteINPUT;
-import br.com.wepdev.domain.model.Cozinha;
+import br.com.wepdev.api.DTO.INPUT.EstadoInputDTO;
 import br.com.wepdev.domain.model.Estado;
-import br.com.wepdev.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,22 +24,22 @@ public class EstadoInputConverterEstado {
 
     /**
      * Metodo que transforma RestauranteInput para Restaurante, utilizado no
-     * @param estadoInput
+     * @param estadoInputDTO
      * @return
      */
-    public Estado toDomainObject(EstadoINPUT estadoInput){
-        return modelMapper.map(estadoInput, Estado.class);
+    public Estado converteInputParaEntidade(EstadoInputDTO estadoInputDTO){
+        return modelMapper.map(estadoInputDTO, Estado.class);
     }
 
 
     /**
      * Metodo que copia as propriedades de RestauranteINPUT para Restaurante, utilizado no atualizar()
-     * @param estadoInput
+     * @param estadoInputDTO
      * @param estado
      */
-    public void copyToDomainObject(EstadoINPUT estadoInput, Estado estado){
+    public void copiaInputParaEntidade(EstadoInputDTO estadoInputDTO, Estado estado){
 
-        modelMapper.map(estadoInput, estado);
+        modelMapper.map(estadoInputDTO, estado);
 
     }
 

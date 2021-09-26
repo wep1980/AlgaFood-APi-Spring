@@ -1,6 +1,5 @@
 package br.com.wepdev.api.DTO.INPUT;
 
-import br.com.wepdev.api.DTO.CidadeResumoDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +15,7 @@ import javax.validation.constraints.NotNull;
  */
 @Setter
 @Getter
-public class EnderecoINPUT {
+public class EnderecoInputDTO {
 
     @NotBlank
     private String cep;
@@ -34,5 +33,5 @@ public class EnderecoINPUT {
 
     @Valid // Validar as propriedades dentro de cidadeIdInput
     @NotNull // Uma instancia de cidadeIdInput deve existir
-    private CidadeIdINPUT cidade;
+    private CidadeIdInputDTO cidade;
 }

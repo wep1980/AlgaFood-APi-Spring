@@ -1,7 +1,9 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.DTO.EstadoDTO;
-import br.com.wepdev.domain.model.Estado;
+import br.com.wepdev.api.DTO.CidadeDTO;
+import br.com.wepdev.api.DTO.GrupoDTO;
+import br.com.wepdev.domain.model.Cidade;
+import br.com.wepdev.domain.model.Grupo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +15,7 @@ import java.util.stream.Collectors;
  * Classe que contem os metodos que convertem de Entidades para DTO
  */
 @Component
-public class EstadoConverterDTO {
+public class GrupoConverterDTO {
 
 
     /*
@@ -26,23 +28,23 @@ public class EstadoConverterDTO {
 
     /**
      * Metodo que converte Estado em EstadoDTO
-     * @param estado
+     * @param grupo
      * @return
      */
-    public EstadoDTO converteEntidadeParaDto(Estado estado) {
-        return modelMapper.map(estado, EstadoDTO.class);
+    public GrupoDTO converteEntidadeParaDto(Grupo grupo) {
+        return modelMapper.map(grupo, GrupoDTO.class);
     }
 
 
     /**
      * Metodo que converte uma lista de Estado em uma lista de Estado
-     * @param estados
+     * @param grupos
      * @return
      */
-    public List<EstadoDTO> converteListaEntidadeParaListaDto(List<Estado> estados){
+    public List<GrupoDTO> converteListaEntidadeParaListaDto(List<Grupo> grupos){
 
         // Convertendo uma lista de Restaurantes para uma lista de RestauranteDTO
-        return estados.stream().map(estado -> converteEntidadeParaDto(estado))
+        return grupos.stream().map(grupo -> converteEntidadeParaDto(grupo))
                 .collect(Collectors.toList());
     }
 }

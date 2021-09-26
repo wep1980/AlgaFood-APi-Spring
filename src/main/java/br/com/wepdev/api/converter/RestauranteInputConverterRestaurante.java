@@ -1,6 +1,6 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.DTO.INPUT.RestauranteINPUT;
+import br.com.wepdev.api.DTO.INPUT.RestauranteInputDTO;
 import br.com.wepdev.domain.model.Cidade;
 import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.model.Restaurante;
@@ -26,20 +26,20 @@ public class RestauranteInputConverterRestaurante {
 
     /**
      * Metodo que transforma RestauranteInput para Restaurante, utilizado no
-     * @param restauranteInput
+     * @param restauranteInputDTO
      * @return
      */
-    public Restaurante toDomainObject(RestauranteINPUT restauranteInput){
-        return modelMapper.map(restauranteInput, Restaurante.class);
+    public Restaurante converteInputParaEntidade(RestauranteInputDTO restauranteInputDTO){
+        return modelMapper.map(restauranteInputDTO, Restaurante.class);
     }
 
 
     /**
      * Metodo que copia as propriedades de RestauranteINPUT para Restaurante, utilizado no atualizar()
-     * @param restauranteInput
+     * @param restauranteInputDTO
      * @param restaurante
      */
-    public void copyToDomainObject(RestauranteINPUT restauranteInput, Restaurante restaurante){
+    public void copiaInputParaEntidade(RestauranteInputDTO restauranteInputDTO, Restaurante restaurante){
 
         /**
          * E necessario instanciar uma nova cozinha, para evitar o problema de no momento da copia, o jpa entender que exista uma tentativa de troca de id
@@ -59,7 +59,7 @@ public class RestauranteInputConverterRestaurante {
             restaurante.getEndereco().setCidade(new Cidade());
         }
 
-        modelMapper.map(restauranteInput, restaurante);
+        modelMapper.map(restauranteInputDTO, restaurante);
 
     }
 

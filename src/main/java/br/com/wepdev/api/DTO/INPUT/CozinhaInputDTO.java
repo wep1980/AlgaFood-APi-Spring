@@ -7,8 +7,7 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-public class EstadoINPUT {
-
+public class CozinhaInputDTO {
 
     @NotBlank
     private String nome;

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class FormaPagamentoINPUT {
+public class FormaPagamentoInputDTO {
 
     @NotBlank
     private String descricao;

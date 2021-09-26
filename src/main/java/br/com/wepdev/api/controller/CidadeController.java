@@ -3,7 +3,7 @@ package br.com.wepdev.api.controller;
 import java.util.List;
 
 import br.com.wepdev.api.DTO.CidadeDTO;
-import br.com.wepdev.api.DTO.INPUT.CidadeINPUT;
+import br.com.wepdev.api.DTO.INPUT.CidadeInputDTO;
 import br.com.wepdev.api.converter.CidadeConverterDTO;
 import br.com.wepdev.api.converter.CidadeInputConverterCidade;
 import br.com.wepdev.domain.exception.EstadoNaoEncontradoException;
@@ -56,7 +56,7 @@ public class CidadeController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public CidadeDTO adicionar(@RequestBody @Valid CidadeINPUT cidadeInput) {
+	public CidadeDTO adicionar(@RequestBody @Valid CidadeInputDTO cidadeInput) {
 		try {
 			Cidade cidade = cidadeInputConverterCidade.converteInputParaEntidade(cidadeInput);
 			cidade = cidadeService.salvar(cidade);
@@ -70,7 +70,7 @@ public class CidadeController {
 
 
 	@PutMapping("/{cidadeId}")
-	public CidadeDTO atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeINPUT cidadeInput) {
+	public CidadeDTO atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInputDTO cidadeInput) {
 			try{
 				Cidade cidadeAtual = cidadeService.buscarOuFalhar(cidadeId);
 

@@ -15,6 +15,9 @@ import javax.persistence.ManyToMany;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * Classe para criar grupos de acesso
+ */
 @Data // Anotacao do LOMBOK que possui gets , sets , equals&HashCode e ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true) // Habilita os campos explicidamente que serao utilizados no Equals e hashcode
 @Entity

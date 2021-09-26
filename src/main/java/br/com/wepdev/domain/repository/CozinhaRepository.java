@@ -3,7 +3,7 @@ package br.com.wepdev.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import br.com.wepdev.infrastructure.repository.CustomJpaRepository;
 import org.springframework.stereotype.Repository;
 
 import br.com.wepdev.domain.model.Cozinha;
@@ -15,7 +15,7 @@ import br.com.wepdev.domain.model.Cozinha;
  *
  */
 @Repository
-public interface CozinhaRepository extends CustomJpaRepository<Cozinha, Long>{
+public interface CozinhaRepository extends CustomJpaRepository<Cozinha, Long> {
 
 	/*
 	 * Referencia para a documentacao das keywords

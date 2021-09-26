@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import br.com.wepdev.infrastructure.repository.CustomJpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,7 +27,7 @@ import br.com.wepdev.domain.model.Restaurante;
  *
  */
 @Repository
-public interface RestauranteRepository extends CustomJpaRepository<Restaurante, Long> , RestauranteRepositoryQueries, JpaSpecificationExecutor<Restaurante>{
+public interface RestauranteRepository extends CustomJpaRepository<Restaurante, Long>, RestauranteRepositoryQueries, JpaSpecificationExecutor<Restaurante>{
 
 	/*
 	 * Referencia para a documentacao das keywords

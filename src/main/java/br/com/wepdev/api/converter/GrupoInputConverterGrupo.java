@@ -1,7 +1,10 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.DTO.INPUT.CozinhaInputDTO;
-import br.com.wepdev.domain.model.Cozinha;
+import br.com.wepdev.api.DTO.INPUT.CidadeInputDTO;
+import br.com.wepdev.api.DTO.INPUT.GrupoInputDTO;
+import br.com.wepdev.domain.model.Cidade;
+import br.com.wepdev.domain.model.Estado;
+import br.com.wepdev.domain.model.Grupo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,7 +13,7 @@ import org.springframework.stereotype.Component;
  * Classe que contem os metodos que convertem os Inputs do controller para Entidades
  */
 @Component
-public class CozinhaInputConverterCozinha {
+public class GrupoInputConverterGrupo {
 
 
     /*
@@ -24,22 +27,22 @@ public class CozinhaInputConverterCozinha {
 
     /**
      * Metodo que transforma RestauranteInput para Restaurante, utilizado no
-     * @param cozinhaInput
+     * @param grupoInput
      * @return
      */
-    public Cozinha converteInputParaEntidade(CozinhaInputDTO cozinhaInput){
-        return modelMapper.map(cozinhaInput, Cozinha.class);
+    public Grupo converteInputParaEntidade(GrupoInputDTO grupoInput){
+        return modelMapper.map(grupoInput, Grupo.class);
     }
 
 
     /**
      * Metodo que copia as propriedades de RestauranteINPUT para Restaurante, utilizado no atualizar()
-     * @param cozinhaInput
-     * @param cozinha
+     * @param grupoInput
+     * @param grupo
      */
-    public void copiaInputParaEntidade(CozinhaInputDTO cozinhaInput, Cozinha cozinha){
+    public void copiaInputParaEntidade(GrupoInputDTO grupoInput, Grupo grupo){
 
-        modelMapper.map(cozinhaInput, cozinha);
+        modelMapper.map(grupoInput, grupo);
 
     }
 

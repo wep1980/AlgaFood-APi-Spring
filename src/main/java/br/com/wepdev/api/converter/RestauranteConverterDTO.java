@@ -1,6 +1,5 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.DTO.CozinhaDTO;
 import br.com.wepdev.api.DTO.RestauranteDTO;
 import br.com.wepdev.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
@@ -30,7 +29,7 @@ public class RestauranteConverterDTO {
      * @param restaurante
      * @return
      */
-    public RestauranteDTO toModel(Restaurante restaurante) {
+    public RestauranteDTO converteEntidadeParaDto(Restaurante restaurante) {
         return modelMapper.map(restaurante, RestauranteDTO.class);
     }
 
@@ -40,10 +39,10 @@ public class RestauranteConverterDTO {
      * @param restaurantes
      * @return
      */
-    public List<RestauranteDTO> toCollectionModel(List<Restaurante> restaurantes){
+    public List<RestauranteDTO> converteListaEntidadeParaListaDto(List<Restaurante> restaurantes){
 
         // Convertendo uma lista de Restaurantes para uma lista de RestauranteDTO
-        return restaurantes.stream().map(restaurante -> toModel(restaurante))
+        return restaurantes.stream().map(restaurante -> converteEntidadeParaDto(restaurante))
                 .collect(Collectors.toList());
     }
 }

@@ -2,7 +2,8 @@ package br.com.wepdev.api.controller;
 
 
 import br.com.wepdev.api.DTO.FormaPagamentoDTO;
-import br.com.wepdev.api.DTO.INPUT.FormaPagamentoINPUT;
+
+import br.com.wepdev.api.DTO.INPUT.FormaPagamentoInputDTO;
 import br.com.wepdev.api.converter.FormaPagamentoConverterDTO;
 import br.com.wepdev.api.converter.FormaPagamentoInputConverterFormaPagamento;
 import br.com.wepdev.domain.model.FormaPagamento;
@@ -50,7 +51,7 @@ public class FormaPagamentoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FormaPagamentoDTO adicionar(@RequestBody @Valid FormaPagamentoINPUT formaPagamentoInput) {
+    public FormaPagamentoDTO adicionar(@RequestBody @Valid FormaPagamentoInputDTO formaPagamentoInput) {
         FormaPagamento formaPagamento = formaPagamentoInputConverterFormaPagamento.converteInputParaEntidade(formaPagamentoInput);
 
         formaPagamento = formaPagamentoService.salvar(formaPagamento);
@@ -60,7 +61,7 @@ public class FormaPagamentoController {
 
     @PutMapping("/{formaPagamentoId}")
     public FormaPagamentoDTO atualizar(@PathVariable Long formaPagamentoId,
-                                         @RequestBody @Valid FormaPagamentoINPUT formaPagamentoInput) {
+                                         @RequestBody @Valid FormaPagamentoInputDTO formaPagamentoInput) {
         FormaPagamento formaPagamentoAtual = formaPagamentoService.buscarOuFalhar(formaPagamentoId);
 
         formaPagamentoInputConverterFormaPagamento.copiaInputParaEntidade(formaPagamentoInput, formaPagamentoAtual);

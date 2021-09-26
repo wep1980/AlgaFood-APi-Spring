@@ -1,7 +1,9 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.DTO.EstadoDTO;
-import br.com.wepdev.domain.model.Estado;
+import br.com.wepdev.api.DTO.CidadeDTO;
+import br.com.wepdev.api.DTO.UsuarioDTO;
+import br.com.wepdev.domain.model.Cidade;
+import br.com.wepdev.domain.model.Usuario;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +15,7 @@ import java.util.stream.Collectors;
  * Classe que contem os metodos que convertem de Entidades para DTO
  */
 @Component
-public class EstadoConverterDTO {
+public class UsuarioConverterDTO {
 
 
     /*
@@ -26,23 +28,23 @@ public class EstadoConverterDTO {
 
     /**
      * Metodo que converte Estado em EstadoDTO
-     * @param estado
+     * @param usuario
      * @return
      */
-    public EstadoDTO converteEntidadeParaDto(Estado estado) {
-        return modelMapper.map(estado, EstadoDTO.class);
+    public UsuarioDTO converteEntidadeParaDto(Usuario usuario) {
+        return modelMapper.map(usuario, UsuarioDTO.class);
     }
 
 
     /**
      * Metodo que converte uma lista de Estado em uma lista de Estado
-     * @param estados
+     * @param usuarios
      * @return
      */
-    public List<EstadoDTO> converteListaEntidadeParaListaDto(List<Estado> estados){
+    public List<UsuarioDTO> converteListaEntidadeParaListaDto(List<Usuario> usuarios){
 
-        // Convertendo uma lista de Restaurantes para uma lista de RestauranteDTO
-        return estados.stream().map(estado -> converteEntidadeParaDto(estado))
+        // Convertendo uma lista de Usuarios para uma lista de UsuarioDTO
+        return usuarios.stream().map(usuario -> converteEntidadeParaDto(usuario))
                 .collect(Collectors.toList());
     }
 }

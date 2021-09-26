@@ -2,8 +2,7 @@ package br.com.wepdev.api.controller;
 
 import java.util.List;
 
-import br.com.wepdev.api.DTO.INPUT.CidadeIdINPUT;
-import br.com.wepdev.api.DTO.INPUT.RestauranteINPUT;
+import br.com.wepdev.api.DTO.INPUT.RestauranteInputDTO;
 import br.com.wepdev.api.DTO.RestauranteDTO;
 import br.com.wepdev.api.converter.RestauranteInputConverterRestaurante;
 import br.com.wepdev.api.converter.RestauranteConverterDTO;
@@ -47,7 +46,7 @@ public class RestauranteController {
 	
 	@GetMapping
 	public List<RestauranteDTO> listar() {
-		return restauranteConverterDTO.toCollectionModel(restauranteRepository.findAll());
+		return restauranteConverterDTO.converteListaEntidadeParaListaDto(restauranteRepository.findAll());
 	}
 
 	
@@ -56,7 +55,7 @@ public class RestauranteController {
 
 		Restaurante  restaurante = restauranteService.buscarOuFalhar(restauranteId);
 
-		return restauranteConverterDTO.toModel(restaurante);
+		return restauranteConverterDTO.converteEntidadeParaDto(restaurante);
 	}
 
 
@@ -65,17 +64,17 @@ public class RestauranteController {
 	 * as anotações para validações e essas anotações por padrão fazem parte de um grupo default, exemplo : @NotBlank(groups = Default.class)
 	 * @Validated(Grupos.CadastroRestaurante.class) -> Valida Restaurante todas as propriedades que possuem o groups CadastroRestaurante.class,
 	 * é um grupo criado para validar somente as propriedades que fazem parte desse grupo (Grupos.CadastroRestaurante.class).
-	 * @param restauranteInput
+	 * @param restauranteInputDTO
 	 * @return
 	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public RestauranteDTO adicionar(@RequestBody @Valid RestauranteINPUT restauranteInput) {
+	public RestauranteDTO adicionar(@RequestBody @Valid RestauranteInputDTO restauranteInputDTO) {
 
 		try {
-			Restaurante restaurante = restInputConverterRestaurante.toDomainObject(restauranteInput);
+			Restaurante restaurante = restInputConverterRestaurante.converteInputParaEntidade(restauranteInputDTO);
 
-			return restauranteConverterDTO.toModel(restauranteService.salvar(restaurante));
+			return restauranteConverterDTO.converteEntidadeParaDto(restauranteService.salvar(restaurante));
 
 		}catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage());
@@ -85,13 +84,13 @@ public class RestauranteController {
 
 
 	@PutMapping("/{restauranteId}")
-	public RestauranteDTO atualizar(@PathVariable Long restauranteId, @RequestBody @Valid RestauranteINPUT restauranteInput) {
+	public RestauranteDTO atualizar(@PathVariable Long restauranteId, @RequestBody @Valid RestauranteInputDTO restauranteInputDTO) {
 		try {
 			Restaurante restauranteAtual = restauranteService.buscarOuFalhar(restauranteId);
 
-			restInputConverterRestaurante.copyToDomainObject(restauranteInput, restauranteAtual);
+			restInputConverterRestaurante.copiaInputParaEntidade(restauranteInputDTO, restauranteAtual);
 
-			return restauranteConverterDTO.toModel(restauranteService.salvar(restauranteAtual));
+			return restauranteConverterDTO.converteEntidadeParaDto(restauranteService.salvar(restauranteAtual));
 
 		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e){
 			throw new NegocioException(e.getMessage(), e);

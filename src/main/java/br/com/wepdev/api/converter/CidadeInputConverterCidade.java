@@ -1,11 +1,8 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.DTO.INPUT.CidadeINPUT;
-import br.com.wepdev.api.DTO.INPUT.RestauranteINPUT;
+import br.com.wepdev.api.DTO.INPUT.CidadeInputDTO;
 import br.com.wepdev.domain.model.Cidade;
-import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.model.Estado;
-import br.com.wepdev.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,7 +28,7 @@ public class CidadeInputConverterCidade {
      * @param cidadeInput
      * @return
      */
-    public Cidade converteInputParaEntidade(CidadeINPUT cidadeInput){
+    public Cidade converteInputParaEntidade(CidadeInputDTO cidadeInput){
         return modelMapper.map(cidadeInput, Cidade.class);
     }
 
@@ -41,7 +38,7 @@ public class CidadeInputConverterCidade {
      * @param cidadeInput
      * @param cidade
      */
-    public void copiaInputParaEntidade(CidadeINPUT cidadeInput, Cidade cidade){
+    public void copiaInputParaEntidade(CidadeInputDTO cidadeInput, Cidade cidade){
 
         /**
          * E necessario instanciar uma nova cidade, para evitar o problema de no momento da copia, o jpa entender que exista uma tentativa de troca de id

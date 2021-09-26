@@ -1,4 +1,4 @@
-package br.com.wepdev.domain.repository;
+package br.com.wepdev.infrastructure.repository;
 
 import java.util.Optional;
 
@@ -18,5 +18,8 @@ public interface CustomJpaRepository<T , ID> extends JpaRepository<T, ID>{
 	
 	
 	Optional<T> buscarPrimeiro();
+
+	// Metodo que retira um objeto do gerenciamento do JPA, evitando assim um sincronismo antes da ora
+	void detach(T entity);
 
 }

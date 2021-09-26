@@ -1,9 +1,7 @@
 package br.com.wepdev.api.converter;
 
 import br.com.wepdev.api.DTO.CozinhaDTO;
-import br.com.wepdev.api.DTO.EstadoDTO;
 import br.com.wepdev.domain.model.Cozinha;
-import br.com.wepdev.domain.model.Estado;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,7 +29,7 @@ public class CozinhaConverterDTO {
      * @param cozinha
      * @return
      */
-    public CozinhaDTO toModel(Cozinha cozinha) {
+    public CozinhaDTO converteEntidadeParaDto(Cozinha cozinha) {
         return modelMapper.map(cozinha, CozinhaDTO.class);
     }
 
@@ -41,10 +39,10 @@ public class CozinhaConverterDTO {
      * @param cozinhas
      * @return
      */
-    public List<CozinhaDTO> toCollectionModel(List<Cozinha> cozinhas){
+    public List<CozinhaDTO> converteListaEntidadeParaListaDto(List<Cozinha> cozinhas){
 
         // Convertendo uma lista de Restaurantes para uma lista de RestauranteDTO
-        return cozinhas.stream().map(cozinha -> toModel(cozinha))
+        return cozinhas.stream().map(cozinha -> converteEntidadeParaDto(cozinha))
                 .collect(Collectors.toList());
     }
 }

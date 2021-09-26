@@ -1,19 +1,13 @@
 package br.com.wepdev.api.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import br.com.wepdev.api.DTO.CozinhaDTO;
-import br.com.wepdev.api.DTO.INPUT.CozinhaINPUT;
-import br.com.wepdev.api.converter.CidadeConverterDTO;
-import br.com.wepdev.api.converter.CidadeInputConverterCidade;
+import br.com.wepdev.api.DTO.INPUT.CozinhaInputDTO;
 import br.com.wepdev.api.converter.CozinhaConverterDTO;
 import br.com.wepdev.api.converter.CozinhaInputConverterCozinha;
-import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,7 +49,7 @@ public class CozinhaController {
 	@GetMapping
 	public List<CozinhaDTO> listar() {
 		List<Cozinha> todasCozinha = cozinhaRepository.findAll();
-		return cozinhaConverterDTO.toCollectionModel(todasCozinha);
+		return cozinhaConverterDTO.converteListaEntidadeParaListaDto(todasCozinha);
 	}
 
 
@@ -64,7 +58,7 @@ public class CozinhaController {
 	public CozinhaDTO buscar(@PathVariable Long cozinhaId) {
 		Cozinha cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
 
-		return cozinhaConverterDTO.toModel(cozinha);
+		return cozinhaConverterDTO.converteEntidadeParaDto(cozinha);
 	}
 
 
@@ -75,10 +69,10 @@ public class CozinhaController {
 	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public CozinhaDTO adicionar(@RequestBody @Valid CozinhaINPUT cozinhaInput) {
-		Cozinha cozinha = cozinhaInputConverterCozinha.toDomainObject(cozinhaInput);
+	public CozinhaDTO adicionar(@RequestBody @Valid CozinhaInputDTO cozinhaInput) {
+		Cozinha cozinha = cozinhaInputConverterCozinha.converteInputParaEntidade(cozinhaInput);
 		cozinha = cozinhaService.salvar(cozinha);
-		return cozinhaConverterDTO.toModel(cozinha);
+		return cozinhaConverterDTO.converteEntidadeParaDto(cozinha);
 	}
 
 	/**
@@ -88,14 +82,14 @@ public class CozinhaController {
 	 * @return
 	 */
 	@PutMapping("/{cozinhaId}")
-	public CozinhaDTO atualizar(@PathVariable  Long cozinhaId, @RequestBody @Valid CozinhaINPUT cozinhaInput) {
+	public CozinhaDTO atualizar(@PathVariable  Long cozinhaId, @RequestBody @Valid CozinhaInputDTO cozinhaInput) {
 
 		Cozinha cozinhaAtual = cozinhaService.buscarOuFalhar(cozinhaId);
 
-		 cozinhaInputConverterCozinha.copyToDomainObject(cozinhaInput, cozinhaAtual);
+		 cozinhaInputConverterCozinha.copiaInputParaEntidade(cozinhaInput, cozinhaAtual);
 		 cozinhaAtual = cozinhaService.salvar(cozinhaAtual);
 
-		 return cozinhaConverterDTO.toModel(cozinhaAtual);
+		 return cozinhaConverterDTO.converteEntidadeParaDto(cozinhaAtual);
 	}
 
 

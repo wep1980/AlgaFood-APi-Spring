@@ -1,7 +1,5 @@
 package br.com.wepdev.core.jackson;
 
-import br.com.wepdev.api.mixin.CidadeMixin;
-import br.com.wepdev.api.mixin.CozinhaMixin;
 import br.com.wepdev.domain.model.Cidade;
 import br.com.wepdev.domain.model.Cozinha;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -18,7 +16,7 @@ public class JacksonMixinModule extends SimpleModule {
      * Construtor, faz a ligação entre a Classe Restaurante e a RestauranteMixin
      */
     public JacksonMixinModule(){
-        setMixInAnnotation(Cidade.class, CidadeMixin.class);
-        setMixInAnnotation(Cozinha.class, CozinhaMixin.class);
+        //setMixInAnnotation(Cidade.class, CidadeMixin.class);
+       //setMixInAnnotation(Cozinha.class, CozinhaMixin.class);
     }
 }

@@ -3,10 +3,9 @@ package br.com.wepdev.api.controller;
 import java.util.List;
 
 import br.com.wepdev.api.DTO.EstadoDTO;
-import br.com.wepdev.api.DTO.INPUT.EstadoINPUT;
+import br.com.wepdev.api.DTO.INPUT.EstadoInputDTO;
 import br.com.wepdev.api.converter.EstadoConverterDTO;
 import br.com.wepdev.api.converter.EstadoInputConverterEstado;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,7 +51,7 @@ public class EstadoController {
 
 		List<Estado> todosEstados = estadoRepository.findAll();
 
-		return estadoConverterDTO.toCollectionModel(todosEstados);
+		return estadoConverterDTO.converteListaEntidadeParaListaDto(todosEstados);
 	}
 
 
@@ -61,29 +60,29 @@ public class EstadoController {
 
 		Estado estado = estadoService.buscarOuFalhar(estadoId);
 
-		return estadoConverterDTO.toModel(estado);
+		return estadoConverterDTO.converteEntidadeParaDto(estado);
 	}
 
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public EstadoDTO adicionar(@RequestBody @Valid EstadoINPUT estadoInput) {
-		Estado estado = estadoInputConverterEstado.toDomainObject(estadoInput);
+	public EstadoDTO adicionar(@RequestBody @Valid EstadoInputDTO estadoInputDTO) {
+		Estado estado = estadoInputConverterEstado.converteInputParaEntidade(estadoInputDTO);
 
 		estado = estadoService.salvar(estado);
-		return estadoConverterDTO.toModel(estado);
+		return estadoConverterDTO.converteEntidadeParaDto(estado);
 	}
 
 
 	@PutMapping("/{estadoId}")
-	public EstadoDTO atualizar(@PathVariable Long estadoId, @RequestBody @Valid EstadoINPUT estadoInput) {
+	public EstadoDTO atualizar(@PathVariable Long estadoId, @RequestBody @Valid EstadoInputDTO estadoInputDTO) {
 		    Estado estadoAtual = estadoService.buscarOuFalhar(estadoId);
 
-			estadoInputConverterEstado.copyToDomainObject(estadoInput, estadoAtual);
+			estadoInputConverterEstado.copiaInputParaEntidade(estadoInputDTO, estadoAtual);
 
 			estadoAtual = estadoService.salvar(estadoAtual);
 
-			return estadoConverterDTO.toModel(estadoAtual);
+			return estadoConverterDTO.converteEntidadeParaDto(estadoAtual);
 	}
 
 

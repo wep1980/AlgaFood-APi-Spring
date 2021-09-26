@@ -1,9 +1,6 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.DTO.INPUT.CidadeINPUT;
-import br.com.wepdev.api.DTO.INPUT.FormaPagamentoINPUT;
-import br.com.wepdev.domain.model.Cidade;
-import br.com.wepdev.domain.model.Estado;
+import br.com.wepdev.api.DTO.INPUT.FormaPagamentoInputDTO;
 import br.com.wepdev.domain.model.FormaPagamento;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +27,7 @@ public class FormaPagamentoInputConverterFormaPagamento {
      * @param formaPagInput
      * @return
      */
-    public FormaPagamento converteInputParaEntidade(FormaPagamentoINPUT formaPagInput){
+    public FormaPagamento converteInputParaEntidade(FormaPagamentoInputDTO formaPagInput){
         return modelMapper.map(formaPagInput, FormaPagamento.class);
     }
 
@@ -40,7 +37,7 @@ public class FormaPagamentoInputConverterFormaPagamento {
      * @param formaPagInput
      * @param formaPagamento
      */
-    public void copiaInputParaEntidade(FormaPagamentoINPUT formaPagInput, FormaPagamento formaPagamento){
+    public void copiaInputParaEntidade(FormaPagamentoInputDTO formaPagInput, FormaPagamento formaPagamento){
 
         modelMapper.map(formaPagInput, formaPagamento);
 
