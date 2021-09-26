@@ -37,21 +37,26 @@ public class FormaPagamentoController {
 
     @GetMapping
     public List<FormaPagamentoDTO> listar() {
+
         List<FormaPagamento> todasFormasPagamentos = formaPagamentoRepository.findAll();
 
         return formaPagamentoConverterDTO.converteListaEntidadeParaListaDto(todasFormasPagamentos);
     }
 
+
     @GetMapping("/{formaPagamentoId}")
     public FormaPagamentoDTO buscar(@PathVariable Long formaPagamentoId) {
+
         FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(formaPagamentoId);
 
         return formaPagamentoConverterDTO.converteEntidadeParaDto(formaPagamento);
     }
 
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public FormaPagamentoDTO adicionar(@RequestBody @Valid FormaPagamentoInputDTO formaPagamentoInput) {
+
         FormaPagamento formaPagamento = formaPagamentoInputConverterFormaPagamento.converteInputParaEntidade(formaPagamentoInput);
 
         formaPagamento = formaPagamentoService.salvar(formaPagamento);
@@ -59,9 +64,10 @@ public class FormaPagamentoController {
         return formaPagamentoConverterDTO.converteEntidadeParaDto(formaPagamento);
     }
 
+
     @PutMapping("/{formaPagamentoId}")
-    public FormaPagamentoDTO atualizar(@PathVariable Long formaPagamentoId,
-                                         @RequestBody @Valid FormaPagamentoInputDTO formaPagamentoInput) {
+    public FormaPagamentoDTO atualizar(@PathVariable Long formaPagamentoId, @RequestBody @Valid FormaPagamentoInputDTO formaPagamentoInput) {
+
         FormaPagamento formaPagamentoAtual = formaPagamentoService.buscarOuFalhar(formaPagamentoId);
 
         formaPagamentoInputConverterFormaPagamento.copiaInputParaEntidade(formaPagamentoInput, formaPagamentoAtual);
@@ -71,9 +77,11 @@ public class FormaPagamentoController {
         return formaPagamentoConverterDTO.converteEntidadeParaDto(formaPagamentoAtual);
     }
 
+
     @DeleteMapping("/{formaPagamentoId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long formaPagamentoId) {
+
         formaPagamentoService.excluir(formaPagamentoId);
     }
 }

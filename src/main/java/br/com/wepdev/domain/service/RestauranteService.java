@@ -128,7 +128,22 @@ public class RestauranteService {
 	}
 
 
+	@Transactional
+	public void abrir(Long restauranteId) {
+		Restaurante restauranteAtual = buscarOuFalhar(restauranteId);
 
+		// Metodo criado na entidade de Restaurante
+		restauranteAtual.abrir();
+	}
+
+
+	@Transactional
+	public void fechar(Long restauranteId) {
+		Restaurante restauranteAtual = buscarOuFalhar(restauranteId);
+
+		// Metodo criado na entidade de Restaurante
+		restauranteAtual.fechar();
+	}
 
 
 

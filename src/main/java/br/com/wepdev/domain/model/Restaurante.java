@@ -94,6 +94,8 @@ public class Restaurante {
 
 	private Boolean ativo = Boolean.TRUE; // Sempre que um novo restaurante for instanciado por padrao ele seta ativo
 
+	private Boolean aberto = Boolean.FALSE; // Sempre que um novo restaurante for instanciado por padrao ele estara fechado
+
 	/*
 	 * Nos bancos de dados relacioanais todos os relacionamentos que possuem muitos para muitos (*..*) precisam de uma tabela adicional.
 	 * Deve ser sempre levado em conta o impacto dos relacionametos de muitos para muitos em uma REST APi
@@ -139,8 +141,19 @@ public class Restaurante {
 		setAtivo(true);
 	}
 
+
 	public void inativar(){
 		setAtivo(false);
+	}
+
+
+	public void abrir() {
+		setAberto(true);
+	}
+
+
+	public void fechar() {
+		setAberto(false);
 	}
 
 

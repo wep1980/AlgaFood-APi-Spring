@@ -38,21 +38,26 @@ public class GrupoController {
 
 	@GetMapping
 	public List<GrupoDTO> listar() {
+
 		List<Grupo> todosGrupos = grupoRepository.findAll();
 
 		return grupoConverterDTO.converteListaEntidadeParaListaDto(todosGrupos);
 	}
 
+
 	@GetMapping("/{grupoId}")
 	public GrupoDTO buscar(@PathVariable Long grupoId) {
+
 		Grupo grupo = grupoService.buscarOuFalhar(grupoId);
 
 		return grupoConverterDTO.converteEntidadeParaDto(grupo);
 	}
 
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public GrupoDTO adicionar(@RequestBody @Valid GrupoInputDTO grupoInput) {
+
 		Grupo grupo = grupoInputConverterGrupo.converteInputParaEntidade(grupoInput);
 
 		grupo = grupoService.salvar(grupo);
@@ -60,9 +65,10 @@ public class GrupoController {
 		return grupoConverterDTO.converteEntidadeParaDto(grupo);
 	}
 
+
 	@PutMapping("/{grupoId}")
-	public GrupoDTO atualizar(@PathVariable Long grupoId,
-								@RequestBody @Valid GrupoInputDTO grupoInput) {
+	public GrupoDTO atualizar(@PathVariable Long grupoId, @RequestBody @Valid GrupoInputDTO grupoInput) {
+
 		Grupo grupoAtual = grupoService.buscarOuFalhar(grupoId);
 
 		grupoInputConverterGrupo.copiaInputParaEntidade(grupoInput, grupoAtual);
@@ -72,9 +78,11 @@ public class GrupoController {
 		return grupoConverterDTO.converteEntidadeParaDto(grupoAtual);
 	}
 
+
 	@DeleteMapping("/{grupoId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long grupoId) {
+
 		grupoService.excluir(grupoId);
 	}
 

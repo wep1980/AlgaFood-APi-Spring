@@ -50,14 +50,18 @@ public class UsuarioController {
 	
 	@GetMapping
 	public List<UsuarioDTO> listar() {
+
 		List<Usuario> todosUsuarios = usuarioRepository.findAll();
+
 		return usuarioConverterDTO.converteListaEntidadeParaListaDto(todosUsuarios);
 	}
 
 
 	@GetMapping("/{usuarioId}")
 	public UsuarioDTO buscar(@PathVariable Long usuarioId) {
+
 		Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
+
 	    return usuarioConverterDTO.converteEntidadeParaDto(usuario);
 	}
 
@@ -67,6 +71,7 @@ public class UsuarioController {
 	public UsuarioDTO adicionar(@RequestBody @Valid UsuarioComSenhaInputDTO usuarioInput) {
 
 			Usuario usuario = usuarioInputConverterUsuario.converteInputParaEntidade(usuarioInput);
+
 			usuario = usuarioService.salvar(usuario);
 
 			return usuarioConverterDTO.converteEntidadeParaDto(usuario);
@@ -79,6 +84,7 @@ public class UsuarioController {
 				Usuario usuarioAtual = usuarioService.buscarOuFalhar(usuarioId);
 
 				usuarioInputConverterUsuario.copiaInputParaEntidade(usuarioInput, usuarioAtual);
+
 				usuarioAtual = usuarioService.salvar(usuarioAtual);
 
 				return usuarioConverterDTO.converteEntidadeParaDto(usuarioAtual);
@@ -91,9 +97,6 @@ public class UsuarioController {
 
 		usuarioService.alterarSenha(usuarioId, senha.getSenhaAtual(), senha.getNovaSenha());
 	}
-
-
-
 
 
 }

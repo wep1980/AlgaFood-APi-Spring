@@ -48,7 +48,9 @@ public class CozinhaController {
 
 	@GetMapping
 	public List<CozinhaDTO> listar() {
+
 		List<Cozinha> todasCozinha = cozinhaRepository.findAll();
+
 		return cozinhaConverterDTO.converteListaEntidadeParaListaDto(todasCozinha);
 	}
 
@@ -56,6 +58,7 @@ public class CozinhaController {
 
 	@GetMapping("/{cozinhaId}")
 	public CozinhaDTO buscar(@PathVariable Long cozinhaId) {
+
 		Cozinha cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
 
 		return cozinhaConverterDTO.converteEntidadeParaDto(cozinha);
@@ -70,8 +73,11 @@ public class CozinhaController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CozinhaDTO adicionar(@RequestBody @Valid CozinhaInputDTO cozinhaInput) {
+
 		Cozinha cozinha = cozinhaInputConverterCozinha.converteInputParaEntidade(cozinhaInput);
+
 		cozinha = cozinhaService.salvar(cozinha);
+
 		return cozinhaConverterDTO.converteEntidadeParaDto(cozinha);
 	}
 

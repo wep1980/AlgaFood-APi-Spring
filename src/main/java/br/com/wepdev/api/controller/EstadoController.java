@@ -76,6 +76,7 @@ public class EstadoController {
 
 	@PutMapping("/{estadoId}")
 	public EstadoDTO atualizar(@PathVariable Long estadoId, @RequestBody @Valid EstadoInputDTO estadoInputDTO) {
+
 		    Estado estadoAtual = estadoService.buscarOuFalhar(estadoId);
 
 			estadoInputConverterEstado.copiaInputParaEntidade(estadoInputDTO, estadoAtual);
@@ -88,6 +89,7 @@ public class EstadoController {
 
 	@DeleteMapping("/{estadoId}")
 	public void remover(@PathVariable Long estadoId) {
+
 		estadoService.excluir(estadoId);
 	}
 	
