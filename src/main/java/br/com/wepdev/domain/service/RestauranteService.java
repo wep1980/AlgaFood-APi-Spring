@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import br.com.wepdev.domain.repository.RestauranteRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 /**
  * Classe para implementacao de regras de negocio
@@ -72,6 +74,19 @@ public class RestauranteService {
 
 		// Metodo criado na Entidade Restaurante, deixa mais legivel e se no futuro for necessario implementar mais alguma coisa, dentro desse metodo fica mais facil
 		restauranteAtual.ativar();
+	}
+
+
+	@Transactional
+	public void ativarVarios(List<Long> restaurantesIds){
+		restaurantesIds.forEach(this::ativar); // Chamando o metodo acima no loop para ativar todos todos os restaurantes
+
+	}
+
+	@Transactional
+	public void inativarVarios(List<Long> restaurantesIds){
+		restaurantesIds.forEach(this::inativar); // Chamando o metodo acima no loop para ativar todos todos os restaurantes
+
 	}
 
 

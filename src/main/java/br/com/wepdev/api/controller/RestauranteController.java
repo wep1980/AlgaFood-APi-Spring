@@ -9,6 +9,7 @@ import br.com.wepdev.api.converter.RestauranteConverterDTO;
 import br.com.wepdev.domain.exception.CidadeNaoEncontradaException;
 import br.com.wepdev.domain.exception.CozinhaNaoEncontradaException;
 import br.com.wepdev.domain.exception.NegocioException;
+import br.com.wepdev.domain.exception.RestauranteNaoEncontradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.SmartValidator;
@@ -102,6 +103,30 @@ public class RestauranteController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ativar(@PathVariable Long restauranteId){
 		restauranteService.ativar(restauranteId);
+
+	}
+
+    @PutMapping("/ativacoes")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void ativarVarios(@RequestBody List<Long> restaurantesIds){
+		try {
+			restauranteService.ativarVarios(restaurantesIds);
+		} catch (RestauranteNaoEncontradoException e){
+			throw new NegocioException(e.getMessage(), e);
+		}
+
+
+	}
+
+	@DeleteMapping("/desativacoes")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void inativarVarios(@RequestBody List<Long> restaurantesIds){
+		try {
+			restauranteService.inativarVarios(restaurantesIds);
+
+		} catch (RestauranteNaoEncontradoException e){
+			throw new NegocioException(e.getMessage(), e);
+		}
 
 	}
 
