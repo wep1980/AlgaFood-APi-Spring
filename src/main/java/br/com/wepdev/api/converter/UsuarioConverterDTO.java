@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ public class UsuarioConverterDTO {
      * @param usuarios
      * @return
      */
-    public List<UsuarioDTO> converteListaEntidadeParaListaDto(List<Usuario> usuarios){
+    public List<UsuarioDTO> converteListaEntidadeParaListaDto(Collection<Usuario> usuarios){
 
         // Convertendo uma lista de Usuarios para uma lista de UsuarioDTO
         return usuarios.stream().map(usuario -> converteEntidadeParaDto(usuario))

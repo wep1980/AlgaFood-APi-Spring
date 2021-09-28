@@ -1,13 +1,10 @@
 package br.com.wepdev.domain.service;
 
 import br.com.wepdev.domain.exception.RestauranteNaoEncontradoException;
-import br.com.wepdev.domain.model.Cidade;
-import br.com.wepdev.domain.model.FormaPagamento;
+import br.com.wepdev.domain.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.wepdev.domain.model.Cozinha;
-import br.com.wepdev.domain.model.Restaurante;
 import br.com.wepdev.domain.repository.RestauranteRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +34,9 @@ public class RestauranteService {
 
 	@Autowired
 	private FormaPagamentoService formaPagamentoService;
+
+	@Autowired
+	private UsuarioService usuarioService;
 
 
 
@@ -146,5 +146,20 @@ public class RestauranteService {
 	}
 
 
+	@Transactional
+	public void desassociarResponsavel(Long restauranteId, Long usuarioId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
+
+		restaurante.removerResponsavel(usuario);
+	}
+
+	@Transactional
+	public void associarResponsavel(Long restauranteId, Long usuarioId) {
+		Restaurante restaurante = buscarOuFalhar(restauranteId);
+		Usuario usuario = usuarioService.buscarOuFalhar(usuarioId);
+
+		restaurante.adicionarResponsavel(usuario);
+	}
 
 }
