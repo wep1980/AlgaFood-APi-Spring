@@ -1,14 +1,10 @@
 package br.com.wepdev.api.controller;
 
 import br.com.wepdev.api.DTO.CidadeDTO;
-import br.com.wepdev.api.DTO.INPUT.CidadeInputDTO;
 import br.com.wepdev.api.DTO.INPUT.ProdutoInputDTO;
 import br.com.wepdev.api.DTO.ProdutoDTO;
 import br.com.wepdev.api.converter.ProdutoConverterDTO;
 import br.com.wepdev.api.converter.ProdutoInputConverterProduto;
-import br.com.wepdev.domain.exception.EstadoNaoEncontradoException;
-import br.com.wepdev.domain.exception.NegocioException;
-import br.com.wepdev.domain.model.Cidade;
 import br.com.wepdev.domain.model.Produto;
 import br.com.wepdev.domain.model.Restaurante;
 import br.com.wepdev.domain.repository.ProdutoRepository;

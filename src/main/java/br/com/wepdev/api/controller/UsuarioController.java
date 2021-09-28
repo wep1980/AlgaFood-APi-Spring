@@ -1,23 +1,14 @@
 package br.com.wepdev.api.controller;
 
 import br.com.wepdev.api.DTO.CidadeDTO;
-import br.com.wepdev.api.DTO.INPUT.CidadeInputDTO;
 import br.com.wepdev.api.DTO.INPUT.SenhaInputDTO;
 import br.com.wepdev.api.DTO.INPUT.UsuarioComSenhaInputDTO;
 import br.com.wepdev.api.DTO.INPUT.UsuarioInputDTO;
 import br.com.wepdev.api.DTO.UsuarioDTO;
-import br.com.wepdev.api.converter.CidadeConverterDTO;
-import br.com.wepdev.api.converter.CidadeInputConverterCidade;
 import br.com.wepdev.api.converter.UsuarioConverterDTO;
 import br.com.wepdev.api.converter.UsuarioInputConverterUsuario;
-import br.com.wepdev.domain.exception.EstadoNaoEncontradoException;
-import br.com.wepdev.domain.exception.NegocioException;
-import br.com.wepdev.domain.exception.UsuarioNaoEncontradoException;
-import br.com.wepdev.domain.model.Cidade;
 import br.com.wepdev.domain.model.Usuario;
-import br.com.wepdev.domain.repository.CidadeRepository;
 import br.com.wepdev.domain.repository.UsuarioRepository;
-import br.com.wepdev.domain.service.CidadeService;
 import br.com.wepdev.domain.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

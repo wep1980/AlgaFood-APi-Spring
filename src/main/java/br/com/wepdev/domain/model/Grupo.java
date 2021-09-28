@@ -1,7 +1,9 @@
 package br.com.wepdev.domain.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,6 +38,15 @@ public class Grupo {
 	@JoinTable(name = "grupo_permissao", // Customozindo o nome da tabela criada em relacoes de muitos para muitos
 			joinColumns = @JoinColumn(name ="grupo_id"), // Customozindo o nome da coluna que é a chave estrangeira que referencia a tabela restaurante
 			inverseJoinColumns = @JoinColumn(name ="permissao_id"))  // Customozindo o nome da coluna que é a chave estrangeira que referencia a tabela Permissao
-	private List<Permissao> permissoes = new ArrayList<>(); // Quando se cria uma instancia da lista, se evita o nullpointerexception ao instanciar uam cozinha
+	private Set<Permissao> permissoes = new HashSet<>(); // Quando se cria uma instancia da lista, se evita o nullpointerexception ao instanciar uam cozinha
 
+
+
+	public boolean removerPermissao(Permissao permissao) {
+		return getPermissoes().remove(permissao);
+	}
+
+	public boolean adicionarPermissao(Permissao permissao) {
+		return getPermissoes().add(permissao);
+	}
 }

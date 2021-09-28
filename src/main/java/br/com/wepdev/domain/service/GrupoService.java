@@ -6,9 +6,11 @@ import br.com.wepdev.domain.exception.GrupoNaoEncontradoException;
 import br.com.wepdev.domain.model.Cidade;
 import br.com.wepdev.domain.model.Estado;
 import br.com.wepdev.domain.model.Grupo;
+import br.com.wepdev.domain.model.Permissao;
 import br.com.wepdev.domain.repository.CidadeRepository;
 import br.com.wepdev.domain.repository.EstadoRepository;
 import br.com.wepdev.domain.repository.GrupoRepository;
+import br.com.wepdev.domain.repository.PermissaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -25,6 +27,9 @@ public class GrupoService {
 
 	@Autowired
 	private GrupoRepository grupoRepository;
+
+	@Autowired
+	private PermissaoService permissaoService;
 
 
 
@@ -51,5 +56,23 @@ public class GrupoService {
 	public Grupo buscarOuFalhar(Long grupoId) {
 		return grupoRepository.findById(grupoId)
 				.orElseThrow(() -> new GrupoNaoEncontradoException(grupoId));
+	}
+
+
+
+	@Transactional
+	public void desassociarPermissao(Long grupoId, Long permissaoId) {
+		Grupo grupo = buscarOuFalhar(grupoId);
+		Permissao permissao = permissaoService.buscarOuFalhar(permissaoId);
+
+		grupo.removerPermissao(permissao);
+	}
+
+	@Transactional
+	public void associarPermissao(Long grupoId, Long permissaoId) {
+		Grupo grupo = buscarOuFalhar(grupoId);
+		Permissao permissao = permissaoService.buscarOuFalhar(permissaoId);
+
+		grupo.adicionarPermissao(permissao);
 	}
 }

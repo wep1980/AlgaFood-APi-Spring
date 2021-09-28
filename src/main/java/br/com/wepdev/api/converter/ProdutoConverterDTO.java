@@ -2,7 +2,6 @@ package br.com.wepdev.api.converter;
 
 import br.com.wepdev.api.DTO.CidadeDTO;
 import br.com.wepdev.api.DTO.ProdutoDTO;
-import br.com.wepdev.domain.model.Cidade;
 import br.com.wepdev.domain.model.Produto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

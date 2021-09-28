@@ -1,8 +1,8 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.DTO.CidadeDTO;
-import br.com.wepdev.api.DTO.GrupoDTO;
-import br.com.wepdev.domain.model.Grupo;
+
+import br.com.wepdev.api.DTO.PermissaoDTO;
+import br.com.wepdev.domain.model.Permissao;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * Classe que contem os metodos que convertem de Entidades para DTO
  */
 @Component
-public class GrupoConverterDTO {
+public class PermissaoConverterDTO {
 
 
     /*
@@ -26,25 +26,16 @@ public class GrupoConverterDTO {
     private ModelMapper modelMapper;
 
 
-    /**
-     * Metodo que converte Estado em EstadoDTO
-     * @param grupo
-     * @return
-     */
-    public GrupoDTO converteEntidadeParaDto(Grupo grupo) {
-        return modelMapper.map(grupo, GrupoDTO.class);
+    public PermissaoDTO converteEntidadeParaDto(Permissao permissao) {
+        return modelMapper.map(permissao, PermissaoDTO.class);
     }
 
 
-    /**
-     * Metodo que converte uma lista de Estado em uma lista de Estado
-     * @param grupos
-     * @return
-     */
-    public List<GrupoDTO> converteListaEntidadeParaListaDto(Collection<Grupo> grupos){
+
+    public List<PermissaoDTO> converteListaEntidadeParaListaDto(Collection<Permissao> permissoes){
 
         // Convertendo uma lista de Restaurantes para uma lista de RestauranteDTO
-        return grupos.stream().map(grupo -> converteEntidadeParaDto(grupo))
+        return permissoes.stream().map(permissao -> converteEntidadeParaDto(permissao))
                 .collect(Collectors.toList());
     }
 }
