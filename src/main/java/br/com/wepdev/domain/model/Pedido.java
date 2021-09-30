@@ -32,7 +32,8 @@ public class Pedido {
     @Embedded // Esta classe esta sendo incorporada em Restaurante
     private Endereco enderecoEntrega;
 
-    private StatusPedido status;
+    @Enumerated(EnumType.STRING) // Evita erros na hora de converter a String para enumeração
+    private StatusPedido status = StatusPedido.CRIADO;
 
     @CreationTimestamp
     private OffsetDateTime dataCriacao;
@@ -43,7 +44,12 @@ public class Pedido {
 
     private OffsetDateTime dataEntrega;
 
-    @ManyToOne// muitos pedidos para 1 forma de pagamento
+    /**
+     * (fetch = FetchType.LAZY) -> (Carregamento preguiçoso) So faz o select em forma de pagamento se for necessario,
+     * Nem sempre que for buscado um pedidop e necessario a forma de pagamento. No DTO de PedidoResumoDTO nao tem forma de pagamento, entao nao e necessario
+     * fazer um select nele
+     */
+    @ManyToOne(fetch = FetchType.LAZY)// muitos pedidos para 1 forma de pagamento
     @JoinColumn(nullable = false)
     private FormaPagamento formaPagamento;
 
@@ -56,9 +62,28 @@ public class Pedido {
     @JoinColumn(name = "usuario_cliente_id", nullable = false)
     private Usuario cliente;
 
+    // Itens que estao sendo comprados
     @OneToMany(mappedBy = "pedido") // Um pedido para varios itens
     private List<ItemPedido> itens = new ArrayList<ItemPedido>();
 
 
+    /**
+     * Calcula o valor total de um pedido
+     */
+    public void calcularValorTotal() {
+        this.subtotal = getItens().stream().map(item -> item.getPrecoTotal()).reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        this.valorTotal = this.subtotal.add(this.taxaFrete);
+    }
+
+
+    public void definirFrete() {
+        setTaxaFrete(getRestaurante().getTaxaFrete());
+    }
+
+
+    public void atribuirPedidoAosItens() {
+        getItens().forEach(item -> item.setPedido(this));
+    }
 
 }

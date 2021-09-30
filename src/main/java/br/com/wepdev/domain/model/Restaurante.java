@@ -181,4 +181,24 @@ public class Restaurante {
 		return getResponsaveis().add(usuario);
 	}
 
+
+	/**
+	 * Metodo que verifica se o restaurante aceita ou não determinada forma de pagamento
+	 * @param formaPagamento
+	 * @return
+	 */
+	public boolean aceitaFormaPagamento(FormaPagamento formaPagamento) {
+		return getFormasPagamento().contains(formaPagamento);
+	}
+
+
+	/**
+	 * Metodo que verifica se o restaurante aceita ou não determinada forma de pagamento
+	 * @param formaPagamento
+	 * @return
+	 */
+	public boolean naoAceitaFormaPagamento(FormaPagamento formaPagamento) {
+		return !aceitaFormaPagamento(formaPagamento);
+	}
+
 }
