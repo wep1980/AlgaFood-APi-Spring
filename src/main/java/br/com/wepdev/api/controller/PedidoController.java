@@ -1,18 +1,14 @@
 package br.com.wepdev.api.controller;
 
-import br.com.wepdev.api.DTO.CozinhaDTO;
-import br.com.wepdev.api.DTO.INPUT.CozinhaInputDTO;
+import br.com.wepdev.api.DTO.INPUT.PedidoInputDTO;
 import br.com.wepdev.api.DTO.PedidoDTO;
 import br.com.wepdev.api.DTO.PedidoResumoDTO;
-import br.com.wepdev.api.converter.CozinhaConverterDTO;
-import br.com.wepdev.api.converter.CozinhaInputConverterCozinha;
-import br.com.wepdev.api.converter.PedidoConverterDTO;
-import br.com.wepdev.api.converter.PedidoResumoConverterDTO;
-import br.com.wepdev.domain.model.Cozinha;
+import br.com.wepdev.api.converter.*;
+import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
+import br.com.wepdev.domain.exception.NegocioException;
 import br.com.wepdev.domain.model.Pedido;
-import br.com.wepdev.domain.repository.CozinhaRepository;
+import br.com.wepdev.domain.model.Usuario;
 import br.com.wepdev.domain.repository.PedidoRepository;
-import br.com.wepdev.domain.service.CozinhaService;
 import br.com.wepdev.domain.service.EmissaoPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,6 +36,9 @@ public class PedidoController {
 
 	@Autowired
 	private PedidoResumoConverterDTO pedidoResumoConverterDTO;
+
+	@Autowired
+	private PedidoInputConverterPedido pedidoInputConverterPedido;
 	
 
 
@@ -61,5 +60,23 @@ public class PedidoController {
 		return pedidoConverterDTO.converteEntidadeParaDto(pedido);
 	}
 
+
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	public PedidoDTO adicionar(@Valid @RequestBody PedidoInputDTO pedidoInput) {
+		try {
+			Pedido novoPedido = pedidoInputConverterPedido.converteInputParaEntidade(pedidoInput);
+
+			// TODO pegar usuário autenticado
+			novoPedido.setCliente(new Usuario());
+			novoPedido.getCliente().setId(1L);
+
+			novoPedido = emissaoPedido.emitir(novoPedido);
+
+			return pedidoConverterDTO.converteEntidadeParaDto(novoPedido);
+		} catch (EntidadeNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage(), e);
+		}
+	}
 
 }

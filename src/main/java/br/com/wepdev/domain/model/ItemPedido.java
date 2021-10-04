@@ -28,4 +28,21 @@ public class ItemPedido {
     @ManyToOne // Muitos itens de pedido para 1 produto
     @JoinColumn(nullable = false)
     private Produto produto;
+
+
+
+    public void calcularPrecoTotal() {
+        BigDecimal precoUnitario = this.getPrecoUnitario();
+        Integer quantidade = this.getQuantidade();
+
+        if (precoUnitario == null) {
+            precoUnitario = BigDecimal.ZERO;
+        }
+
+        if (quantidade == null) {
+            quantidade = 0;
+        }
+        this.setPrecoTotal(precoUnitario.multiply(new BigDecimal(quantidade)));
+    }
+
 }

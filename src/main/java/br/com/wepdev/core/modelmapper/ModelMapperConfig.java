@@ -1,8 +1,10 @@
 package br.com.wepdev.core.modelmapper;
 
 import br.com.wepdev.api.DTO.EnderecoDTO;
+import br.com.wepdev.api.DTO.INPUT.ItemPedidoInputDTO;
 import br.com.wepdev.api.DTO.RestauranteDTO;
 import br.com.wepdev.domain.model.Endereco;
+import br.com.wepdev.domain.model.ItemPedido;
 import br.com.wepdev.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +24,10 @@ public class ModelMapperConfig {
 
 //        modelMapper.createTypeMap(Restaurante.class, RestauranteDTO.class)
 //                .addMapping(Restaurante::getTaxaFrete, RestauranteDTO::setTaxaFrete); // Mapeamento simples feito com referencia de metodos.
+
+        // Adicionandp um mapeamento customizado , ignorando o mapeamento para o setId()
+        modelMapper.createTypeMap(ItemPedidoInputDTO.class, ItemPedido.class)
+                .addMappings(mapper -> mapper.skip(ItemPedido::setId));
 
         // Mapeamento de endereco para EnderecoDTO
         var enderecoToEnderecoDTOTypeMap = modelMapper.createTypeMap(Endereco.class, EnderecoDTO.class);

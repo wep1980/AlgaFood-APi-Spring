@@ -63,7 +63,7 @@ public class Pedido {
     private Usuario cliente;
 
     // Itens que estao sendo comprados
-    @OneToMany(mappedBy = "pedido") // Um pedido para varios itens
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)//Um pedido para varios itens, CascadeType.ALL -> Salva os itens do pedido em cascata, junto com pedido
     private List<ItemPedido> itens = new ArrayList<ItemPedido>();
 
 
@@ -71,7 +71,11 @@ public class Pedido {
      * Calcula o valor total de um pedido
      */
     public void calcularValorTotal() {
-        this.subtotal = getItens().stream().map(item -> item.getPrecoTotal()).reduce(BigDecimal.ZERO, BigDecimal::add);
+        getItens().forEach(ItemPedido::calcularPrecoTotal);
+
+        this.subtotal = getItens().stream()
+                .map(item -> item.getPrecoTotal())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         this.valorTotal = this.subtotal.add(this.taxaFrete);
     }
