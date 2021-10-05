@@ -1,6 +1,5 @@
 package br.com.wepdev.api.controller;
 
-import br.com.wepdev.api.DTO.CidadeDTO;
 import br.com.wepdev.api.DTO.INPUT.ProdutoInputDTO;
 import br.com.wepdev.api.DTO.ProdutoDTO;
 import br.com.wepdev.api.converter.ProdutoConverterDTO;
@@ -40,14 +39,25 @@ public class RestauranteProdutoController {
 	@Autowired
 	private ProdutoInputConverterProduto produtoInputConverterProduto;
 
-	
-	
+
+	/**
+	 *
+	 * @param restauranteId
+	 * @param incluirInativos required = false -> nao torna obrigatorio a passagem do parametro, ja que por padrao a busca pelos restaurantes e feita so com o ativos
+	 * @return
+	 */
 	@GetMapping
-	public List<ProdutoDTO> listar(@PathVariable Long restauranteId) {
+	public List<ProdutoDTO> listar(@PathVariable Long restauranteId, @RequestParam(required = false) boolean incluirInativos) {
+
 		Restaurante restaurante = restauranteService.buscarOuFalhar(restauranteId);
 
-		List<Produto> todosProdutos = produtoRepository.findByRestaurante(restaurante);
+		List<Produto> todosProdutos = null;
 
+		if(incluirInativos){
+			todosProdutos = produtoRepository.findTodosByRestaurante(restaurante);
+		} else {
+			todosProdutos = produtoRepository.findAtivosByRestaurante(restaurante);
+		}
 		return produtoConverterDTO.converteListaEntidadeParaListaDto(todosProdutos);
 	}
 
