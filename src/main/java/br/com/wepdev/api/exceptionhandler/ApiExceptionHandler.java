@@ -18,6 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -49,14 +50,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     private MessageSource messageSource; // Instancia injetada, é uma interface que resolve mensagens
 
-
-//    public static Throwable getRootException(Throwable exception){
-//        Throwable rootException=exception;
-//        while(rootException.getCause()!=null){
-//            rootException = rootException.getCause();
-//        }
-//        return rootException;
-//    }
 
 
     /**
@@ -445,59 +438,45 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
-    /**
-     * Metodo que captura exception lançada quando uma regra da validação e violada.
-     * @param ex
-     * @param headers
-     * @param status
-     * @param request
-     * @return
-     */
+    @Override
+    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        return handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
+        return handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
+    }
+
+
+    private ResponseEntity<Object> handleValidationInternal(Exception ex, HttpHeaders headers, HttpStatus status, WebRequest request, BindingResult bindingResult) {
+
         ProblemType problemType = ProblemType.DADOS_INVALIDOS;
+
         String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
 
-        BindingResult bindingResult = ex.getBindingResult(); // Armazena as violações de constraints, acesso as propriedades violadas
-
-        /**
-         * Transformando a lista de erros que e do tipo BindingResult em uma lista de Problem.Campo
-         * Problem.Campo.builder() -> chamando o builder do Campo, pegando o resultando dos campos, fazendo o build e trasnformando em uma lista de Problem.Campo
-         *
-         * Foi criado um bloco de codigo dentro da stream(), o bloco começa em fieldError -> {   e termina depois do build() }, esse bloco foi criado
-         * por conta do String message
-         */
         List<Problem.Objeto> problemObjetos = bindingResult.getAllErrors().stream().map(objectError -> {
 
-                    /**
-                     * Pegando a mensagem do erro com fieldError e passando a região local para as mesagens serem enviadas em portugues.
-                     * Foi necessario configurar o UTF-8 no settings -> file encodings
-                     */
                     String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
 
-            /*
-             Pegando o nome da classe na qual ocorreu o erro de validação, no exemplo o erro ocorre quando e usada a validação de classe customizada,
-             @ValorZeroIncluiDescricao que de acordo com a regra se o frete e igual a zero, no campo nome deve contem a frase frete gratis
-             */
                     String name = objectError.getObjectName();
 
                     if(objectError instanceof FieldError){
                         name = ((FieldError) objectError).getField();
                     }
                     return Problem.Objeto.builder()
-                            .name(name) // Pegando o nome da propriedade
-                            //.mensagemParaUsuario(fieldError.getDefaultMessage()) // Nao retorna as msgs customizadas do arquivo messages.properties
-                            .userMessage(message) // Informando a mensagem para cada tipo de violação
+                            .name(name)
+                            .userMessage(message)
                             .build();
                 })
-                .collect(Collectors.toList()); // Transformando a stream() na lista de Problem.Campo, com as propriedade preenchidas
+                .collect(Collectors.toList());
 
         Problem problem = createProblemBuilder(status, problemType, detail)
                 .objetos(problemObjetos)
                 .userMessage(detail)
                 .build();
-
         return handleExceptionInternal(ex, problem, headers, status, request);
     }
 
