@@ -15,7 +15,7 @@ public class RestauranteSpecs {
 	
 	
 	/*
-	 * Para nao precisar reornar uma instancia da classe RestauranteComFreteGratisSpec(), 
+	 * Para nao precisar retornar uma instancia da classe RestauranteComFreteGratisSpec(),
 	 * pode ser criada uma classe anonima utilizando expressao lambda.
 	 * 
 	 */

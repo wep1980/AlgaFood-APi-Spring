@@ -9,13 +9,11 @@ import br.com.wepdev.domain.exception.NegocioException;
 import br.com.wepdev.domain.model.Pedido;
 import br.com.wepdev.domain.model.Usuario;
 import br.com.wepdev.domain.repository.PedidoRepository;
+import br.com.wepdev.api.DTO.INPUT.PedidoFilterInputDTO;
 import br.com.wepdev.domain.service.EmissaoPedidoService;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import org.apache.commons.lang3.StringUtils;
+import br.com.wepdev.infrastructure.repository.spec.PedidoSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -43,13 +41,24 @@ public class PedidoController {
 
 	@Autowired
 	private PedidoInputConverterPedido pedidoInputConverterPedido;
-	
 
 
+	/**
+	 * Metodo que pesquisa um pedido pelos filtros de restauranteId, clienteId, dataCriacaoInicio e dataCriacaoFim, ou se nao for colado nenhum filtro traz todos
+	 * os pedidos.
+	 *
+	 * So de colocar o parametro no metodo PedidoFilterDTO, o spring ja entende e faz de forma automatica uma instancia de PedidoFilterDTO e atribui as
+	 * propriedades
+	 * @param filtro
+	 * @return
+	 */
 	@GetMapping
-	public List<PedidoResumoDTO> listar() {
+	public List<PedidoResumoDTO> pesquisar(PedidoFilterInputDTO filtro) {
 
-		List<Pedido> todosPedidos = pedidoRepository.findAll();
+		/**
+		 * O findAll() nao estava aceitando passar um specification no parametro pq o Repository tem que extender JpaSpecificationExecutor
+		 */
+		List<Pedido> todosPedidos = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro));
 
 		return pedidoResumoConverterDTO.converteListaEntidadeParaListaDto(todosPedidos);
 	}

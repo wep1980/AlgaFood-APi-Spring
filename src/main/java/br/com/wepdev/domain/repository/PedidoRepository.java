@@ -2,15 +2,18 @@ package br.com.wepdev.domain.repository;
 
 import br.com.wepdev.domain.model.Pedido;
 import br.com.wepdev.infrastructure.repository.CustomJpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-
+/**
+ * JpaSpecificationExecutor<Restaurante> -> Implementa as classes de metodos customizados no padrao DDD(Domain driven design) Specifications
+ */
 @Repository
-public interface PedidoRepository extends CustomJpaRepository<Pedido, Long> {
+public interface PedidoRepository extends CustomJpaRepository<Pedido, Long>, JpaSpecificationExecutor<Pedido> {
 
 
     /**

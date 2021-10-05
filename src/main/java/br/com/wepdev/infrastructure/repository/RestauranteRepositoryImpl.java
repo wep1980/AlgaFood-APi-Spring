@@ -94,7 +94,7 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 //	}
 	
 	
-	// ******* CRITERIA Api do JPA para criacao de querys de forma programatica, ele e burocratica, ideal para consultas complexas e dinamicas ****************************************
+	// ******* CRITERIA Api do JPA para criacao de querys de forma programatica, ela e burocratica, ideal para consultas complexas e dinamicas ******************
 	
 	
 	/**
