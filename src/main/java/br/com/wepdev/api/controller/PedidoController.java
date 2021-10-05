@@ -52,10 +52,10 @@ public class PedidoController {
 
 
 
-	@GetMapping("/{pedidoId}")
-	public PedidoDTO buscar(@PathVariable Long pedidoId) {
+	@GetMapping("/{codigoPedido}")
+	public PedidoDTO buscar(@PathVariable String codigoPedido) {
 
-		Pedido pedido = emissaoPedido.buscarOuFalhar(pedidoId);
+		Pedido pedido = emissaoPedido.buscarOuFalhar(codigoPedido);
 
 		return pedidoConverterDTO.converteEntidadeParaDto(pedido);
 	}

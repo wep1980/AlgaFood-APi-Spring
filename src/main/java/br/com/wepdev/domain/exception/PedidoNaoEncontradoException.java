@@ -13,15 +13,15 @@ public class PedidoNaoEncontradoException extends EntidadeNaoEncontradaException
 
 
 
-	public PedidoNaoEncontradoException(String mensagem) {
-		super ( mensagem); // Chama o construtor do RuntimeException passando a mensagem recebida por parametro
-	}
+//	public PedidoNaoEncontradoException(String mensagem) {
+//		super ( mensagem); // Chama o construtor do RuntimeException passando a mensagem recebida por parametro
+//	}
 
 	/**
 	 * this() -> Chama o construtor acima
 	 * * @param estadoId
 	 */
-	public PedidoNaoEncontradoException(Long pedidoId) {
-		this(String.format("Não existe um cadastro de pedido com código %d", pedidoId));
+	public PedidoNaoEncontradoException(String codigoPedido) {
+		super(String.format("Não existe um cadastro de pedido com código %s", codigoPedido));
 	}
 }

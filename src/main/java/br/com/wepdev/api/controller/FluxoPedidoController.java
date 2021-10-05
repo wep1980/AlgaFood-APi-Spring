@@ -24,7 +24,7 @@ import java.util.List;
 //@ResponseBody // As Respostas dos metedos desse controlador devem ir na resposta da requisicao
 //@Controller // Controlador REST
 @RestController // Substitue as 2 anotacoes acima
-@RequestMapping(value = "/pedidos/{pedidoId}") //, produces = MediaType.APPLICATION_JSON_VALUE) // Toda a classe produz JSON
+@RequestMapping(value = "/pedidos/{codigoPedido}") //, produces = MediaType.APPLICATION_JSON_VALUE) // Toda a classe produz JSON
 public class FluxoPedidoController {
 
 	@Autowired
@@ -35,22 +35,22 @@ public class FluxoPedidoController {
 
 	@PutMapping("/confirmacao")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void confirmar(@PathVariable Long pedidoId){
-		fluxoPedidoService.confirmar(pedidoId);
+	public void confirmar(@PathVariable String codigoPedido){
+		fluxoPedidoService.confirmar(codigoPedido);
 	}
 
 
 	@PutMapping("/cancelamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void cancelar(@PathVariable Long pedidoId) {
-		fluxoPedidoService.cancelar(pedidoId);
+	public void cancelar(@PathVariable String codigoPedido) {
+		fluxoPedidoService.cancelar(codigoPedido);
 	}
 
 
 	@PutMapping("/entrega")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void entregar(@PathVariable Long pedidoId) {
-		fluxoPedidoService.entregar(pedidoId);
+	public void entregar(@PathVariable String codigoPedido) {
+		fluxoPedidoService.entregar(codigoPedido);
 	}
 
 

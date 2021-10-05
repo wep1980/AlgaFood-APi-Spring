@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data // Anotacao do LOMBOK que possui gets , sets , equals&HashCode e ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true) // Habilita os campos explicidamente que serao utilizados no Equals e hashcode
@@ -67,6 +68,11 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)//Um pedido para varios itens, CascadeType.ALL -> Salva os itens do pedido em cascata, junto com pedido
     private List<ItemPedido> itens = new ArrayList<ItemPedido>();
 
+    /**
+     * Campo criado para nao expor o id do produto, ja que o id revela a quantidade de pedidos existentes.
+     * O codigo e gerado atraves de um uuid -- https://www.uuidgenerator.net/
+     */
+    private String codigo;
 
     /**
      * Calcula o valor total de um pedido
@@ -116,12 +122,23 @@ public class Pedido {
      */
     private void setStatus(StatusPedido novoStatus){
         if(getStatus().naoPodeAlterarPara(novoStatus)){
-            throw new NegocioException(String.format("Status do pedido %d não pode ser alterado de %s para %s",
-                    getId(),
+            throw new NegocioException(String.format("Status do pedido %s não pode ser alterado de %s para %s",
+                    getCodigo(),
                     getStatus().getDescricao(), // status atual do pedido
                     novoStatus.getDescricao()));
         }
         this.status = novoStatus;
+
+    }
+
+
+    /**
+     * Gerando um codigo UUID e setando no campo codigo
+     * @PrePersist -> antes de inserir um pedido executa esse metodo, metodo de callback do JPA
+     */
+    @PrePersist
+    private void gerarCodigo(){
+        setCodigo(UUID.randomUUID().toString());
 
     }
 
