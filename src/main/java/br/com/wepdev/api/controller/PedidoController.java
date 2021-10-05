@@ -10,8 +10,12 @@ import br.com.wepdev.domain.model.Pedido;
 import br.com.wepdev.domain.model.Usuario;
 import br.com.wepdev.domain.repository.PedidoRepository;
 import br.com.wepdev.domain.service.EmissaoPedidoService;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -42,12 +46,44 @@ public class PedidoController {
 	
 
 
+//	@GetMapping
+//	public List<PedidoResumoDTO> listar() {
+//
+//		List<Pedido> todosPedidos = pedidoRepository.findAll();
+//
+//		return pedidoResumoConverterDTO.converteListaEntidadeParaListaDto(todosPedidos);
+//	}
+
+
+	/**
+	 * Endpoint para trabalhar com JsonFilter, recebe por parametro somente os campos desejados que seja repassados na representação,
+	 * ou repassa na representacao todos os campos, caso nenhum parametro seja passado
+	 *
+	 * @return
+	 */
 	@GetMapping
-	public List<PedidoResumoDTO> listar() {
+	public MappingJacksonValue listar(@RequestParam(required = false) String campos) {
 
-		List<Pedido> todosPedidos = pedidoRepository.findAll();
+		List<Pedido> pedidos = pedidoRepository.findAll();
+		List<PedidoResumoDTO> pedidosResumoDto = pedidoResumoConverterDTO.converteListaEntidadeParaListaDto(pedidos);
 
-		return pedidoResumoConverterDTO.converteListaEntidadeParaListaDto(todosPedidos);
+		MappingJacksonValue pedidosWrapper = new MappingJacksonValue(pedidosResumoDto); // Instanciando o envelope passado o DTO
+
+		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+		//filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll()); // Serializa todas as propriedades do DTO
+
+		// Serializa apenas as propriedades codigo e valorTotal do DTO
+		//filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept("codigo", "valorTotal"));
+
+		filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll()); // por padrao serializa todas as propriedades do DTO
+
+		if(StringUtils.isNotBlank(campos)){
+           filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept( // se tiver campos serializa pelos campos passados
+				   campos.split(","))); // Quebra a String campos , separando por virgula em um array
+		}
+		pedidosWrapper.setFilters(filterProvider);
+
+		return pedidosWrapper;
 	}
 
 
