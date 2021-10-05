@@ -1,5 +1,6 @@
 package br.com.wepdev.domain.model;
 
+import br.com.wepdev.domain.exception.NegocioException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -88,6 +89,40 @@ public class Pedido {
 
     public void atribuirPedidoAosItens() {
         getItens().forEach(item -> item.setPedido(this));
+    }
+
+
+    public void confirmar(){
+        setStatus(StatusPedido.CONFIRMADO);
+        setDataConfirmacao(OffsetDateTime.now());
+    }
+
+
+    public void entregar(){
+        setStatus(StatusPedido.ENTREGUE);
+        setDataEntrega(OffsetDateTime.now());
+    }
+
+
+    public void cancelar(){
+        setStatus(StatusPedido.CANCELADO);
+        setDataCancelamento(OffsetDateTime.now());
+    }
+
+
+    /**
+     * Metodo setStatus() que altera o status atual de acordo com seu status anterior
+     * @param novoStatus
+     */
+    private void setStatus(StatusPedido novoStatus){
+        if(getStatus().naoPodeAlterarPara(novoStatus)){
+            throw new NegocioException(String.format("Status do pedido %d não pode ser alterado de %s para %s",
+                    getId(),
+                    getStatus().getDescricao(), // status atual do pedido
+                    novoStatus.getDescricao()));
+        }
+        this.status = novoStatus;
+
     }
 
 }
