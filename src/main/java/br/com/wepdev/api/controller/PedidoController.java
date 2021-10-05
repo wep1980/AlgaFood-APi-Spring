@@ -46,13 +46,13 @@ public class PedidoController {
 	
 
 
-//	@GetMapping
-//	public List<PedidoResumoDTO> listar() {
-//
-//		List<Pedido> todosPedidos = pedidoRepository.findAll();
-//
-//		return pedidoResumoConverterDTO.converteListaEntidadeParaListaDto(todosPedidos);
-//	}
+	@GetMapping
+	public List<PedidoResumoDTO> listar() {
+
+		List<Pedido> todosPedidos = pedidoRepository.findAll();
+
+		return pedidoResumoConverterDTO.converteListaEntidadeParaListaDto(todosPedidos);
+	}
 
 
 	/**
@@ -61,30 +61,30 @@ public class PedidoController {
 	 *
 	 * @return
 	 */
-	@GetMapping
-	public MappingJacksonValue listar(@RequestParam(required = false) String campos) {
-
-		List<Pedido> pedidos = pedidoRepository.findAll();
-		List<PedidoResumoDTO> pedidosResumoDto = pedidoResumoConverterDTO.converteListaEntidadeParaListaDto(pedidos);
-
-		MappingJacksonValue pedidosWrapper = new MappingJacksonValue(pedidosResumoDto); // Instanciando o envelope passado o DTO
-
-		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-		//filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll()); // Serializa todas as propriedades do DTO
-
-		// Serializa apenas as propriedades codigo e valorTotal do DTO
-		//filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept("codigo", "valorTotal"));
-
-		filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll()); // por padrao serializa todas as propriedades do DTO
-
-		if(StringUtils.isNotBlank(campos)){
-           filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept( // se tiver campos serializa pelos campos passados
-				   campos.split(","))); // Quebra a String campos , separando por virgula em um array
-		}
-		pedidosWrapper.setFilters(filterProvider);
-
-		return pedidosWrapper;
-	}
+//	@GetMapping
+//	public MappingJacksonValue listar(@RequestParam(required = false) String campos) {
+//
+//		List<Pedido> pedidos = pedidoRepository.findAll();
+//		List<PedidoResumoDTO> pedidosResumoDto = pedidoResumoConverterDTO.converteListaEntidadeParaListaDto(pedidos);
+//
+//		MappingJacksonValue pedidosWrapper = new MappingJacksonValue(pedidosResumoDto); // Instanciando o envelope passado o DTO
+//
+//		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+//		//filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll()); // Serializa todas as propriedades do DTO
+//
+//		// Serializa apenas as propriedades codigo e valorTotal do DTO
+//		//filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept("codigo", "valorTotal"));
+//
+//		filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll()); // por padrao serializa todas as propriedades do DTO
+//
+//		if(StringUtils.isNotBlank(campos)){
+//           filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept( // se tiver campos serializa pelos campos passados
+//				   campos.split(","))); // Quebra a String campos , separando por virgula em um array
+//		}
+//		pedidosWrapper.setFilters(filterProvider);
+//
+//		return pedidosWrapper;
+//	}
 
 
 
