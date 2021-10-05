@@ -1,5 +1,7 @@
 package br.com.wepdev.api.DTO;
 
+import br.com.wepdev.domain.model.view.RestauranteView;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,11 +12,20 @@ import java.math.BigDecimal;
 public class RestauranteDTO {
 
 
+    @JsonView({RestauranteView.Resumo.class, RestauranteView.ApenasNome.class}) // Mostrando uma versão resumida com JSonView
     private Long id;
+
+    @JsonView({RestauranteView.Resumo.class, RestauranteView.ApenasNome.class})
     private String nome;
+
+    @JsonView(RestauranteView.Resumo.class)
     private BigDecimal taxaFrete;
+
+    @JsonView(RestauranteView.Resumo.class)
     private CozinhaDTO cozinha;
+
     private Boolean ativo;
+
     private Boolean aberto;
 
     private EnderecoDTO endereco;

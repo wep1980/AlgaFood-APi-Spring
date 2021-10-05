@@ -10,8 +10,11 @@ import br.com.wepdev.domain.exception.CidadeNaoEncontradaException;
 import br.com.wepdev.domain.exception.CozinhaNaoEncontradaException;
 import br.com.wepdev.domain.exception.NegocioException;
 import br.com.wepdev.domain.exception.RestauranteNaoEncontradoException;
+import br.com.wepdev.domain.model.view.RestauranteView;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,12 +46,52 @@ public class RestauranteController {
 	@Autowired
 	private SmartValidator validato;
 
-	
-	
+
+
+	@JsonView(RestauranteView.Resumo.class)
 	@GetMapping
 	public List<RestauranteDTO> listar() {
 		return restauranteConverterDTO.converteListaEntidadeParaListaDto(restauranteRepository.findAll());
 	}
+
+
+//	@JsonView(RestauranteView.Resumo.class) // Ao inves de representação ser exibido o DTO, sera exibido a classe de resumo que utiliza o JsonView
+//	@GetMapping(params = "projecao=resumo") // esse endpoint so sera utilizado se no GET for passado esse parametro=resumo
+//	public List<RestauranteDTO> listarResumido() {
+//		return listar();
+//	}
+
+
+	@JsonView(RestauranteView.ApenasNome.class) // Ao inves de representação ser exibido o DTO, sera exibido a classe de resumo que utiliza o JsonView
+	@GetMapping(params = "projecao=apenas-nome") // esse endpoint so sera utilizado se no GET for passado esse parametro=apenas-nome
+	public List<RestauranteDTO> listarApenasNomes() {
+		return listar();
+	}
+
+	/**
+	 * Deixando o endpoint dinamico para aceitar parametros diferentes utilizando MappingJacksonValue.
+	 * O metodo recebe um @RequestParam e o required = false, para não ser obrigatorio o parametro, ja que ao listar sem passagem de parametro,
+	 * na representação ele traz a lista de acordo com o DTO e nao as interfaces com JsonView que possuem os parametros
+	 * @return
+	 */
+//	@GetMapping
+//	public MappingJacksonValue listar(@RequestParam(required = false) String projecao) {
+//		List<Restaurante> restaurantes = restauranteRepository.findAll();
+//		List<RestauranteDTO> restaurantesDto = restauranteConverterDTO.converteListaEntidadeParaListaDto(restaurantes);
+//
+//		MappingJacksonValue restaurantesWrapper = new MappingJacksonValue(restaurantesDto);
+//
+//		// se nao for passado nenhum parametro, por padrão vai ser sempre utilizado o resumo na representação
+//		restaurantesWrapper.setSerializationView(RestauranteView.Resumo.class);
+//
+//		if("apenas-nome".equals(projecao)){ // Se o parametro passado for projecao
+//			restaurantesWrapper.setSerializationView(RestauranteView.ApenasNome.class);
+//		}
+//		else if("completo".equals(projecao)){ // se o parametro passado for completo, o DTO sera passado na representação, por isso valor null abaixo
+//			restaurantesWrapper.setSerializationView(null);
+//		}
+//		return restaurantesWrapper;
+//	}
 
 	
 	@GetMapping("/{restauranteId}")
