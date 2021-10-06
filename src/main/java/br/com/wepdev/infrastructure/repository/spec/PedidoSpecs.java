@@ -17,7 +17,7 @@ public class PedidoSpecs {
 
 
 	/**
-	 * Metodo que filtra pelas propriedades um pedido.
+	 * Metodo que filtra pelas propriedades um pedido, utilizando o criteria query.
 	 *
 	 * Consulta implementada dentro de um bloco de codigo
 	 * @param filtro
@@ -26,8 +26,20 @@ public class PedidoSpecs {
 	public static Specification<Pedido> usandoFiltro(PedidoFilterInputDTO filtro) {
 
 		return (root, query, builder) -> {
-			root.fetch("restaurante").fetch("cozinha"); // Resolvendo problema do N+1 , muitos selects desnecessario
-			root.fetch("cliente"); // Resolvendo problema do N+1 , muitos selects desnecessario
+
+			/**
+			 * Esse metodo tem que funcionar tanto para o select nos pedidos de acordo com os filtros, quanto para um select count que é utilizado na paginação.
+			 * O problema que existia é que nao tem como fazer um fetch em um count.
+			 *
+			 * O if() Verifica se o resultType do criteria query e do tipo Pedido, se faz um fetch para retornar pedidos, se nao for nao faz o fetch.
+			 *
+			 * A paginacao faz um count que retorna um tipo numerico.
+			 */
+			if (Pedido.class.equals(query.getResultType())) {
+
+				root.fetch("restaurante").fetch("cozinha"); // Resolvendo problema do N+1 , muitos selects desnecessario
+				root.fetch("cliente"); // Resolvendo problema do N+1 , muitos selects desnecessario
+			}
 
 			var predicates = new ArrayList<Predicate>(); // Predicate e um filtro, funciona como se fosse um where
 

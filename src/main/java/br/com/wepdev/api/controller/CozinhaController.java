@@ -7,6 +7,10 @@ import br.com.wepdev.api.DTO.INPUT.CozinhaInputDTO;
 import br.com.wepdev.api.converter.CozinhaConverterDTO;
 import br.com.wepdev.api.converter.CozinhaInputConverterCozinha;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,12 +50,38 @@ public class CozinhaController {
 	
 
 
+//	@GetMapping
+//	public List<CozinhaDTO> listar() {
+//
+//		List<Cozinha> todasCozinha = cozinhaRepository.findAll();
+//
+//		return cozinhaConverterDTO.converteListaEntidadeParaListaDto(todasCozinha);
+//	}
+
+
+	/**
+	 * @PageableDefault(size = 10) -> Apenas elementos serão exibidos por pagina
+	 * @param pageable
+	 * @return
+	 */
 	@GetMapping
-	public List<CozinhaDTO> listar() {
+	public Page<CozinhaDTO> listarComPaginacao(@PageableDefault(size = 10) Pageable pageable) {
 
-		List<Cozinha> todasCozinha = cozinhaRepository.findAll();
+		Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable); // O findAll() ja possui a sobrecarga para o Page
 
-		return cozinhaConverterDTO.converteListaEntidadeParaListaDto(todasCozinha);
+		List<CozinhaDTO> cozinhasDto = cozinhaConverterDTO.converteListaEntidadeParaListaDto(cozinhasPage.getContent());
+
+		/**
+		 * Colocando uma lista de CozinhaDTO dentro do Page.
+		 * cozinhasDto -> conteudo que sera colocado dentro do page.
+		 * pageable -> parametro recebido no endpoint.
+		 * cozinhasPage.getTotalElements() -> pegando o total de elementos de dentro do cozinhasPage
+		 *
+		 * Como o retorno e um Page, na representacao tera todos os elementos da paginação
+		 */
+		Page<CozinhaDTO> cozinhasDtoPage = new PageImpl<>(cozinhasDto, pageable, cozinhasPage.getTotalElements());
+
+		return cozinhasDtoPage;
 	}
 
 
