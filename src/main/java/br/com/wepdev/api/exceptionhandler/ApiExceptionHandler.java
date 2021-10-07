@@ -457,21 +457,37 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
 
+        /**
+         * bindingResult -> Armazena as violações de constraints.
+         * Transformando a lista de erros que e do tipo BindingResult em uma lista de Problem.Campo
+         * Problem.Campo.builder() -> chamando o builder do Campo, pegando o resultando dos campos, fazendo o build e trasnformando em uma lista de Problem.Campo
+         *
+         * Foi criado um bloco de codigo dentro da stream(), o bloco começa em fieldError -> {   e termina depois do build() }, esse bloco foi criado
+         * por conta do String message
+         */
         List<Problem.Objeto> problemObjetos = bindingResult.getAllErrors().stream().map(objectError -> {
 
+                    /**
+                     * Pegando a mensagem do erro com fieldError e passando a região local para as mesagens serem enviadas em portugues.
+                     * Foi necessario configurar o UTF-8 no settings -> file encodings
+                     */
                     String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
 
+                     /*
+                     Pegando o nome da classe na qual ocorreu o erro de validação, no exemplo o erro ocorre quando e usada a validação de classe customizada,
+                     @ValorZeroIncluiDescricao que de acordo com a regra se o frete e igual a zero, no campo nome deve contem a frase frete gratis
+                     */
                     String name = objectError.getObjectName();
 
                     if(objectError instanceof FieldError){
                         name = ((FieldError) objectError).getField();
                     }
                     return Problem.Objeto.builder()
-                            .name(name)
-                            .userMessage(message)
+                            .name(name)// Pegando o nome da propriedade
+                            .userMessage(message) // Informando a mensagem para cada tipo de violação
                             .build();
                 })
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());// Transformando a stream() na lista de Problem.Campo, com as propriedade preenchidas
 
         Problem problem = createProblemBuilder(status, problemType, detail)
                 .objetos(problemObjetos)
