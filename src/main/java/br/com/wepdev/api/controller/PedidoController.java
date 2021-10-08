@@ -4,6 +4,7 @@ import br.com.wepdev.api.DTO.INPUT.PedidoInputDTO;
 import br.com.wepdev.api.DTO.PedidoDTO;
 import br.com.wepdev.api.DTO.PedidoResumoDTO;
 import br.com.wepdev.api.converter.*;
+import br.com.wepdev.core.data.PageableTradutor;
 import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wepdev.domain.exception.NegocioException;
 import br.com.wepdev.domain.model.Pedido;
@@ -12,6 +13,7 @@ import br.com.wepdev.domain.repository.PedidoRepository;
 import br.com.wepdev.api.DTO.INPUT.PedidoFilterInputDTO;
 import br.com.wepdev.domain.service.EmissaoPedidoService;
 import br.com.wepdev.infrastructure.repository.spec.PedidoSpecs;
+import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -70,6 +72,14 @@ public class PedidoController {
 
 	@GetMapping
 	public Page<PedidoResumoDTO> pesquisarComPaginacao(PedidoFilterInputDTO filtro, @PageableDefault(size = 10) Pageable pageable) {
+
+		/**
+		 * Exemplo : No PedidoResumoDO houve uma mudança na propriedade UsuarioDTO cliente para String nomeCliente, o modelMapper vai realizar o
+		 * mapeamento automaticamente. So que para o consumidor da api na hora de fazer um sort(ordenar a lista por um campo) nomeCliente ocorrera um erro
+		 * avisando que nao existe a propriedade nomeCliente na entidade Pedido, mas existem um cliente e dentro dele tem um nome, ou seja a propriedade
+		 * cliente.nome funcionaria. Se no DTO existe unma propriedade nomeCliente, ela deve funcionar no sort, o metodo abaixo faz a traducao das propriedades
+		 */
+		pageable = traduzirPageable(pageable);
 
 		Page<Pedido> pedidosPage = pedidoRepository.findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
 
@@ -139,6 +149,27 @@ public class PedidoController {
 		} catch (EntidadeNaoEncontradaException e) {
 			throw new NegocioException(e.getMessage(), e);
 		}
+	}
+
+
+	/**
+	 * Metodo que traduz as propriedades que sao passadas na representacao por json. Exemplo : o consumidor da api passa nomeCliente, e o tradutor transofrma
+	 * em cliente.nome
+	 */
+	private Pageable traduzirPageable(Pageable apiPageable){
+
+		/**
+		 * Criado um dePara de propriedades enviadas pelo consumidor da APi com as propriedades da entidade Pedido.
+		 * Somente as propriedades que estiverem no mapeamento serão ordenaveis na paginação, isso e necessario quando o nome das propriedades nao coincidem, exemplo:
+		 * nomeCliente -> não coincide, cliente.nome -> coincide ::: e so verificar as propriedades no DTO PedidoResumoDTO
+		 */
+		var mapeamento = ImmutableMap.of(
+			   "codigo", "codigo", // codigo -> enviado pelo consumidor da api, codigo -> e a tradução
+			  "restaurante.nome", "restaurante.nome",
+			  "nomeCliente", "cliente.nome", // nomeCliente -> enviado pelo consumidor da api, cliente.nome -> e a tradução
+			   "valorTotal", "valorTotal"
+	   );
+	   return PageableTradutor.tradutor(apiPageable, mapeamento);
 	}
 
 }
