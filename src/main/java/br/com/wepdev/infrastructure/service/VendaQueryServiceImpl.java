@@ -27,11 +27,13 @@ public class VendaQueryServiceImpl implements VendaQueryService {
      * Esse metodo nao faz apenas pesquisas, mas tambem transformação de dados, nesse caso nao teremos transformação.
      * Utilizando criteria api do JPA.
      * Metodo com função de agregação.
+     * O timeOffset passado no parametro refere se ao timeZone do local onde a api esta sendo utilizada, pois as datas sao gravadas no banco de dados em formato UTC 00:00,
+     * no horario de brasilia é -03:00
      * @param filtro
      * @return
      */
     @Override
-    public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro) {
+    public List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro, String timeOffset) {
 
         // Obtendo uma instancia de criteria builder, usado para construir Querys, Predicates, funções de agregação, etc
         var builder = manager.getCriteriaBuilder();
@@ -47,12 +49,46 @@ public class VendaQueryServiceImpl implements VendaQueryService {
         var predicates = new ArrayList<Predicate>();
 
         /*
+            ****** Melhoria na function para trabalhar com as datas no horario de brasilia de acordo com query SQL abaixo *****
+
+        select date(convert_tz(p.data_criacao, '+00:00', '-03:00')) as data_criacao,
+           count(p.id) as total_vendas,
+           sum(p.valor_total) as total_faturado
+       from pedido p
+           where p.status in ('CONFIRMADO','ENTREGUE')
+           group by date(convert_tz(p.data_criacao, '+00:00','-03:00'))
+
+        Criando uma funcao date do MySql
+        "convert_tz" -> nome da funcao no banco de dados MySql.
+        Date.class -> ao executar a funcao é esperado que o JPA converta o date do MySql em um LocalDate.
+        root.get("dataCriacao") -> argumento(Propriedade da classe Pedido) passado na funcao date.
+        Adicionando um literal que se referente ao SQL acima a '+00:00', '-03:00'
+        builder.literal("+00:00") -> UTC, forma gravada no banco de dados
+        builder.literal(timeOffset) -> timeZone passado pelo consumidor da APi de acordo com seu horario local
+         */
+        var functionConvertTzDataCriacao = builder.function("convert_tz", Date.class,
+                root.get("dataCriacao"),
+                builder.literal("+00:00"),
+                builder.literal(timeOffset));
+
+        /*
         Criando uma funcao date do MySql
         "date" -> nome da funcao no banco de dados MySql
         Date.class -> ao executar a funcao é esperado que o JPA converta o date do MySql em um LocalDate
-        root.get("dataCriacao") -> argumento da funcao date
+        root.get("dataCriacao") -> argumento(Propriedade da classe Pedido) passado na funcao date.
+
+
+        ****** Melhoria na function para trabalhar com as datas no horario de brasilia de acordo com query SQL abaixo *****
+
+        select date(convert_tz(p.data_criacao, '+00:00', '-03:00')) as data_criacao,
+           count(p.id) as total_vendas,
+           sum(p.valor_total) as total_faturado
+       from pedido p
+           where p.status in ('CONFIRMADO','ENTREGUE')
+           group by date(convert_tz(p.data_criacao, '+00:00','-03:00'))
          */
-        var functionDateDataCriacao = builder.function("date", Date.class, root.get("dataCriacao"));
+        //var functionDateDataCriacao = builder.function("date", Date.class, root.get("dataCriacao"));
+        var functionDateDataCriacao = builder.function("date", Date.class, functionConvertTzDataCriacao);// Uma funcao dentro de outra
 
         /*
         Criando uma seleção correpondendo a um construtor, o resultado da pesquisa sera utilizado para chamar o construtor da classe VendaDiaria, ou seja

@@ -7,6 +7,9 @@ import java.util.List;
 
 public interface VendaQueryService {
 
-
-    List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro);
+    /*
+    O timeOffset passado refere se ao timezone do local onde a api esta sendo utilizada, pois as datas sao gravadas no banco de dados em formato UTC,
+    no horario de brasilia e -03:00
+     */
+    List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro, String timeOffset);
 }
