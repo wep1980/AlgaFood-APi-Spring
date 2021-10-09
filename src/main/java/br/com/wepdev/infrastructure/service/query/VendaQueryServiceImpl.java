@@ -1,4 +1,4 @@
-package br.com.wepdev.infrastructure.service;
+package br.com.wepdev.infrastructure.service.query;
 
 
 import br.com.wepdev.domain.model.Pedido;
