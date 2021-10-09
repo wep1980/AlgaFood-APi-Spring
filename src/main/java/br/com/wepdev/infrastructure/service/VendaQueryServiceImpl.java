@@ -2,6 +2,7 @@ package br.com.wepdev.infrastructure.service;
 
 
 import br.com.wepdev.domain.model.Pedido;
+import br.com.wepdev.domain.model.StatusPedido;
 import br.com.wepdev.domain.model.agregadosDTO.VendaDiaria;
 import br.com.wepdev.domain.filter.VendaDiariaFilter;
 import br.com.wepdev.domain.service.VendaQueryService;
@@ -9,9 +10,11 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDate;
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 
 @Repository
 public class VendaQueryServiceImpl implements VendaQueryService {
@@ -39,6 +42,9 @@ public class VendaQueryServiceImpl implements VendaQueryService {
 
         // O Pedido não sera retornado, apenas VendaDiaria
         var root = query.from(Pedido.class);
+
+        // Predicate e um filtro, funciona como se fosse um where
+        var predicates = new ArrayList<Predicate>();
 
         /*
         Criando uma funcao date do MySql
@@ -71,7 +77,32 @@ public class VendaQueryServiceImpl implements VendaQueryService {
                 builder.count(root.get("id")),
                 builder.sum(root.get("valorTotal")));
 
+        //*** Adicionando predicates no arrayList de acordo com a regra de negocio ***
+
+        if (filtro.getRestauranteId() != null) {  //Se tiver um restauranteId no filtro, adiciona ele no predicate
+            // Adicionando um novo predicate, comparando a propriedade que vai ser consultada = "restaurante", o valor que sera filtrado = getRestauranteId()
+            predicates.add(builder.equal(root.get("restaurante"), filtro.getRestauranteId()));
+        }
+
+        if (filtro.getDataCriacaoInicio() != null) { //Se tiver uma DataCriacaoInicio no filtro, adiciona ele no predicate
+            predicates.add(builder.greaterThanOrEqualTo(root.get("dataCriacao"),
+                    filtro.getDataCriacaoInicio()));
+        }
+
+        if (filtro.getDataCriacaoFim() != null) { //Se tiver uma DataCriacaoFim no filtro, adiciona ele no predicate
+            predicates.add(builder.lessThanOrEqualTo(root.get("dataCriacao"),
+                    filtro.getDataCriacaoFim()));
+        }
+
+        /*
+        O status do pedidos tem que ser CONFIRMADO ou ENTREGUE.
+        root.get("status").in -> No SQL seria algo como where p.status in ('CONFIRMADO','ENTREGUE')
+         */
+        predicates.add(root.get("status").in(
+                StatusPedido.CONFIRMADO, StatusPedido.ENTREGUE));
+
         query.select(selection);
+        query.where(predicates.toArray(new Predicate[0]));
         query.groupBy(functionDateDataCriacao);
 
         return manager.createQuery(query).getResultList();

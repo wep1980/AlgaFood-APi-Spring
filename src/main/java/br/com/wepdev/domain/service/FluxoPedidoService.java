@@ -1,13 +1,10 @@
 package br.com.wepdev.domain.service;
 
-import br.com.wepdev.domain.exception.NegocioException;
 import br.com.wepdev.domain.model.Pedido;
-import br.com.wepdev.domain.model.StatusPedido;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.OffsetDateTime;
 
 @Service
 public class FluxoPedidoService {
