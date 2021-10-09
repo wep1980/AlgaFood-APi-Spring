@@ -1,6 +1,6 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.DTO.INPUT.RestauranteInputDTO;
+import br.com.wepdev.api.inputDTO.RestauranteInputDTO;
 import br.com.wepdev.domain.model.Cidade;
 import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.model.Restaurante;

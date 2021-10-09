@@ -2,7 +2,7 @@ package br.com.wepdev.api.controller;
 
 import java.util.List;
 
-import br.com.wepdev.api.DTO.INPUT.RestauranteInputDTO;
+import br.com.wepdev.api.inputDTO.RestauranteInputDTO;
 import br.com.wepdev.api.DTO.RestauranteDTO;
 import br.com.wepdev.api.converter.RestauranteInputConverterRestaurante;
 import br.com.wepdev.api.converter.RestauranteConverterDTO;
@@ -14,7 +14,6 @@ import br.com.wepdev.domain.model.view.RestauranteView;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
 

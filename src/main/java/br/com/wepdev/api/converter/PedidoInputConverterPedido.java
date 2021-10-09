@@ -1,8 +1,6 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.DTO.INPUT.EstadoInputDTO;
-import br.com.wepdev.api.DTO.INPUT.PedidoInputDTO;
-import br.com.wepdev.domain.model.Estado;
+import br.com.wepdev.api.inputDTO.PedidoInputDTO;
 import br.com.wepdev.domain.model.Pedido;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.DTO.INPUT.CozinhaInputDTO;
+import br.com.wepdev.api.inputDTO.CozinhaInputDTO;
 import br.com.wepdev.domain.model.Cozinha;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package br.com.wepdev.api.DTO.INPUT;
+package br.com.wepdev.domain.filter;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 
 @Setter
 @Getter
-public class PedidoFilterInputDTO {
+public class PedidoFilter {
 
 
     private Long clienteId;

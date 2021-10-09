@@ -3,7 +3,7 @@ package br.com.wepdev.api.controller;
 import java.util.List;
 
 import br.com.wepdev.api.DTO.CidadeDTO;
-import br.com.wepdev.api.DTO.INPUT.CidadeInputDTO;
+import br.com.wepdev.api.inputDTO.CidadeInputDTO;
 import br.com.wepdev.api.converter.CidadeConverterDTO;
 import br.com.wepdev.api.converter.CidadeInputConverterCidade;
 import br.com.wepdev.domain.exception.EstadoNaoEncontradoException;

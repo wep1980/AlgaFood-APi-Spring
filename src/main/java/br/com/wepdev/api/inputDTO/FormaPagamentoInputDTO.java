@@ -1,4 +1,4 @@
-package br.com.wepdev.api.DTO.INPUT;
+package br.com.wepdev.api.inputDTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,9 +7,10 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-public class EstadoInputDTO {
-
+public class FormaPagamentoInputDTO {
 
     @NotBlank
-    private String nome;
+    private String descricao;
+
+
 }

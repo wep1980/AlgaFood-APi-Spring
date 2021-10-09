@@ -1,9 +1,6 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.DTO.INPUT.CidadeInputDTO;
-import br.com.wepdev.api.DTO.INPUT.GrupoInputDTO;
-import br.com.wepdev.domain.model.Cidade;
-import br.com.wepdev.domain.model.Estado;
+import br.com.wepdev.api.inputDTO.GrupoInputDTO;
 import br.com.wepdev.domain.model.Grupo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
+import br.com.wepdev.domain.repository.CustomJpaRepository;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
@@ -12,7 +13,7 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
  * @author Waldir
  *
  */
-public class CustomJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> implements CustomJpaRepository<T, ID>{
+public class CustomJpaRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> implements CustomJpaRepository<T, ID> {
 
 	
 	private EntityManager manager;

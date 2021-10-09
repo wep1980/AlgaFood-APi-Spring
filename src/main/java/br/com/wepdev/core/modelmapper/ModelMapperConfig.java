@@ -1,11 +1,9 @@
 package br.com.wepdev.core.modelmapper;
 
 import br.com.wepdev.api.DTO.EnderecoDTO;
-import br.com.wepdev.api.DTO.INPUT.ItemPedidoInputDTO;
-import br.com.wepdev.api.DTO.RestauranteDTO;
+import br.com.wepdev.api.inputDTO.ItemPedidoInputDTO;
 import br.com.wepdev.domain.model.Endereco;
 import br.com.wepdev.domain.model.ItemPedido;
-import br.com.wepdev.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

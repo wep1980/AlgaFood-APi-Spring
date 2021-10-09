@@ -1,7 +1,7 @@
 package br.com.wepdev.infrastructure.repository.spec;
 
 import br.com.wepdev.domain.model.Pedido;
-import br.com.wepdev.api.DTO.INPUT.PedidoFilterInputDTO;
+import br.com.wepdev.domain.filter.PedidoFilter;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;
@@ -23,7 +23,7 @@ public class PedidoSpecs {
 	 * @param filtro
 	 * @return
 	 */
-	public static Specification<Pedido> usandoFiltro(PedidoFilterInputDTO filtro) {
+	public static Specification<Pedido> usandoFiltro(PedidoFilter filtro) {
 
 		return (root, query, builder) -> {
 

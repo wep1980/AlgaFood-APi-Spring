@@ -3,7 +3,7 @@ package br.com.wepdev.api.controller;
 import java.util.List;
 
 import br.com.wepdev.api.DTO.CozinhaDTO;
-import br.com.wepdev.api.DTO.INPUT.CozinhaInputDTO;
+import br.com.wepdev.api.inputDTO.CozinhaInputDTO;
 import br.com.wepdev.api.converter.CozinhaConverterDTO;
 import br.com.wepdev.api.converter.CozinhaInputConverterCozinha;
 import org.springframework.beans.factory.annotation.Autowired;

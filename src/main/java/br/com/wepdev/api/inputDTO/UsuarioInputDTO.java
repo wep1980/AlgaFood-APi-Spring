@@ -1,4 +1,4 @@
-package br.com.wepdev.api.DTO.INPUT;
+package br.com.wepdev.api.inputDTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,9 +9,13 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-public class UsuarioComSenhaInputDTO extends UsuarioInputDTO{
+public class UsuarioInputDTO {
 
     @NotBlank
-    private String senha;
+    private String nome;
+
+    @NotBlank
+    @Email
+    private String email;
 
 }

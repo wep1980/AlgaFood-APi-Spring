@@ -1,24 +1,9 @@
 package br.com.wepdev.api.controller;
 
-import br.com.wepdev.api.DTO.INPUT.PedidoInputDTO;
-import br.com.wepdev.api.DTO.PedidoDTO;
-import br.com.wepdev.api.DTO.PedidoResumoDTO;
-import br.com.wepdev.api.converter.PedidoConverterDTO;
-import br.com.wepdev.api.converter.PedidoInputConverterPedido;
-import br.com.wepdev.api.converter.PedidoResumoConverterDTO;
-import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
-import br.com.wepdev.domain.exception.NegocioException;
-import br.com.wepdev.domain.model.Pedido;
-import br.com.wepdev.domain.model.Usuario;
-import br.com.wepdev.domain.repository.PedidoRepository;
-import br.com.wepdev.domain.service.EmissaoPedidoService;
 import br.com.wepdev.domain.service.FluxoPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
 
 
 //@ResponseBody // As Respostas dos metedos desse controlador devem ir na resposta da requisicao

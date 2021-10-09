@@ -1,4 +1,4 @@
-package br.com.wepdev.infrastructure.repository;
+package br.com.wepdev.domain.repository;
 
 import java.util.Optional;
 

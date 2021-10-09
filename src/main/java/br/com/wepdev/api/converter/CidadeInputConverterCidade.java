@@ -1,6 +1,6 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.DTO.INPUT.CidadeInputDTO;
+import br.com.wepdev.api.inputDTO.CidadeInputDTO;
 import br.com.wepdev.domain.model.Cidade;
 import br.com.wepdev.domain.model.Estado;
 import org.modelmapper.ModelMapper;

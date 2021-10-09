@@ -1,8 +1,6 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.DTO.INPUT.GrupoInputDTO;
-import br.com.wepdev.api.DTO.INPUT.ProdutoInputDTO;
-import br.com.wepdev.domain.model.Grupo;
+import br.com.wepdev.api.inputDTO.ProdutoInputDTO;
 import br.com.wepdev.domain.model.Produto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package br.com.wepdev.api.controller;
 
-import br.com.wepdev.api.DTO.INPUT.PedidoInputDTO;
+import br.com.wepdev.api.inputDTO.PedidoInputDTO;
 import br.com.wepdev.api.DTO.PedidoDTO;
 import br.com.wepdev.api.DTO.PedidoResumoDTO;
 import br.com.wepdev.api.converter.*;
@@ -10,7 +10,7 @@ import br.com.wepdev.domain.exception.NegocioException;
 import br.com.wepdev.domain.model.Pedido;
 import br.com.wepdev.domain.model.Usuario;
 import br.com.wepdev.domain.repository.PedidoRepository;
-import br.com.wepdev.api.DTO.INPUT.PedidoFilterInputDTO;
+import br.com.wepdev.domain.filter.PedidoFilter;
 import br.com.wepdev.domain.service.EmissaoPedidoService;
 import br.com.wepdev.infrastructure.repository.spec.PedidoSpecs;
 import com.google.common.collect.ImmutableMap;
@@ -71,7 +71,7 @@ public class PedidoController {
 
 
 	@GetMapping
-	public Page<PedidoResumoDTO> pesquisarComPaginacao(PedidoFilterInputDTO filtro, @PageableDefault(size = 10) Pageable pageable) {
+	public Page<PedidoResumoDTO> pesquisarComPaginacao(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
 
 		/**
 		 * Exemplo : No PedidoResumoDO houve uma mudança na propriedade UsuarioDTO cliente para String nomeCliente, o modelMapper vai realizar o

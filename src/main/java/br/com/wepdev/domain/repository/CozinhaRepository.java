@@ -3,7 +3,6 @@ package br.com.wepdev.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
-import br.com.wepdev.infrastructure.repository.CustomJpaRepository;
 import org.springframework.stereotype.Repository;
 
 import br.com.wepdev.domain.model.Cozinha;
