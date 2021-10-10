@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.UUID;
@@ -14,9 +15,16 @@ import java.util.UUID;
 public class RestauranteProdutoFotoController {
 
 
-
+    /**
+     * HttpMediaTypeNotSupportedException: Content type '' not supported --> No caso desse erro e necessario passar um contentType no postman assim :
+     * multipart/form-data; boundary=0 -> colocar campo no headers do postman
+     *
+     * @param restauranteId
+     * @param produtoId
+     * @param produtoFotoInputDTO
+     */
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)// Mepeado no contentType para receber apenas o MULTIPART_FORM_DATA_VALUE
-    public void atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, ProdutoFotoInputDTO produtoFotoInputDTO) {
+    public void atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid ProdutoFotoInputDTO produtoFotoInputDTO) {
 
         /**
          * O uploads estao  sendo salvos na pasta C:/Users/Waldir/Desktop/upload
