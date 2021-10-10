@@ -17,6 +17,11 @@ public class FotoProduto {
 	@EqualsAndHashCode.Include // O Campo id sera o unico utilizado no equals e hashcode
 	private Long id;
 
+	/**
+	 * OBS : quando for necessario pegar uma fotoProduto atraves de um Produto ou seja , fazer um getProduto().getFotoProduto() que nao existira, o que pode ser feito é
+	 * e buscar direto uma fotoProduto com uma consulta JPQL ou etc.. filtrando por produto, vai ser feito assim pq um relacionamento bi-direcional OneToOne e muito
+	 * complexo e não vale a pena o esforço. segue o link para leitura a respeito : https://blog.algaworks.com/lazy-loading-com-mapeamento-onetoone/
+	 */
 	//Uma foto produto tem um produto
 	@OneToOne(fetch = FetchType.LAZY) // fetch = FetchType.LAZY -> Evita o carregamento desnecessario(selects) de produtos ao buscar apenas a foto do produto
 	@MapsId // Produto e mapeado atraves da propriedade id da entidade FotoProduto(que é essa mesma entidade)
