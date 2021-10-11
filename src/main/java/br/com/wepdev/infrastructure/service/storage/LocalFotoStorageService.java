@@ -13,7 +13,7 @@ import java.nio.file.Path;
  * Classe de serviço de armazenagem de fotos em algum dispositivo
  */
 @Service // Transforma em Bean Spring
-public class DiscoLocalFotoStorageService implements FotoStorageService {
+public class LocalFotoStorageService implements FotoStorageService {
 
     // Injetando um valor de uma propriedade do application.properties
     @Value("${algafood.storage.local.diretorio-fotos}")
@@ -38,6 +38,24 @@ public class DiscoLocalFotoStorageService implements FotoStorageService {
             // StorageException -> exception customizada
             throw new StorageException("Não possível armazenar arquivo.", e);
         }
+    }
+
+
+    /**
+     * Remove arquivos no disco local
+     * @param nomeArquivo
+     */
+    @Override
+    public void remover(String nomeArquivo) {
+
+        try {
+            Path arquivoPath = getArquivopath(nomeArquivo); // Pegando o caminho do arquivo a ser removido
+            Files.deleteIfExists(arquivoPath);
+        } catch (IOException e) {
+            // StorageException -> exception customizada
+            throw new StorageException("Não possível excluir arquivo.", e);
+        }
+
     }
 
 

@@ -49,11 +49,14 @@ public class CatalogoFotoProdutoService {
         Long restauranteId = foto.getRestauranteId();
         Long produtoId = foto.getProduto().getId();
         String nomeNovoArquivo = fotoStorageService.gerarNomeArquivo(foto.getNomeArquivo());
+        String nomeArquivoExistente = null; // variavel criada para substituiçao de um arquivo antigo por um novo caso haja no disco local
+
         /**
          * Antes de salvar a foto do produto e verificado se ela ja existe, se existir ela e excluida para ser salva uma nova foto
          */
         Optional<FotoProduto> fotoExistente = produtoRepository.findFotoById(restauranteId, produtoId);
         if(fotoExistente.isPresent()){
+            nomeArquivoExistente = fotoExistente.get().getNomeArquivo(); // Pega o arquivo antigo, caso exista sera substituido
             produtoRepository.delete(fotoExistente.get());
         }
 
@@ -68,7 +71,11 @@ public class CatalogoFotoProdutoService {
                         .inputStream(dadosArquivo)
                         .build();
 
-        fotoStorageService.armazenar(novaFoto); // Se acontecer algum problema na hora de armazenar a foto, vai acontecer um rollback, incluisive no banco de dados
+        /**
+         *  Se acontecer algum problema na hora de substituir ou armazenar a foto, vai acontecer um rollback, incluisive no banco de dados
+         *  A foto so sera substituida se forma a mesma que estiver sendo salva novamente e for o mesmo produto
+         */
+        fotoStorageService.substituir(nomeArquivoExistente, novaFoto);
 
         /*
         Caso ocorra alguma exception no momento do save a foto vai ter sido armazenada com a chamada do metodo acima, para evitar que isso aconteça o save deve ser

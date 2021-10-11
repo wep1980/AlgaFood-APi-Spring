@@ -11,8 +11,11 @@ import java.util.UUID;
  */
 public interface FotoStorageService {
 
+
+
     // Com classe NovaFoto abaixo, evitata se ficar passando varios argumentos dentro do construtor
     void armazenar(NovaFoto novaFoto);
+
 
     /**
      * Metodo com implementação para mudança de nome do arquivo(foto), pois caso tenha upload de fotos com nomes identicos, uma foto não sera substituida por
@@ -21,6 +24,17 @@ public interface FotoStorageService {
     default String gerarNomeArquivo(String nomeOriginal){
         return UUID.randomUUID().toString() + "_" + nomeOriginal;
     }
+
+    default void substituir(String nomeArquivoAntigo, NovaFoto novaFoto){
+        this.armazenar(novaFoto);
+
+        if(nomeArquivoAntigo != null){
+           this.remover(nomeArquivoAntigo);
+        }
+    }
+
+    void remover(String nomeArquivo);
+
 
 
     /**
