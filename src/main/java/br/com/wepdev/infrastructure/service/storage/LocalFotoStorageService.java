@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -30,7 +31,7 @@ public class LocalFotoStorageService implements FotoStorageService {
         try {
         //Caminho de armazenamento, o caminho nao fica ficar fixo aqui como na forma abaixo
         //Path arquivoPath = Path.of("/Users/Waldir/Desktop/upload/catalogo", novaFoto.getNomeArquivo());
-        Path arquivoPath = getArquivopath(novaFoto.getNomeArquivo());
+        Path arquivoPath = getArquivoPath(novaFoto.getNomeArquivo());
 
             // Copia os dados recebidos dentro de novaFoto para o caminho arquivoPath (Copiando de um lugar para outro)
             FileCopyUtils.copy(novaFoto.getInputStream(), Files.newOutputStream(arquivoPath));
@@ -49,7 +50,7 @@ public class LocalFotoStorageService implements FotoStorageService {
     public void remover(String nomeArquivo) {
 
         try {
-            Path arquivoPath = getArquivopath(nomeArquivo); // Pegando o caminho do arquivo a ser removido
+            Path arquivoPath = getArquivoPath(nomeArquivo); // Pegando o caminho do arquivo a ser removido
             Files.deleteIfExists(arquivoPath);
         } catch (IOException e) {
             // StorageException -> exception customizada
@@ -63,8 +64,24 @@ public class LocalFotoStorageService implements FotoStorageService {
      * Metodo que retorna juntando o diretorio(Path) da pasta (Local de armazenamento) e o nome do arquivo.
      * retorna o caminho completo de onde o arquivo vai ficar
      */
-    private Path getArquivopath(String nomeArquivo){
+    private Path getArquivoPath(String nomeArquivo){
         return diretorioFotos.resolve(Path.of(nomeArquivo));
 
+    }
+
+
+    /**
+     * Metodo que recupera os arquivos do disco local para servir os consumidores da APi,
+     * fornecer os dados desse arquivo para download
+     */
+    @Override
+    public InputStream recuperar(String nomeArquivo) {
+        try {
+            Path arquivoPath = getArquivoPath(nomeArquivo);
+
+            return Files.newInputStream(arquivoPath);
+        } catch (Exception e) {
+            throw new StorageException("Não foi possível recuperar arquivo.", e);
+        }
     }
 }

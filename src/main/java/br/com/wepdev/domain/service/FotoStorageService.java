@@ -25,6 +25,8 @@ public interface FotoStorageService {
         return UUID.randomUUID().toString() + "_" + nomeOriginal;
     }
 
+
+    // Metodo que substitui ou grava uma foto de um produto, se a foto do produto for a mesma e feito a substituição do arquivo no disco local
     default void substituir(String nomeArquivoAntigo, NovaFoto novaFoto){
         this.armazenar(novaFoto);
 
@@ -33,7 +35,14 @@ public interface FotoStorageService {
         }
     }
 
+    /**
+     * Metodo que recupera os arquivos do disco local para servir os consumidores da APi,
+     * fornecer os dados desse arquivo para download
+     */
     void remover(String nomeArquivo);
+
+
+    InputStream recuperar(String nomeArquivo);
 
 
 

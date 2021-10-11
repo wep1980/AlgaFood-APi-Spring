@@ -1,5 +1,6 @@
 package br.com.wepdev.domain.service;
 
+import br.com.wepdev.domain.exception.FotoProdutoNaoEncontradaException;
 import br.com.wepdev.domain.model.FotoProduto;
 import br.com.wepdev.domain.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +87,10 @@ public class CatalogoFotoProdutoService {
     }
 
 
-
+    public FotoProduto buscarOuFalhar(Long restauranteId, Long produtoId) {
+        return produtoRepository.findFotoById(restauranteId, produtoId)
+                .orElseThrow(() -> new FotoProdutoNaoEncontradaException(restauranteId, produtoId));
+    }
 
 
 

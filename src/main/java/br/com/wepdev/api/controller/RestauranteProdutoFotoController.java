@@ -92,6 +92,15 @@ public class RestauranteProdutoFotoController {
 
         return fotoProdutoConverterDTO.converteEntidadeParaDto(fotoSalva);
     }
+
+
+    @GetMapping
+    public FotoProdutoDTO buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
+
+        FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
+
+        return fotoProdutoConverterDTO.converteEntidadeParaDto(fotoProduto);
+    }
 }
 
 
