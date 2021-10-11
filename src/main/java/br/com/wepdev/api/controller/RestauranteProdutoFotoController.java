@@ -65,7 +65,15 @@ public class RestauranteProdutoFotoController {
 //    }
 
 
-
+    /**
+     * Como na tabela FotoProduto o campo produto_id alem de identificador e a chave primaria, nao pode existir produto_id duplicado.
+     * Na implementacao ao tentar gravar uma nova foto, se ja existir uma foto cadastrada ela sera excluida e a nova foto sera salva.
+     * Na regra de negócio so e permitido gravar uma foto para cada produto.
+     * @param restauranteId
+     * @param produtoId
+     * @param produtoFotoInputDTO
+     * @return
+     */
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)// Mepeado no contentType para receber apenas o MULTIPART_FORM_DATA_VALUE
     public FotoProdutoDTO atualizarFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId, @Valid ProdutoFotoInputDTO produtoFotoInputDTO) {
 

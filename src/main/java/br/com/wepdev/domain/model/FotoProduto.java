@@ -32,4 +32,17 @@ public class FotoProduto {
 	private String contentType;
 	private Long tamanho;
 
+
+	/**
+	 * Metodo para retornar o id de um Restaurante, esse metodo foi criado para evitar o encadeamento abaixo no service(CatalogoFotoProdutoService)
+	 * encadeamento -> Long restauranteId = foto.getProduto().getRestaurante().getId();
+	 * @return
+	 */
+	public Long getRestauranteId(){
+		if(getProduto() != null){
+			return getProduto().getRestaurante().getId();
+		}
+		return null;
+	}
+
 }
