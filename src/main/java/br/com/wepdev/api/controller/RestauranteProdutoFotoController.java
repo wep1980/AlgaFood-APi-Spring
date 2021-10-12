@@ -3,19 +3,23 @@ package br.com.wepdev.api.controller;
 import br.com.wepdev.api.DTO.FotoProdutoDTO;
 import br.com.wepdev.api.converter.FotoProdutoConverterDTO;
 import br.com.wepdev.api.inputDTO.ProdutoFotoInputDTO;
+import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wepdev.domain.model.FotoProduto;
 import br.com.wepdev.domain.model.Produto;
 import br.com.wepdev.domain.service.CatalogoFotoProdutoService;
+import br.com.wepdev.domain.service.FotoStorageService;
 import br.com.wepdev.domain.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.UUID;
+import java.io.InputStream;
+
 
 @RestController
 @RequestMapping(value = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
@@ -31,6 +35,9 @@ public class RestauranteProdutoFotoController {
 
     @Autowired
     private FotoProdutoConverterDTO fotoProdutoConverterDTO;
+
+    @Autowired
+    private FotoStorageService fotoStorageService;
 
 
     /**
@@ -94,13 +101,39 @@ public class RestauranteProdutoFotoController {
     }
 
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE) // Retorna um Json, caso o consumidor da APi informar a Accept application/json
     public FotoProdutoDTO buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 
         FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
 
         return fotoProdutoConverterDTO.converteEntidadeParaDto(fotoProduto);
     }
+
+
+    /**
+     * Classe que representa um InputStream de um recurso
+     */
+    @GetMapping(produces = MediaType.IMAGE_JPEG_VALUE)// Retorna um JPEG, caso o consumidor da APi informar a Accept application/jpeg
+    public ResponseEntity<InputStreamResource> servirFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
+
+        try {
+        FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
+
+        InputStream inputStream = fotoStorageService.recuperar(fotoProduto.getNomeArquivo());
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(new InputStreamResource(inputStream));
+
+        // Exception gerada caso a foto de um produto buscada nao exista no produto
+        } catch (EntidadeNaoEncontradaException e){
+            return ResponseEntity.notFound().build();
+
+        }
+
+    }
+
+
 }
 
 
