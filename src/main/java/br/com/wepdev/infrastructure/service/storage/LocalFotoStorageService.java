@@ -1,6 +1,8 @@
 package br.com.wepdev.infrastructure.service.storage;
 
+import br.com.wepdev.core.storage.StorageProperties;
 import br.com.wepdev.domain.service.FotoStorageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
@@ -17,8 +19,12 @@ import java.nio.file.Path;
 public class LocalFotoStorageService implements FotoStorageService {
 
     // Injetando um valor de uma propriedade do application.properties
-    @Value("${algafood.storage.local.diretorio-fotos}")
-    private Path diretorioFotos;
+    //@Value("${algafood.storage.local.diretorio-fotos}")
+    //private Path diretorioFotos;
+
+
+    @Autowired
+    private StorageProperties storageProperties;
 
     /**
      * OBS : Esse metodo não esta utilizando o Multipart que é uma instancia ligada a web, nela tem o metodo transferTo() que torna mais facil a implementação,
@@ -65,7 +71,7 @@ public class LocalFotoStorageService implements FotoStorageService {
      * retorna o caminho completo de onde o arquivo vai ficar
      */
     private Path getArquivoPath(String nomeArquivo){
-        return diretorioFotos.resolve(Path.of(nomeArquivo));
+        return storageProperties.getLocal().getDiretorioFotos().resolve(Path.of(nomeArquivo));
 
     }
 
