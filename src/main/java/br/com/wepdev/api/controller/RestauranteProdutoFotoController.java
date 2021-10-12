@@ -104,6 +104,11 @@ public class RestauranteProdutoFotoController {
     }
 
 
+    /**
+     * Busca foto em formato json.
+     * Se o consumidor da APi passar o Accept em application/json, esse endpoin sera chamado.
+     * Se Accept for diferente de application/json, sera chamado o endpoint servirFoto()
+     */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE) // Retorna um Json, caso o consumidor da APi informar a Accept application/json
     public FotoProdutoDTO buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 
