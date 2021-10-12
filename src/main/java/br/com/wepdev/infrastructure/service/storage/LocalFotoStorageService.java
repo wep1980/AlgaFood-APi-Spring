@@ -14,8 +14,9 @@ import java.nio.file.Path;
 
 /**
  * Classe de serviço de armazenagem de fotos em algum dispositivo
+ * //@Service -> service comentado, para utilizacao do S3FotoStorageService no projeto
  */
-@Service // Transforma em Bean Spring
+//@Service // Transforma em Bean Spring
 public class LocalFotoStorageService implements FotoStorageService {
 
     // Injetando um valor de uma propriedade do application.properties

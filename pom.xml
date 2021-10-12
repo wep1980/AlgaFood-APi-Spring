@@ -20,7 +20,8 @@
 		<java.version>11</java.version>
 		<modelmapper.version>2.3.0</modelmapper.version>
 		<squiggly.version>1.3.18</squiggly.version>
-		<jasperreports>6.17.0</jasperreports>
+		<jasperreports.version>6.17.0</jasperreports.version>
+		<aws-java-sdk-s3.version>1.11.671</aws-java-sdk-s3.version>
 	</properties>
 	
 	<dependencies>
@@ -100,13 +101,19 @@
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
-			<version>${jasperreports}</version> <!--A versão foi colocada no <properties> que esta acima por mim, e chamada aqui -->
+			<version>${jasperreports.version}</version> <!--A versão foi colocada no <properties> que esta acima por mim, e chamada aqui -->
 		</dependency>
 
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports-functions</artifactId>
-			<version>${jasperreports}</version> <!--A versão foi colocada no <properties> que esta acima por mim, e chamada aqui -->
+			<version>${jasperreports.version}</version> <!--A versão foi colocada no <properties> que esta acima por mim, e chamada aqui -->
+		</dependency>
+
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-s3</artifactId>
+			<version>${aws-java-sdk-s3.version}</version>
 		</dependency>
 
 	</dependencies>
