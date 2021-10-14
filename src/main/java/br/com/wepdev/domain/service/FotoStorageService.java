@@ -42,7 +42,7 @@ public interface FotoStorageService {
     void remover(String nomeArquivo);
 
 
-    InputStream recuperar(String nomeArquivo);
+    FotoRecuperada recuperar(String nomeArquivo);
 
 
 
@@ -58,4 +58,28 @@ public interface FotoStorageService {
         private String contentType; // Propriedade criada para armazenamento no amazonS3, para armazenar no disco local, não é utilizada
 
     }
+
+
+    /**
+     * Classe que recupera as fotos armazenadas no AmazonS3
+     */
+    @Builder
+    @Getter
+    class FotoRecuperada{
+
+        private InputStream inputStream;
+        private String url;
+
+
+        public boolean temUrl(){
+            return url != null;
+        }
+
+        public boolean temInputStream(){
+            return inputStream != null;
+        }
+
+    }
+
+
 }

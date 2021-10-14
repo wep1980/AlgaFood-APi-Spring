@@ -9,8 +9,10 @@ import br.com.wepdev.domain.model.Produto;
 import br.com.wepdev.domain.service.CatalogoFotoProdutoService;
 import br.com.wepdev.domain.service.FotoStorageService;
 import br.com.wepdev.domain.service.ProdutoService;
+import br.com.wepdev.domain.service.FotoStorageService.FotoRecuperada;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 
@@ -130,7 +131,7 @@ public class RestauranteProdutoFotoController {
      * TIPOS DE MEDIATYPE passados no POSTMAN accept -> image/* - image/png - image/jpeg - image/gif - image/gif,image/jpeg,image/png
      */
     @GetMapping//(produces = MediaType.IMAGE_JPEG_VALUE)// Retorna um JPEG, caso o consumidor da APi informar a Accept application/jpeg
-    public ResponseEntity<InputStreamResource> servirFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
+    public ResponseEntity<?> servirFoto(@PathVariable Long restauranteId, @PathVariable Long produtoId,
                                           @RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
 
         try {
@@ -150,11 +151,29 @@ public class RestauranteProdutoFotoController {
 
         verificarCompatibilidadeMediaType(mediaTypeFoto, mediatypesAceitas);
 
-        InputStream inputStream = fotoStorageService.recuperar(fotoProduto.getNomeArquivo());
+        FotoRecuperada fotoRecuperada = fotoStorageService.recuperar(fotoProduto.getNomeArquivo());
 
-        return ResponseEntity.ok()
-                .contentType(mediaTypeFoto) // Retorna no cabeçalho o contentType exato que esta armazenado
-                .body(new InputStreamResource(inputStream));
+        /*
+        Se tem url a foto esta sendo recuperada da AmazonS3.
+        Nesse caso nos nao vms fazer o download da foto na Amazon para servir na api(Nos não vms servir como uma ponte), o consumidor da api sera
+        redirecionado
+         */
+        if(fotoRecuperada.temUrl()){
+           return ResponseEntity.status(HttpStatus.FOUND) // Status de que existe esse recurso, porem tera que seguir a url abaixo
+
+                   /**
+                    * No postman de a configuração em SETTINGS -> Automaticaly follow redirects estiver off : retorna a url da imagem.
+                    * No postman de a configuração em SETTINGS -> Automaticaly follow redirects estiver on : retorna a imagem.
+                    */
+                   .header(HttpHeaders.LOCATION, fotoRecuperada.getUrl()).build();
+
+        } else { // Se nao tiver url e porque o retorno esta sendo um inputStream, ou seja esta recuperando a foto do disco local
+            return ResponseEntity.ok()
+                    .contentType(mediaTypeFoto) // Retorna no cabeçalho o contentType exato que esta armazenado
+                    .body(new InputStreamResource(fotoRecuperada.getInputStream())); // Retorna a imagem(binario da imagem) gravada no disco local
+        }
+
+
 
         // Exception gerada caso a foto de um produto buscada nao exista no produto
         } catch (EntidadeNaoEncontradaException e){

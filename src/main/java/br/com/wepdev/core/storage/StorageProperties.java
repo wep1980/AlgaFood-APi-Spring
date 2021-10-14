@@ -20,8 +20,16 @@ public class StorageProperties {
 
     private Local local = new Local();
     private S3 s3 = new S3();
+    private TipoStorage tipo = TipoStorage.LOCAL; // Esse e o tipo de storage padrão
 
 
+    public enum TipoStorage {
+        LOCAL, S3
+    }
+
+    /**
+     * Metodo que identifica qual o tipo de storage que sera usado, o LocalFotoStorageService ou S3FotoStorageService
+     */
 
 
 
