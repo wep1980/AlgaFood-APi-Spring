@@ -55,6 +55,7 @@ public interface FotoStorageService {
 
         private String nomeArquivo;
         private InputStream inputStream; // Fluxo de entrada(leitura) do arquivo
+        private String contentType; // Propriedade criada para armazenamento no amazonS3, para armazenar no disco local, não é utilizada
 
     }
 }

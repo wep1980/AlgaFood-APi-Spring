@@ -69,6 +69,7 @@ public class CatalogoFotoProdutoService {
         // Instanciando(Criando) um objeto NovaFoto utilizando o builder() do lombok
         NovaFoto novaFoto = NovaFoto.builder()
                         .nomeArquivo(foto.getNomeArquivo())
+                        .contentType(foto.getContentType())
                         .inputStream(dadosArquivo)
                         .build();
 
