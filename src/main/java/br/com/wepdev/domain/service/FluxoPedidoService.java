@@ -24,18 +24,30 @@ public class FluxoPedidoService {
 		Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigoPedido);
 		pedido.confirmar();
 
-		var mensagem = EnvioEmailService.Mensagem.builder().assunto(pedido.getRestaurante().getNome() + "-" + " - Pedido confirmado")
+		var mensagem = EnvioEmailService.Mensagem.builder()
+				.assunto(pedido.getRestaurante().getNome() + "-" + " - Pedido confirmado")
 
-						// Como no envio do corpo foi configurado como HTML, o <strong> que deixa em negrito, vai funcionar
-						.corpo("O pedido de código <strong>" + pedido.getCodigo() + "</strong> foi confirmado!")
+				/**
+				 * O conteudo do arquivo html sera processado por uma biblioteca chamada apache freemarker, que pega o html, o objeto java, e gera um output com html
+				 * final
+				 */
+				.corpo("pedido-confirmado.html") // nome do arquivo do template que sera processado pela biblioteca freemarker
 
-						/*
-						/ Aqui em desinario precisaria ser passado um Set() de destinatarios(), mas com a anotação do lombok colocado no Set, ele singularizou o metedo,
-						transformando de destinatarios() para destinatario(), ou seja para passar varios destinatarios é nessesario fazer :
-						destinatario("wepbike@gmail.com") e assim por diante.
-						 */
-			     		.destinatario(pedido.getCliente().getEmail())
-				        .build();
+				/*
+				recebe a variavel pedido, e o objeto pedido pra serem processados, no pedido-confirmado.html com o objeto Pedido é possivel pegar qualquer propriedade,
+				no caso estamos pegando apenas o campo nome do cliente.
+				Poderia pegar outros campos de Pedido como no exemplo: .variavel("nomeCliente", "Joao da silva") ou .variavel("valorTotal", variavelValue) ...etc
+				 */
+				.variavel("pedido", pedido)
+				/*
+                    / Aqui em desinario precisaria ser passado um Set() de destinatarios(), mas com a anotação do lombok colocado no Set, ele singularizou o metedo,
+                    transformando de destinatarios() para destinatario(), ou seja para passar varios destinatarios é nessesario fazer :
+                    destinatario("wepbike@gmail.com") e assim por diante.
+                     */
+				.destinatario(pedido.getCliente().getEmail())
+				.build();
+
+
 
         envioEmailService.enviar(mensagem);
 	}

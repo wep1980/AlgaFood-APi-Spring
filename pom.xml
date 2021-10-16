@@ -121,6 +121,11 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>  <!-- Biblioteca para trabalhar com template de corpo de email, unindo um html, mais um objeto java e gera um novo html -->
+			<artifactId>spring-boot-starter-freemarker</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
