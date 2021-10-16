@@ -70,7 +70,7 @@ public class Pedido {
 
     /**
      * Campo criado para nao expor o id do produto, ja que o id revela a quantidade de pedidos existentes.
-     * O codigo e gerado atraves de um uuid -- https://www.uuidgenerator.net/
+     * O codigo e gerado atraves de um UUID -- https://www.uuidgenerator.net/
      */
     private String codigo;
 
