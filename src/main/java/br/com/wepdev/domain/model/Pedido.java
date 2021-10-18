@@ -1,22 +1,33 @@
 package br.com.wepdev.domain.model;
 
+import br.com.wepdev.domain.event.PedidoConfirmadoEvent;
 import br.com.wepdev.domain.exception.NegocioException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Data // Anotacao do LOMBOK que possui gets , sets , equals&HashCode e ToString
-@EqualsAndHashCode(onlyExplicitlyIncluded = true) // Habilita os campos explicidamente que serao utilizados no Equals e hashcode
+
+/**
+ * @Data -> Anotacao do LOMBOK que possui gets , sets , equals&HashCode e ToString.
+ *
+ * @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false) -> Habilita os campos explicidamente que serao utilizados no Equals e hashcode,
+ * callSuper = false -> nao chama o metodo da super classe.
+ *
+ * AbstractAggregateRoot<Pedido> -> (Registra um evento) Pedido herda essa classe para que ela possa utilizar metodos de eventos,
+ * nesse caso o envio de um email sera um evento toda vez que um pedido for confirmado
+ */
+@Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Entity
-public class Pedido {
+public class Pedido extends AbstractAggregateRoot<Pedido> {
 
 
     @EqualsAndHashCode.Include // O Campo id sera o unico utilizado no equals e hashcode
@@ -101,6 +112,12 @@ public class Pedido {
     public void confirmar(){
         setStatus(StatusPedido.CONFIRMADO);
         setDataConfirmacao(OffsetDateTime.now());
+
+        /*
+        this -> Instancia atual do Pedido que esta sendo confirmado.
+        Registrando o evento que deve ser disparado assim que o objeto Pedido for salva no repository
+         */
+        registerEvent(new PedidoConfirmadoEvent(this));
     }
 
 
