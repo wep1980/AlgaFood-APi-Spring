@@ -26,7 +26,7 @@ public class FluxoPedidoService {
 		Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigoPedido);
 		pedido.confirmar();
 
-		pedidoRepository.save(pedido); // O save foi necessario para que o evento de disparo de email funcione
+		pedidoRepository.save(pedido); // O save foi necessario para que o evento de disparo de email funcione, ou qualquer outro tipo de evento que seja criado
 	}
 
 
