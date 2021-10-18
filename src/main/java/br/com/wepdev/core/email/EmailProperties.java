@@ -17,6 +17,30 @@ import javax.validation.constraints.NotNull;
 public class EmailProperties {
 
 
+    // Atribuimos FAKE como padrão
+    // Isso evita o problema de enviar e-mails de verdade caso você esqueça
+    // de definir a propriedade
+    private Implementacao impl = Implementacao.FAKE;
+
+    private Sandbox sandbox = new Sandbox();
+
+
+    public enum Implementacao {
+        SMTP, FAKE, SANDBOX
+    }
+
+
     @NotNull // Essa propriedade não pode ser nula
     private String remetente;
+
+
+
+
+        @Getter
+        @Setter
+        public class Sandbox {
+
+            private String destinatario;
+
+        }
 }

@@ -10,12 +10,13 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 /**
  * Classe que implementa o envio de email.
  */
-@Service
+//@Service // O tipo de serviço de email : smtp, sandbox ou fake e definido agora application.properties
 public class SmtpEnvioEmailService implements EnvioEmailService {
 
 
@@ -29,23 +30,15 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
     private Configuration freemarkerConfig;
 
 
+
     @Override
     public void enviar(Mensagem mensagem) {
         try {
-            String corpo = processarTemplate(mensagem); // processa a mensagem do corpo
-
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8"); // Instancia de ajuda a configurar o MimeMessage, e tb e colocado o encoding
-            helper.setTo(mensagem.getDestinatarios().toArray(new String[0])); // Convertendo o Set em um array[0] de Strings
-            helper.setFrom(emailProperties.getRemetente());
-            helper.setSubject(mensagem.getAssunto());
-            helper.setText(corpo, true); // texto enviado em HTML, pois permite enviar em negrito, imagens, etc....
+            MimeMessage mimeMessage = criarMimeMessage(mensagem);
 
             javaMailSender.send(mimeMessage);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new EmailException("Não foi possível enviar e-mail", e);
-
         }
     }
 
@@ -54,27 +47,31 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
      * @param mensagem
      * @return
      */
-    private String processarTemplate(Mensagem mensagem){
-        try {
-            Template templete = freemarkerConfig.getTemplate(mensagem.getCorpo());
+    protected MimeMessage criarMimeMessage(Mensagem mensagem) throws MessagingException {
+        String corpo = processarTemplate(mensagem);
 
-            /**
-             * Passa nos parametros do metodo o template, e o objeto java que vai ser usado para gerar o html dinamicamente, o freemarker vai unir os 2 parametros
-             * e gerar um unico html, que sera o corpo do email
-             */
-            return FreeMarkerTemplateUtils.processTemplateIntoString(templete, mensagem.getVariaveis());
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
-        }catch (Exception e){
-            throw new EmailException("Não foi possível montar o template do e-mail", e);
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
+        helper.setFrom(emailProperties.getRemetente());
+        helper.setTo(mensagem.getDestinatarios().toArray(new String[0]));
+        helper.setSubject(mensagem.getAssunto());
+        helper.setText(corpo, true);
 
-        }
-
-
-
+        return mimeMessage;
     }
 
 
+    protected String processarTemplate(Mensagem mensagem) {
+        try {
+            Template template = freemarkerConfig.getTemplate(mensagem.getCorpo());
 
+            return FreeMarkerTemplateUtils.processTemplateIntoString(
+                    template, mensagem.getVariaveis());
+        } catch (Exception e) {
+            throw new EmailException("Não foi possível montar o template do e-mail", e);
+        }
+    }
 
 
 

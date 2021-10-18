@@ -47,8 +47,6 @@ public class FluxoPedidoService {
 				.destinatario(pedido.getCliente().getEmail())
 				.build();
 
-
-
         envioEmailService.enviar(mensagem);
 	}
 
