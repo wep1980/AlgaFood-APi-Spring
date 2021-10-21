@@ -13,7 +13,9 @@ import br.com.wepdev.domain.exception.RestauranteNaoEncontradoException;
 import br.com.wepdev.domain.model.view.RestauranteView;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,11 +48,20 @@ public class RestauranteController {
 	private SmartValidator validato;
 
 
-
+	/**
+	 * Com o ResponseEntity podemos retornar varias propriedades na requisição, uma delas e o header, e dentro dele eu posso colocar uma liberação de CORS
+	 * para uma origem especifica. -> header(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://www.algafood.local:8000/index.html").
+	 *
+	 * O melhor navegador para teste e o MOZILA
+	 */
 	@JsonView(RestauranteView.Resumo.class)
 	@GetMapping
-	public List<RestauranteDTO> listar() {
-		return restauranteConverterDTO.converteListaEntidadeParaListaDto(restauranteRepository.findAll());
+	public ResponseEntity<List<RestauranteDTO>> listar() {
+		List<RestauranteDTO> restauranteDTOS = restauranteConverterDTO.converteListaEntidadeParaListaDto(restauranteRepository.findAll());
+
+		return ResponseEntity.ok()
+				.header(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://www.algafood.local:8000")
+				.body(restauranteDTOS);
 	}
 
 
@@ -61,11 +72,11 @@ public class RestauranteController {
 //	}
 
 
-	@JsonView(RestauranteView.ApenasNome.class) // Ao inves de representação ser exibido o DTO, sera exibido a classe de resumo que utiliza o JsonView
-	@GetMapping(params = "projecao=apenas-nome") // esse endpoint so sera utilizado se no GET for passado esse parametro=apenas-nome
-	public List<RestauranteDTO> listarApenasNomes() {
-		return listar();
-	}
+//	@JsonView(RestauranteView.ApenasNome.class) // Ao inves de representação ser exibido o DTO, sera exibido a classe de resumo que utiliza o JsonView
+//	@GetMapping(params = "projecao=apenas-nome") // esse endpoint so sera utilizado se no GET for passado esse parametro=apenas-nome
+//	public List<RestauranteDTO> listarApenasNomes() {
+//		return listar();
+//	}
 
 	/**
 	 * Deixando o endpoint dinamico para aceitar parametros diferentes utilizando MappingJacksonValue.

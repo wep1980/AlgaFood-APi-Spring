@@ -34,6 +34,8 @@ public class FluxoPedidoService {
 	public void cancelar(String codigoPedido) {
 		Pedido pedido = emissaoPedidoService.buscarOuFalhar(codigoPedido);
         pedido.cancelar();
+
+		pedidoRepository.save(pedido); // O save foi necessario para que o evento de disparo de email funcione, ou qualquer outro tipo de evento que seja criado
 	}
 
 

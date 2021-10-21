@@ -1,5 +1,6 @@
 package br.com.wepdev.domain.model;
 
+import br.com.wepdev.domain.event.PedidoCanceladoEvent;
 import br.com.wepdev.domain.event.PedidoConfirmadoEvent;
 import br.com.wepdev.domain.exception.NegocioException;
 import lombok.Data;
@@ -130,6 +131,12 @@ public class Pedido extends AbstractAggregateRoot<Pedido> {
     public void cancelar(){
         setStatus(StatusPedido.CANCELADO);
         setDataCancelamento(OffsetDateTime.now());
+
+        /*
+        this -> Instancia atual do Pedido que esta sendo cancelado.
+        Registrando o evento que deve ser disparado assim que o objeto Pedido for cancelado
+         */
+        registerEvent(new PedidoCanceladoEvent(this));
     }
 
 
