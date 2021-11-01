@@ -23,7 +23,15 @@ import br.com.wepdev.domain.service.RestauranteService;
 
 import javax.validation.Valid;
 
-@CrossOrigin(origins = {"http://www.algafood.local:8000", ""}) // Liberando CORS no controller completo, e para liberar mais de 1 URL e so colocar um array como no exemplo
+//@CrossOrigin(origins = {"http://www.algafood.local:8000", ""}) // Liberando CORS no controller completo, e para liberar mais de 1 URL e so colocar um array como no exemplo
+
+/*
+// tempo maximo de 20 segundos que o browser pode armazenar o tempo do preflight do CORS. preflight é uma primeira requisição feita pelo navegador antes da requisição
+ de fato feita por nos. O preflight so feito quando a requisição e feita para uma origem diferente, e apenas em certas condições, se for uma requisição simples dos verbos
+ (GET, POST, HEAD) nao vai ativar o preflight, ou seja, nao vai fazer o options antes. Cabeçalhos tambem definem se uma requisição e simples ou não
+ informações em https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests
+ */
+@CrossOrigin(maxAge = 20)
 @RestController
 @RequestMapping(value = "/restaurantes")
 public class RestauranteController {
