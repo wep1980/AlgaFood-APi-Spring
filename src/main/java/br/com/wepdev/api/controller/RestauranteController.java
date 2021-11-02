@@ -31,7 +31,7 @@ import javax.validation.Valid;
  (GET, POST, HEAD) nao vai ativar o preflight, ou seja, nao vai fazer o options antes. Cabeçalhos tambem definem se uma requisição e simples ou não
  informações em https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests
  */
-@CrossOrigin(maxAge = 20)
+//@CrossOrigin(maxAge = 20)
 @RestController
 @RequestMapping(value = "/restaurantes")
 public class RestauranteController {
