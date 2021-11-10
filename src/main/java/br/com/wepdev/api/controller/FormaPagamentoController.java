@@ -56,6 +56,8 @@ public class FormaPagamentoController {
 
     /**
      * Adionando o tipo de retorno como ResponseEntity, para poder alterar o cabeçalho da resposta e assim adicionar um cache de 10 segundos na requisição da representação
+     *
+     * Metodo que vai retornar um itag contendo o hash da resposta. o filtro para criação do itag foi habilitado aqui no spring
      * @return
      */
     @GetMapping("/{formaPagamentoId}")
