@@ -54,12 +54,20 @@ public class FormaPagamentoController {
     }
 
 
+    /**
+     * Adionando o tipo de retorno como ResponseEntity, para poder alterar o cabeçalho da resposta e assim adicionar um cache de 10 segundos na requisição da representação
+     * @return
+     */
     @GetMapping("/{formaPagamentoId}")
-    public FormaPagamentoDTO buscar(@PathVariable Long formaPagamentoId) {
+    public ResponseEntity<FormaPagamentoDTO> buscar(@PathVariable Long formaPagamentoId) {
 
         FormaPagamento formaPagamento = formaPagamentoService.buscarOuFalhar(formaPagamentoId);
 
-        return formaPagamentoConverterDTO.converteEntidadeParaDto(formaPagamento);
+        FormaPagamentoDTO formaPagamentoDTO = formaPagamentoConverterDTO.converteEntidadeParaDto(formaPagamento);
+
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS)) // Colocando a representação no cache da requisicao por 10 segundos
+                .body(formaPagamentoDTO);
     }
 
 
