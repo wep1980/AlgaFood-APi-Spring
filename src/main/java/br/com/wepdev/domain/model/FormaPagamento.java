@@ -8,6 +8,9 @@ import javax.persistence.Id;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.OffsetDateTime;
 
 
 @Entity
@@ -22,7 +25,9 @@ public class FormaPagamento {
 	
 	@Column(nullable = false)
 	private String descricao;
-	
+
+	@UpdateTimestamp // Sempre que existir uma atualização desta entidade o jpa armazenara a data
+	private OffsetDateTime dataAtualizacao;
 	
 	
 }

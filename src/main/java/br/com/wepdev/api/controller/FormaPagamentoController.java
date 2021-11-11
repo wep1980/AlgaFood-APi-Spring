@@ -44,12 +44,27 @@ public class FormaPagamentoController {
     @GetMapping
     public ResponseEntity<List<FormaPagamentoDTO>> listar() {
 
+        /**
+         * Depois ter habilitado o Etag no projeto, ele filtra as respostas dos endpoints e gera um hash da resposta adicionando o cabeçalho Etag.
+         *
+         * Deep ETags -> evita que o processamento completo seja feito do lado do servidor, caso a validação do Etag recebida no cabeçalho If-None-Match
+         * confirme que não tenha nenhuma modificação no Etag. Ou seja o consumidor envia If-None-Match com etag que esta no cache, se o etag for igual ao da resposta
+         * que servidor, nao precisa executar o processamento completo.
+         *
+         * O Obejtivo e economia de banda, processamento do servidor e processamento do banco de dados.
+         *
+         * Verifica se o valor que esta no cabeçalho do If-None-Matchetag do Etag e igual ao valor que seria passado na resposta.
+         * Sera buscada a ultima data de atualização de FormaPagamento
+         *
+         */
+
+
         List<FormaPagamento> todasFormasPagamentos = formaPagamentoRepository.findAll();
 
         List<FormaPagamentoDTO> formasPagamentosDTO = formaPagamentoConverterDTO.converteListaEntidadeParaListaDto(todasFormasPagamentos);
 
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))// Colocando a representação no cache da requisicao por 10 segundos
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePublic())// Colocando a representação no cache da requisicao por 10 segundos
                 .body(formasPagamentosDTO);
     }
 
