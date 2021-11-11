@@ -67,8 +67,19 @@ public class FormaPagamentoController {
 
         FormaPagamentoDTO formaPagamentoDTO = formaPagamentoConverterDTO.converteEntidadeParaDto(formaPagamento);
 
+        /*
+        CacheControl.maxAge(10, TimeUnit.SECONDS) ->  Colocando a representação no cache da requisicao por 10 segundos.
+        cachePrivate() -> permite o armazenamento do cache local, exemplo : no navegador. Nao permito o armazenamento compartilhado do cache, ou seja nao permite
+        em um proxy, por exemplo.
+        cachePublic() -> o cache pode ser armazenado tanto em cache local e em cache compartilhado(é o padrão)
+         */
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS)) // Colocando a representação no cache da requisicao por 10 segundos
+                //.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+                //.cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePrivate())
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePublic())
+                //.cacheControl(CacheControl.noCache()) // Se a resposta for cacheada sera sempre necessario uma validação(Como se esse cache estivesse sempre em stale(velho))
+                //.cacheControl(CacheControl.noStore()) // nenhum cache pode ser armazenado
+
                 .body(formaPagamentoDTO);
     }
 
