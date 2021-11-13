@@ -14,8 +14,11 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import javax.validation.Valid;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -42,7 +45,7 @@ public class FormaPagamentoController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<List<FormaPagamentoDTO>> listar() {
+    public ResponseEntity<List<FormaPagamentoDTO>> listar(ServletWebRequest request) {
 
         /**
          * Depois ter habilitado o Etag no projeto, ele filtra as respostas dos endpoints e gera um hash da resposta adicionando o cabeçalho Etag.
@@ -57,6 +60,21 @@ public class FormaPagamentoController {
          * Sera buscada a ultima data de atualização de FormaPagamento
          *
          */
+        ShallowEtagHeaderFilter.disableContentCaching(request.getRequest()); // Desabilitando o filtro que cria o Etag para essa requisição
+
+        String eTag = "0";
+
+        OffsetDateTime dataUltimaAtualizacao = formaPagamentoRepository.getDataUltimaAtualizacao();
+        if(dataUltimaAtualizacao != null){
+            eTag = String.valueOf(dataUltimaAtualizacao.toEpochSecond()); // Convertendo a data da ultima atualizacao para segundos e trasnformando o resultado em string
+        }
+
+        /*
+        compara se o If-None-Matchetag e igual ao Etag passada. Pega o  If-None-Matchetag do cabeçalho da requisição e compara com o Etag
+         */
+        if(request.checkNotModified(eTag)){ // se nao foi modificado, ou seja se sao iguais
+            return null;
+        }
 
 
         List<FormaPagamento> todasFormasPagamentos = formaPagamentoRepository.findAll();
@@ -65,6 +83,7 @@ public class FormaPagamentoController {
 
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS).cachePublic())// Colocando a representação no cache da requisicao por 10 segundos
+                .eTag(eTag) // Adionando o etag no cabeçalho da resposta
                 .body(formasPagamentosDTO);
     }
 

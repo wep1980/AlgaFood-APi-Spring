@@ -26,7 +26,8 @@ public class FormaPagamento {
 	@Column(nullable = false)
 	private String descricao;
 
-	@UpdateTimestamp // Sempre que existir uma atualização desta entidade o jpa armazenara a data
+	//Sempre que existir uma atualização desta entidade o jpa armazenara a data.
+	@UpdateTimestamp // O hash(Etag) sera gerado atraves desse unico campo
 	private OffsetDateTime dataAtualizacao;
 	
 	
