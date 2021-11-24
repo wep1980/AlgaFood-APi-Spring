@@ -4,8 +4,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
@@ -30,7 +33,8 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .apis(RequestHandlerSelectors.basePackage("br.com.wepdev.api")) // escaneia apenas os controladores desse pacote
                 .paths(PathSelectors.any()) // seleciona os caminhos dos end points que terao documentação, any() -> todos os caminhos
                 //.paths(PathSelectors.ant("/restaurantes/*"))
-                .build(); // retorna o Docket
+                .build() // retorna o Docket
+                .apiInfo(apiInfo()); // Passando as informações do cabeçalho da pagina HTML do swagger
     }
 
 
@@ -46,6 +50,38 @@ public class SpringFoxConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
+
+
+    /**
+     * Metodo que modifica as informações no cabeçalho da documentação do swagger na pagina HTML
+     * @return
+     */
+    public ApiInfo apiInfo(){
+        return new ApiInfoBuilder()
+                .title("AlgaFood API")
+                .description("API aberta para clientes e restaurantes")
+                .version("1")
+                .contact(new Contact("Waldir escouto pereira", "www.linkedin.com/in/wepdev", "wepcienciadacomputacao@gmail.com"))
+                .build();
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
