@@ -9,6 +9,7 @@ import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
@@ -34,7 +35,8 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .paths(PathSelectors.any()) // seleciona os caminhos dos end points que terao documentação, any() -> todos os caminhos
                 //.paths(PathSelectors.ant("/restaurantes/*"))
                 .build() // retorna o Docket
-                .apiInfo(apiInfo()); // Passando as informações do cabeçalho da pagina HTML do swagger
+                .apiInfo(apiInfo()) // Passando as informações do cabeçalho da pagina HTML do swagger
+                .tags(new Tag("Cidades", "Gerencia as cidades")); // Adicionando uma nova Tag na documentação
     }
 
 

@@ -8,6 +8,7 @@ import br.com.wepdev.api.converter.CidadeConverterDTO;
 import br.com.wepdev.api.converter.CidadeInputConverterCidade;
 import br.com.wepdev.domain.exception.EstadoNaoEncontradoException;
 import br.com.wepdev.domain.exception.NegocioException;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 
 //@ResponseBody // As Respostas dos metedos desse controlador devem ir na resposta da requisicao
 //@Controller // Controlador REST
+@Api(tags = "Cidades") // Controlador com recursos para utilização do swagger
 @RestController // Substitue as 2 anotacoes acima, Essa classe e a responsavel pelas respostas HTTP
 @RequestMapping(value = "/cidades")
 public class CidadeController {
