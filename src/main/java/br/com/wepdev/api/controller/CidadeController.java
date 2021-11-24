@@ -9,6 +9,7 @@ import br.com.wepdev.api.converter.CidadeInputConverterCidade;
 import br.com.wepdev.domain.exception.EstadoNaoEncontradoException;
 import br.com.wepdev.domain.exception.NegocioException;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,8 @@ public class CidadeController {
 	private CidadeInputConverterCidade cidadeInputConverterCidade;
 
 	
-	
+
+	@ApiOperation("Lista as cidades")
 	@GetMapping
 	public List<CidadeDTO> listar() {
 		List<Cidade> todasCidades = cidadeRepository.findAll();
@@ -49,6 +51,7 @@ public class CidadeController {
 	}
 
 
+	@ApiOperation("Busca uma cidade por ID")
 	@GetMapping("/{cidadeId}")
 	public CidadeDTO buscar(@PathVariable Long cidadeId) {
 		Cidade cidade = cidadeService.buscarOuFalhar(cidadeId);
@@ -56,6 +59,7 @@ public class CidadeController {
 	}
 
 
+	@ApiOperation("Cadastra uma cidade")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeDTO adicionar(@RequestBody @Valid CidadeInputDTO cidadeInput) {
@@ -71,6 +75,7 @@ public class CidadeController {
 	}
 
 
+	@ApiOperation("Atualiza uma cidade por ID")
 	@PutMapping("/{cidadeId}")
 	public CidadeDTO atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInputDTO cidadeInput) {
 			try{
@@ -84,9 +89,10 @@ public class CidadeController {
 			}catch (EstadoNaoEncontradoException e){
                 throw new NegocioException(e.getMessage(), e);
 			}
-
 	}
 
+
+	@ApiOperation("Exclui uma cidade por ID")
 	@DeleteMapping("/{cidadeId}")
 	public void remover(@PathVariable Long cidadeId) {
 			  cidadeService.excluir(cidadeId);
