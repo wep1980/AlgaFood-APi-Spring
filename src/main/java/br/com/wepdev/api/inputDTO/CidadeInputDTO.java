@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 public class CidadeInputDTO {
 
 
-    @ApiModelProperty(example = "Uberlandia")
+    @ApiModelProperty(example = "Uberlandia", required = true)
     @NotBlank
     private String nome;
 

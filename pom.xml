@@ -139,9 +139,15 @@
 			<version>2.0.0.RELEASE</version>
 		</dependency>
 
-		<dependency>
+		<dependency> <!-- Dependencia de documentação -->
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${springfox.version}</version>
+		</dependency>
+
+		<dependency> <!-- Dependencia de documentação para integração com o bean validators -->
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-bean-validators</artifactId>
 			<version>${springfox.version}</version>
 		</dependency>
 

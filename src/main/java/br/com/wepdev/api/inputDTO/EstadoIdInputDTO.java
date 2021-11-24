@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 public class EstadoIdInputDTO {
 
 
-    @ApiModelProperty(example = "1")
+    @ApiModelProperty(example = "1", required = true)
     @NotNull
     private Long id;
 }
