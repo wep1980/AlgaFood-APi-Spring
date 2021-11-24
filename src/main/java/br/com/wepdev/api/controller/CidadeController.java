@@ -10,6 +10,7 @@ import br.com.wepdev.domain.exception.EstadoNaoEncontradoException;
 import br.com.wepdev.domain.exception.NegocioException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -51,9 +52,14 @@ public class CidadeController {
 	}
 
 
+	/**
+	 * example = "1" -> Parametro que ja preenche na pagina HTML de documentação do swagger o numero 1 como exemplo do que deve ser preenchido.
+	 * @param cidadeId
+	 * @return
+	 */
 	@ApiOperation("Busca uma cidade por ID")
 	@GetMapping("/{cidadeId}")
-	public CidadeDTO buscar(@PathVariable Long cidadeId) {
+	public CidadeDTO buscar(@ApiParam(value = "ID de uma cidade", example = "1") @PathVariable Long cidadeId) {
 		Cidade cidade = cidadeService.buscarOuFalhar(cidadeId);
 	    return cidadeConverterDTO.converteEntidadeParaDto(cidade);
 	}
@@ -62,7 +68,8 @@ public class CidadeController {
 	@ApiOperation("Cadastra uma cidade")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public CidadeDTO adicionar(@RequestBody @Valid CidadeInputDTO cidadeInput) {
+	public CidadeDTO adicionar(@ApiParam(name = "corpo", value = "Representação de uma nova cidade")
+								   @RequestBody @Valid CidadeInputDTO cidadeInput) {
 		try {
 			Cidade cidade = cidadeInputConverterCidade.converteInputParaEntidade(cidadeInput);
 			cidade = cidadeService.salvar(cidade);
@@ -77,7 +84,8 @@ public class CidadeController {
 
 	@ApiOperation("Atualiza uma cidade por ID")
 	@PutMapping("/{cidadeId}")
-	public CidadeDTO atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInputDTO cidadeInput) {
+	public CidadeDTO atualizar(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId,
+					  @ApiParam(name = "corpo", value = "Representação de uma cidade com os novos dados") @RequestBody @Valid CidadeInputDTO cidadeInput) {
 			try{
 				Cidade cidadeAtual = cidadeService.buscarOuFalhar(cidadeId);
 
@@ -94,7 +102,7 @@ public class CidadeController {
 
 	@ApiOperation("Exclui uma cidade por ID")
 	@DeleteMapping("/{cidadeId}")
-	public void remover(@PathVariable Long cidadeId) {
+	public void remover(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId) {
 			  cidadeService.excluir(cidadeId);
 	}
 
