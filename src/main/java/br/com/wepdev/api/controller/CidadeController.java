@@ -3,6 +3,7 @@ package br.com.wepdev.api.controller;
 import java.util.List;
 
 import br.com.wepdev.api.DTO.CidadeDTO;
+import br.com.wepdev.api.controller.openapi.CidadeControllerOpenApi;
 import br.com.wepdev.api.exceptionhandler.Problem;
 import br.com.wepdev.api.inputDTO.CidadeInputDTO;
 import br.com.wepdev.api.converter.CidadeConverterDTO;
@@ -29,10 +30,10 @@ import javax.validation.Valid;
 
 //@ResponseBody // As Respostas dos metedos desse controlador devem ir na resposta da requisicao
 //@Controller // Controlador REST
-@Api(tags = "Cidades") // Controlador com recursos para utilização do swagger
+//@Api(tags = "Cidades") // Controlador com recursos para utilização do swagger
 @RestController // Substitue as 2 anotacoes acima, Essa classe e a responsavel pelas respostas HTTP
 @RequestMapping(value = "/cidades")
-public class CidadeController {
+public class CidadeController implements CidadeControllerOpenApi {
 	
 	
 	@Autowired
@@ -49,7 +50,6 @@ public class CidadeController {
 
 	
 
-	@ApiOperation("Lista as cidades")
 	@GetMapping
 	public List<CidadeDTO> listar() {
 		List<Cidade> todasCidades = cidadeRepository.findAll();
@@ -64,27 +64,16 @@ public class CidadeController {
 	 * @param cidadeId
 	 * @return
 	 */
-	@ApiOperation("Busca uma cidade por ID")
-	@ApiResponses({ // Adicionando respostas de erro na documentação com a representação no payload da resposta
-			@ApiResponse(responseCode = "400", description = "ID da cidade inválido", content = @Content(schema = @Schema(implementation = Problem.class))),
-			@ApiResponse(responseCode = "404", description = "Cidade não encontrada", content = @Content(schema = @Schema(implementation = Problem.class)))
-
-	})
 	@GetMapping("/{cidadeId}")
-	public CidadeDTO buscar(@ApiParam(value = "ID de uma cidade", example = "1") @PathVariable Long cidadeId) {
+	public CidadeDTO buscar(@PathVariable Long cidadeId) {
 		Cidade cidade = cidadeService.buscarOuFalhar(cidadeId);
 	    return cidadeConverterDTO.converteEntidadeParaDto(cidade);
 	}
 
 
-	@ApiOperation("Cadastra uma cidade")
-	@ApiResponses({ // Adicionando respostas de erro na documentação com a representação no payload da resposta
-			@ApiResponse(responseCode = "201", description = "Cidade cadastrada")
-	})
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public CidadeDTO adicionar(@ApiParam(name = "corpo", value = "Representação de uma nova cidade")
-								   @RequestBody @Valid CidadeInputDTO cidadeInput) {
+	public CidadeDTO adicionar(@RequestBody @Valid CidadeInputDTO cidadeInput) {
 		try {
 			Cidade cidade = cidadeInputConverterCidade.converteInputParaEntidade(cidadeInput);
 			cidade = cidadeService.salvar(cidade);
@@ -97,18 +86,9 @@ public class CidadeController {
 	}
 
 
-	@ApiOperation("Atualiza uma cidade por ID")
-	@ApiResponses({ // Adicionando respostas de erro na documentação com a representação no payload da resposta
-			@ApiResponse(responseCode = "200", description = "Cidade atualizada"),
-			@ApiResponse(responseCode = "404", description = "Cidade não encontrada", content = @Content(schema = @Schema(implementation = Problem.class)))
-	})
-	@PutMapping("/{cidadeId}")
-	public CidadeDTO atualizar(
-			@ApiParam(value = "ID de uma cidade")
-			@PathVariable Long cidadeId,
-			@ApiParam(name = "corpo", value = "Representação de uma cidade com os novos dados")
-			@RequestBody @Valid CidadeInputDTO cidadeInput) {
 
+	@PutMapping("/{cidadeId}")
+	public CidadeDTO atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInputDTO cidadeInput) {
 			try{
 				Cidade cidadeAtual = cidadeService.buscarOuFalhar(cidadeId);
 
@@ -123,14 +103,10 @@ public class CidadeController {
 	}
 
 
-	@ApiOperation("Exclui uma cidade por ID")
-	@ApiResponses({ // Adicionando respostas de erro na documentação com a representação no payload da resposta
-			@ApiResponse(responseCode = "204", description = "Cidade excluída", content = @Content(schema = @Schema(implementation = Problem.class))),
-			@ApiResponse(responseCode = "404", description = "Cidade não encontrada", content = @Content(schema = @Schema(implementation = Problem.class)))
-	})
+
 	@DeleteMapping("/{cidadeId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void remover(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId) {
+	public void remover(@PathVariable Long cidadeId) {
 
 			  cidadeService.excluir(cidadeId);
 	}
