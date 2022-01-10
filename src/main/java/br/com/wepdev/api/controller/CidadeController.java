@@ -3,6 +3,7 @@ package br.com.wepdev.api.controller;
 import java.util.List;
 
 import br.com.wepdev.api.DTO.CidadeDTO;
+import br.com.wepdev.api.exceptionhandler.Problem;
 import br.com.wepdev.api.inputDTO.CidadeInputDTO;
 import br.com.wepdev.api.converter.CidadeConverterDTO;
 import br.com.wepdev.api.converter.CidadeInputConverterCidade;
@@ -11,6 +12,10 @@ import br.com.wepdev.domain.exception.NegocioException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -60,6 +65,11 @@ public class CidadeController {
 	 * @return
 	 */
 	@ApiOperation("Busca uma cidade por ID")
+	@ApiResponses({ // Adicionando respostas de erro na documentação com a representação no payload da resposta
+			@ApiResponse(responseCode = "400", description = "ID da cidade inválido", content = @Content(schema = @Schema(implementation = Problem.class))),
+			@ApiResponse(responseCode = "404", description = "Cidade não encontrada", content = @Content(schema = @Schema(implementation = Problem.class)))
+
+	})
 	@GetMapping("/{cidadeId}")
 	public CidadeDTO buscar(@ApiParam(value = "ID de uma cidade", example = "1") @PathVariable Long cidadeId) {
 		Cidade cidade = cidadeService.buscarOuFalhar(cidadeId);
@@ -68,6 +78,9 @@ public class CidadeController {
 
 
 	@ApiOperation("Cadastra uma cidade")
+	@ApiResponses({ // Adicionando respostas de erro na documentação com a representação no payload da resposta
+			@ApiResponse(responseCode = "201", description = "Cidade cadastrada")
+	})
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeDTO adicionar(@ApiParam(name = "corpo", value = "Representação de uma nova cidade")
@@ -85,6 +98,10 @@ public class CidadeController {
 
 
 	@ApiOperation("Atualiza uma cidade por ID")
+	@ApiResponses({ // Adicionando respostas de erro na documentação com a representação no payload da resposta
+			@ApiResponse(responseCode = "200", description = "Cidade atualizada"),
+			@ApiResponse(responseCode = "404", description = "Cidade não encontrada", content = @Content(schema = @Schema(implementation = Problem.class)))
+	})
 	@PutMapping("/{cidadeId}")
 	public CidadeDTO atualizar(
 			@ApiParam(value = "ID de uma cidade")
@@ -107,6 +124,10 @@ public class CidadeController {
 
 
 	@ApiOperation("Exclui uma cidade por ID")
+	@ApiResponses({ // Adicionando respostas de erro na documentação com a representação no payload da resposta
+			@ApiResponse(responseCode = "204", description = "Cidade excluída", content = @Content(schema = @Schema(implementation = Problem.class))),
+			@ApiResponse(responseCode = "404", description = "Cidade não encontrada", content = @Content(schema = @Schema(implementation = Problem.class)))
+	})
 	@DeleteMapping("/{cidadeId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId) {

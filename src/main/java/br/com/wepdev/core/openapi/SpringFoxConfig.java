@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
@@ -177,11 +176,14 @@ public class SpringFoxConfig implements WebMvcConfigurer {
     }
 
 
-
+    /**
+     * Metodo que referencia a classe Problem
+     * @return
+     */
     private Consumer<RepresentationBuilder> getProblemaModelReference() {
         return r -> r.model(m -> m.name("Problema")
                 .referenceModel(ref -> ref.key(k -> k.qualifiedModelName(
-                        q -> q.name("Problema").namespace("com.algaworks.algafood.api.exceptionhandler")))));
+                        q -> q.name("Problema").namespace("br.com.wepdev.api.exceptionhandler")))));
     }
 
 
