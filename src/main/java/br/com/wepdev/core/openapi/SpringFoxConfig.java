@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -20,6 +21,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 // versão Spring Fox 3 e Open API 3
 
@@ -71,24 +73,6 @@ public class SpringFoxConfig implements WebMvcConfigurer {
 
 
 
-
-//    @Bean
-//    public Docket apiDocket() {
-//        return new Docket(DocumentationType.OAS_30)
-//                .select()
-//                .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api"))
-//                .paths(PathSelectors.any())
-//                .build()
-//                .useDefaultResponseMessages(false)
-//                .globalResponses(HttpMethod.GET, globalGetResponseMessages())
-//                .globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
-//                .globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
-//                .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
-//                .apiInfo(apiInfo())
-//                .tags(new Tag("Cidades", "Gerencia as cidades"));
-//    }
-
-
     /**
      * versão 3 do SpringFox
      *
@@ -101,6 +85,8 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 new ResponseBuilder()
                         .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
                         .description("Erro interno no servidor")
+                        .representation( MediaType.APPLICATION_JSON ) // Adicionando um modelo de representação no corpo da resposta deste erro
+                        .apply(getProblemaModelReference())
                         .build(),
                 new ResponseBuilder()
                         .code(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()))
@@ -120,10 +106,14 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 new ResponseBuilder()
                         .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
                         .description("Requisição inválida (erro do cliente)")
+                        .representation( MediaType.APPLICATION_JSON )// Adicionando um modelo de representação no corpo da resposta deste erro
+                        .apply(getProblemaModelReference())
                         .build(),
                 new ResponseBuilder()
                         .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
                         .description("Erro interno no servidor")
+                        .representation( MediaType.APPLICATION_JSON )
+                        .apply(getProblemaModelReference())
                         .build(),
                 new ResponseBuilder()
                         .code(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()))
@@ -132,6 +122,8 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 new ResponseBuilder()
                         .code(String.valueOf(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()))
                         .description("Requisição recusada porque o corpo está em um formato não suportado")
+                        .representation( MediaType.APPLICATION_JSON )
+                        .apply(getProblemaModelReference())
                         .build()
         );
     }
@@ -142,10 +134,14 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 new ResponseBuilder()
                         .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
                         .description("Requisição inválida (erro do cliente)")
+                        .representation( MediaType.APPLICATION_JSON )
+                        .apply(getProblemaModelReference())
                         .build(),
                 new ResponseBuilder()
                         .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
                         .description("Erro interno no servidor")
+                        .representation( MediaType.APPLICATION_JSON )
+                        .apply(getProblemaModelReference())
                         .build()
         );
     }
@@ -182,7 +178,11 @@ public class SpringFoxConfig implements WebMvcConfigurer {
 
 
 
-
+    private Consumer<RepresentationBuilder> getProblemaModelReference() {
+        return r -> r.model(m -> m.name("Problema")
+                .referenceModel(ref -> ref.key(k -> k.qualifiedModelName(
+                        q -> q.name("Problema").namespace("com.algaworks.algafood.api.exceptionhandler")))));
+    }
 
 
 
