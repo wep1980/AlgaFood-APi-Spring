@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import br.com.wepdev.domain.model.Cidade;
@@ -50,7 +51,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 
 	
 
-	@GetMapping
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<CidadeDTO> listar() {
 		List<Cidade> todasCidades = cidadeRepository.findAll();
 
@@ -64,14 +65,14 @@ public class CidadeController implements CidadeControllerOpenApi {
 	 * @param cidadeId
 	 * @return
 	 */
-	@GetMapping("/{cidadeId}")
+	@GetMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeDTO buscar(@PathVariable Long cidadeId) {
 		Cidade cidade = cidadeService.buscarOuFalhar(cidadeId);
 	    return cidadeConverterDTO.converteEntidadeParaDto(cidade);
 	}
 
 
-	@PostMapping
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public CidadeDTO adicionar(@RequestBody @Valid CidadeInputDTO cidadeInput) {
 		try {
@@ -87,7 +88,7 @@ public class CidadeController implements CidadeControllerOpenApi {
 
 
 
-	@PutMapping("/{cidadeId}")
+	@PutMapping(path = "/{cidadeId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CidadeDTO atualizar(@PathVariable Long cidadeId, @RequestBody @Valid CidadeInputDTO cidadeInput) {
 			try{
 				Cidade cidadeAtual = cidadeService.buscarOuFalhar(cidadeId);

@@ -57,7 +57,8 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
                 .additionalModels(typeResolver.resolve(Problem.class)) // Lista na pagina de documentação http://api.algafood.local:8080/swagger-ui/index.html em Schemas a classe Problem.class
                 .apiInfo(apiInfo()) // Passando as informações do cabeçalho da pagina HTML do swagger
-                .tags(new Tag("Cidades", "Gerencia as cidades")); // Adicionando uma nova Tag na documentação
+                .tags(new Tag("Cidades", "Gerencia as cidades"), // Adicionando uma nova Tag na documentação
+                        new Tag("Grupos", "Gerencia os grupos de usuários")); // Adicionando uma nova Tag na documentação
     }
 
 

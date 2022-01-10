@@ -1,6 +1,7 @@
 package br.com.wepdev.api.controller;
 
 import br.com.wepdev.api.DTO.GrupoDTO;
+import br.com.wepdev.api.controller.openapi.GrupoControllerOpenApi;
 import br.com.wepdev.api.inputDTO.GrupoInputDTO;
 import br.com.wepdev.api.converter.GrupoConverterDTO;
 import br.com.wepdev.api.converter.GrupoInputConverterGrupo;
@@ -9,6 +10,7 @@ import br.com.wepdev.domain.repository.GrupoRepository;
 import br.com.wepdev.domain.service.GrupoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,7 +21,7 @@ import java.util.List;
 //@Controller // Controlador REST
 @RestController // Substitue as 2 anotacoes acima, Essa classe e a responsavel pelas respostas HTTP
 @RequestMapping(value = "/grupos")
-public class GrupoController {
+public class GrupoController implements GrupoControllerOpenApi {
 	
 	
 	@Autowired
@@ -36,7 +38,7 @@ public class GrupoController {
 
 
 
-	@GetMapping
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<GrupoDTO> listar() {
 
 		List<Grupo> todosGrupos = grupoRepository.findAll();
@@ -45,7 +47,7 @@ public class GrupoController {
 	}
 
 
-	@GetMapping("/{grupoId}")
+	@GetMapping(path = "/{grupoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public GrupoDTO buscar(@PathVariable Long grupoId) {
 
 		Grupo grupo = grupoService.buscarOuFalhar(grupoId);
@@ -54,7 +56,7 @@ public class GrupoController {
 	}
 
 
-	@PostMapping
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public GrupoDTO adicionar(@RequestBody @Valid GrupoInputDTO grupoInput) {
 
@@ -66,7 +68,7 @@ public class GrupoController {
 	}
 
 
-	@PutMapping("/{grupoId}")
+	@PutMapping(path = "/{grupoId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public GrupoDTO atualizar(@PathVariable Long grupoId, @RequestBody @Valid GrupoInputDTO grupoInput) {
 
 		Grupo grupoAtual = grupoService.buscarOuFalhar(grupoId);
