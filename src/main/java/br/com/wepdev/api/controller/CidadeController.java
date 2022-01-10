@@ -48,7 +48,9 @@ public class CidadeController {
 	@GetMapping
 	public List<CidadeDTO> listar() {
 		List<Cidade> todasCidades = cidadeRepository.findAll();
+
 		return cidadeConverterDTO.converteListaEntidadeParaListaDto(todasCidades);
+
 	}
 
 
@@ -84,8 +86,12 @@ public class CidadeController {
 
 	@ApiOperation("Atualiza uma cidade por ID")
 	@PutMapping("/{cidadeId}")
-	public CidadeDTO atualizar(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId,
-					  @ApiParam(name = "corpo", value = "Representação de uma cidade com os novos dados") @RequestBody @Valid CidadeInputDTO cidadeInput) {
+	public CidadeDTO atualizar(
+			@ApiParam(value = "ID de uma cidade")
+			@PathVariable Long cidadeId,
+			@ApiParam(name = "corpo", value = "Representação de uma cidade com os novos dados")
+			@RequestBody @Valid CidadeInputDTO cidadeInput) {
+
 			try{
 				Cidade cidadeAtual = cidadeService.buscarOuFalhar(cidadeId);
 
@@ -102,7 +108,9 @@ public class CidadeController {
 
 	@ApiOperation("Exclui uma cidade por ID")
 	@DeleteMapping("/{cidadeId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@ApiParam(value = "ID de uma cidade") @PathVariable Long cidadeId) {
+
 			  cidadeService.excluir(cidadeId);
 	}
 

@@ -3,17 +3,21 @@ package br.com.wepdev.core.openapi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.service.Tag;
+import springfox.documentation.builders.*;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+
+import java.util.Arrays;
+import java.util.List;
+
+// versão Spring Fox 3 e Open API 3
 
 // WebMvcConfigurer -> Interface usada para customizar o Spring MCV no projeto
 @Configuration
@@ -38,8 +42,92 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .paths(PathSelectors.any()) // seleciona os caminhos dos end points que terao documentação, any() -> todos os caminhos
                 //.paths(PathSelectors.ant("/restaurantes/*"))
                 .build() // retorna o Docket
+                .useDefaultResponseMessages(false) // Desabilita os codigos de status 400
+                .globalResponses(HttpMethod.GET, globalGetResponseMessages()) // Configurando os codigos de mensagens padrao para o metodo GET, POST, PUT, DELETE de forma global
+                .globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
+                .globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
+                .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
                 .apiInfo(apiInfo()) // Passando as informações do cabeçalho da pagina HTML do swagger
                 .tags(new Tag("Cidades", "Gerencia as cidades")); // Adicionando uma nova Tag na documentação
+    }
+
+
+//    @Bean
+//    public Docket apiDocket() {
+//        return new Docket(DocumentationType.OAS_30)
+//                .select()
+//                .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api"))
+//                .paths(PathSelectors.any())
+//                .build()
+//                .useDefaultResponseMessages(false)
+//                .globalResponses(HttpMethod.GET, globalGetResponseMessages())
+//                .globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
+//                .globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
+//                .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
+//                .apiInfo(apiInfo())
+//                .tags(new Tag("Cidades", "Gerencia as cidades"));
+//    }
+
+
+    /**
+     * versão 3 do SpringFox
+     *
+     * Metodo que cria uma lista de ResponseMessage para todos os metodos GET de forma global, metodo utilizado no metodo acima.
+     * Colocado no metodo apenas os codigos de erro.
+     * @return
+     */
+    private List<Response> globalGetResponseMessages(){
+        return Arrays.asList(
+                new ResponseBuilder()
+                        .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
+                        .description("Erro interno no servidor")
+                        .build(),
+                new ResponseBuilder()
+                        .code(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()))
+                        .description("Recurso não possui representação que poderia ser aceita pelo consumidor")
+                        .build()
+
+//                new ResponseBuilder() // Nao funciona a descricao customizada de forma global no status 200, para funcionar e necessario customizar no proprio endpoint
+//                        .code(String.valueOf(HttpStatus.OK.value()))
+//                        .description("Consulta realizada com sucesso")
+//                        .build()
+        );
+    }
+
+
+    private List<Response> globalPostPutResponseMessages() {
+        return Arrays.asList(
+                new ResponseBuilder()
+                        .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
+                        .description("Requisição inválida (erro do cliente)")
+                        .build(),
+                new ResponseBuilder()
+                        .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
+                        .description("Erro interno no servidor")
+                        .build(),
+                new ResponseBuilder()
+                        .code(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()))
+                        .description("Recurso não possui representação que poderia ser aceita pelo consumidor")
+                        .build(),
+                new ResponseBuilder()
+                        .code(String.valueOf(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()))
+                        .description("Requisição recusada porque o corpo está em um formato não suportado")
+                        .build()
+        );
+    }
+
+
+    private List<Response> globalDeleteResponseMessages() {
+        return Arrays.asList(
+                new ResponseBuilder()
+                        .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
+                        .description("Requisição inválida (erro do cliente)")
+                        .build(),
+                new ResponseBuilder()
+                        .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
+                        .description("Erro interno no servidor")
+                        .build()
+        );
     }
 
 
@@ -62,7 +150,7 @@ public class SpringFoxConfig implements WebMvcConfigurer {
      * Metodo que modifica as informações no cabeçalho da documentação do swagger na pagina HTML
      * @return
      */
-    public ApiInfo apiInfo(){
+    private ApiInfo apiInfo(){
         return new ApiInfoBuilder()
                 .title("AlgaFood API")
                 .description("API aberta para clientes e restaurantes")

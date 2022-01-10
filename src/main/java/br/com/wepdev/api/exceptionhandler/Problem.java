@@ -10,7 +10,7 @@ import java.util.List;
 
 
 /**
- * Classe que customiza as informacoes dos erros que vao aparecer na representção (POSTMAN)
+ * Classe que customiza as informacoes dos erros que vão aparecer na representção (POSTMAN)
  */
 @JsonInclude(JsonInclude.Include.NON_NULL) // So inclue na representação( POSTMAN ) se o valor da propriedade nao estiver nulo
 @Getter
