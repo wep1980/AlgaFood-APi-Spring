@@ -1,5 +1,8 @@
 package br.com.wepdev.core.openapi;
 
+import br.com.wepdev.api.exceptionhandler.Problem;
+import com.fasterxml.classmate.TypeResolver;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -12,6 +15,7 @@ import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration
 import springfox.documentation.builders.*;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.json.JacksonModuleRegistrar;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.Arrays;
@@ -33,6 +37,9 @@ public class SpringFoxConfig implements WebMvcConfigurer {
      */
     @Bean
     public Docket apiDocket() {
+
+        var typeResolver = new TypeResolver(); // Intancia criada e utilizada para adicionar o modelo de Problem que descreve os erros na representação
+
         return new Docket(DocumentationType.OAS_30)
                 .select() // Retorna um builder que ira selecionar os end points que devem ser expostos na definição do JSON
 
@@ -47,9 +54,22 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
                 .globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
                 .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
+                .additionalModels(typeResolver.resolve(Problem.class)) // Lista na pagina de documentação http://api.algafood.local:8080/swagger-ui/index.html em Schemas a classe Problem.class
                 .apiInfo(apiInfo()) // Passando as informações do cabeçalho da pagina HTML do swagger
                 .tags(new Tag("Cidades", "Gerencia as cidades")); // Adicionando uma nova Tag na documentação
     }
+
+
+    /**
+     * Bean para fazer com que o SpringFox carregue o módulo de conversão de datas e resolva o problema na documentação de serialização
+     * @return
+     */
+    @Bean
+    public JacksonModuleRegistrar springFoxJacksonConfig() {
+        return objectMapper -> objectMapper.registerModule(new JavaTimeModule());
+    }
+
+
 
 
 //    @Bean

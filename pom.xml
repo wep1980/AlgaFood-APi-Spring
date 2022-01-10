@@ -151,6 +151,11 @@
 			<version>${springfox.version}</version>
 		</dependency>
 
+		<dependency> <!-- Resolvendo o problema de serialização de OffsetDateTime na documentação do swagger -->
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
