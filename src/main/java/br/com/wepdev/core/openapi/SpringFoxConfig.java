@@ -1,11 +1,13 @@
 package br.com.wepdev.core.openapi;
 
 import br.com.wepdev.api.exceptionhandler.Problem;
+import br.com.wepdev.core.openapi.model.PageableModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -56,6 +58,7 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
                 .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
                 .additionalModels(typeResolver.resolve(Problem.class)) // Lista na pagina de documentação http://api.algafood.local:8080/swagger-ui/index.html em Schemas a classe Problem.class
+                .directModelSubstitute(Pageable.class, PageableModelOpenApi.class) // Substituindo a classe principal pela classe customizada que foi feita para fins de documentação
                 .apiInfo(apiInfo()) // Passando as informações do cabeçalho da pagina HTML do swagger
                 .tags(new Tag("Cidades", "Gerencia as cidades"), // Adicionando uma nova Tag na documentação
                         new Tag("Grupos", "Gerencia os grupos de usuários")); // Adicionando uma nova Tag na documentação
