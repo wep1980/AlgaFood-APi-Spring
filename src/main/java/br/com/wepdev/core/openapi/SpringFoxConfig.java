@@ -1,12 +1,15 @@
 package br.com.wepdev.core.openapi;
 
+import br.com.wepdev.api.DTO.CozinhaDTO;
 import br.com.wepdev.api.exceptionhandler.Problem;
-import br.com.wepdev.core.openapi.model.PageableModelOpenApi;
+import br.com.wepdev.api.openapi.model.CozinhasModelOpenApi;
+import br.com.wepdev.api.openapi.model.PageableModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -15,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.*;
+import springfox.documentation.schema.AlternateTypeRules;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.json.JacksonModuleRegistrar;
@@ -59,6 +63,8 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
                 .additionalModels(typeResolver.resolve(Problem.class)) // Lista na pagina de documentação http://api.algafood.local:8080/swagger-ui/index.html em Schemas a classe Problem.class
                 .directModelSubstitute(Pageable.class, PageableModelOpenApi.class) // Substituindo a classe principal pela classe customizada que foi feita para fins de documentação
+                .alternateTypeRules(AlternateTypeRules.newRule(
+                        typeResolver.resolve(Page.class, CozinhaDTO.class), CozinhasModelOpenApi.class)) // Criando uma regra de substituição de classe, pois o Page recebe um parametro generico, tipado como CozinhaDTO e alterna para CozinhasModelOpenApi, que e a classe para documentação
                 .apiInfo(apiInfo()) // Passando as informações do cabeçalho da pagina HTML do swagger
                 .tags(new Tag("Cidades", "Gerencia as cidades"), // Adicionando uma nova Tag na documentação
                         new Tag("Grupos", "Gerencia os grupos de usuários")); // Adicionando uma nova Tag na documentação

@@ -1,7 +1,7 @@
 package br.com.wepdev.api.controller;
 
 import br.com.wepdev.api.DTO.GrupoDTO;
-import br.com.wepdev.api.controller.openapi.GrupoControllerOpenApi;
+import br.com.wepdev.api.openapi.controller.GrupoControllerOpenApi;
 import br.com.wepdev.api.inputDTO.GrupoInputDTO;
 import br.com.wepdev.api.converter.GrupoConverterDTO;
 import br.com.wepdev.api.converter.GrupoInputConverterGrupo;

@@ -1,4 +1,4 @@
-package br.com.wepdev.core.openapi.model;
+package br.com.wepdev.api.openapi.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,6 +7,9 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * Classe criada para fins de documentação
+ */
 @ApiModel("Pageable") // Alterando o nome da classe para Pageable na documentação -- http://api.algafood.local:8080/swagger-ui/index.html#
 @Setter
 @Getter
