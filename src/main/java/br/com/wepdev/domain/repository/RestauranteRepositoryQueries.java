@@ -21,7 +21,9 @@ public interface RestauranteRepositoryQueries {
 	 * @return
 	 */
 	List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal);
-	
+
+	List<Restaurante> find2(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal);
+
 	
 	List<Restaurante> findComFreteGratis(String nome);
 

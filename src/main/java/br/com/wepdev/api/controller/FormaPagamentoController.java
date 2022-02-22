@@ -2,16 +2,17 @@ package br.com.wepdev.api.controller;
 
 
 import br.com.wepdev.api.DTO.FormaPagamentoDTO;
-
-import br.com.wepdev.api.inputDTO.FormaPagamentoInputDTO;
 import br.com.wepdev.api.converter.FormaPagamentoConverterDTO;
 import br.com.wepdev.api.converter.FormaPagamentoInputConverterFormaPagamento;
+import br.com.wepdev.api.inputDTO.FormaPagamentoInputDTO;
+import br.com.wepdev.api.openapi.controller.FormaPagamentoControllerOpenApi;
 import br.com.wepdev.domain.model.FormaPagamento;
 import br.com.wepdev.domain.repository.FormaPagamentoRepository;
 import br.com.wepdev.domain.service.FormaPagamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -24,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/formas-pagamento")
-public class FormaPagamentoController {
+public class FormaPagamentoController implements FormaPagamentoControllerOpenApi {
 
 
     @Autowired
@@ -44,7 +45,7 @@ public class FormaPagamentoController {
      * Adionando o tipo de retorno como ResponseEntity, para poder alterar o cabeçalho da resposta e assim adicionar um cache de 10 segundos na requisição da representação
      * @return
      */
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<FormaPagamentoDTO>> listar(ServletWebRequest request) {
 
         /**
@@ -94,7 +95,7 @@ public class FormaPagamentoController {
      * Metodo que vai retornar um itag contendo o hash da resposta. o filtro para criação do itag foi habilitado aqui no spring
      * @return
      */
-    @GetMapping("/{formaPagamentoId}")
+    @GetMapping(path = "/{formaPagamentoId}" , produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FormaPagamentoDTO> buscar(@PathVariable Long formaPagamentoId, ServletWebRequest request) {
 
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest()); // Desabilitando o filtro que cria o Etag para essa requisição
@@ -132,7 +133,7 @@ public class FormaPagamentoController {
     }
 
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public FormaPagamentoDTO adicionar(@RequestBody @Valid FormaPagamentoInputDTO formaPagamentoInput) {
 
@@ -144,7 +145,7 @@ public class FormaPagamentoController {
     }
 
 
-    @PutMapping("/{formaPagamentoId}")
+    @PutMapping(path = "/{formaPagamentoId}",  produces = MediaType.APPLICATION_JSON_VALUE)
     public FormaPagamentoDTO atualizar(@PathVariable Long formaPagamentoId, @RequestBody @Valid FormaPagamentoInputDTO formaPagamentoInput) {
 
         FormaPagamento formaPagamentoAtual = formaPagamentoService.buscarOuFalhar(formaPagamentoId);

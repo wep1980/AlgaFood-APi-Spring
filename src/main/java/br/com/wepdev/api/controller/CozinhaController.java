@@ -1,39 +1,31 @@
 package br.com.wepdev.api.controller;
 
-import java.util.List;
-
 import br.com.wepdev.api.DTO.CozinhaDTO;
-import br.com.wepdev.api.inputDTO.CozinhaInputDTO;
 import br.com.wepdev.api.converter.CozinhaConverterDTO;
 import br.com.wepdev.api.converter.CozinhaInputConverterCozinha;
+import br.com.wepdev.api.inputDTO.CozinhaInputDTO;
+import br.com.wepdev.api.openapi.controller.CozinhaControllerOpenApi;
+import br.com.wepdev.domain.model.Cozinha;
+import br.com.wepdev.domain.repository.CozinhaRepository;
+import br.com.wepdev.domain.service.CozinhaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
-import br.com.wepdev.domain.model.Cozinha;
-import br.com.wepdev.domain.repository.CozinhaRepository;
-import br.com.wepdev.domain.service.CozinhaService;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 //@ResponseBody // As Respostas dos metedos desse controlador devem ir na resposta da requisicao
 //@Controller // Controlador REST
 @RestController // Substitue as 2 anotacoes acima
 @RequestMapping(value = "/cozinhas") //, produces = MediaType.APPLICATION_JSON_VALUE) // Toda a classe produz JSON
-public class CozinhaController {
+public class CozinhaController implements CozinhaControllerOpenApi {
 	
 	
 	@Autowired
@@ -64,7 +56,7 @@ public class CozinhaController {
 	 * @param pageable
 	 * @return
 	 */
-	@GetMapping
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<CozinhaDTO> listarComPaginacao(@PageableDefault(size = 10) Pageable pageable) {
 
 		Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable); // O findAll() ja possui a sobrecarga para o Page
@@ -86,7 +78,7 @@ public class CozinhaController {
 
 
 
-	@GetMapping("/{cozinhaId}")
+	@GetMapping(path = "/{cozinhaId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CozinhaDTO buscar(@PathVariable Long cozinhaId) {
 
 		Cozinha cozinha = cozinhaService.buscarOuFalhar(cozinhaId);
@@ -100,7 +92,7 @@ public class CozinhaController {
 	 * @param cozinhaInput
 	 * @return
 	 */
-	@PostMapping
+	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public CozinhaDTO adicionar(@RequestBody @Valid CozinhaInputDTO cozinhaInput) {
 
@@ -117,7 +109,7 @@ public class CozinhaController {
 	 * @param cozinhaInput
 	 * @return
 	 */
-	@PutMapping("/{cozinhaId}")
+	@PutMapping(path = "/{cozinhaId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CozinhaDTO atualizar(@PathVariable  Long cozinhaId, @RequestBody @Valid CozinhaInputDTO cozinhaInput) {
 
 		Cozinha cozinhaAtual = cozinhaService.buscarOuFalhar(cozinhaId);
@@ -130,9 +122,10 @@ public class CozinhaController {
 
 
 
-	@DeleteMapping("/{cozinhaId}")
+	@DeleteMapping(path = "/{cozinhaId}", produces = {})
 	@ResponseStatus(HttpStatus.NO_CONTENT) // Em caso de sucesso manda um status no content
 	public void remover(@PathVariable Long cozinhaId) {
+
 		cozinhaService.excluir(cozinhaId);
 	}
 

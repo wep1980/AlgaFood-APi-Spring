@@ -24,6 +24,7 @@ public interface CozinhaRepository extends CustomJpaRepository<Cozinha, Long> {
 	//List<Cozinha> consultarPorNome(String nome); // Esse metodo nao funciona
 	List<Cozinha> nome(String nome);//  // implementacao com Sprind Data do mesmo metodo acima
 	List<Cozinha> findByNome(String nome); // implementacao com Sprind Data do mesmo metodo acima
+
 	
 	// implementacao com Spring-Data do mesmo metodo acima, pode ser adicionado qualquer nome entre o FIND e o BY, portanto que nao seja uma keyWords
 	List<Cozinha> findQualquerNomeByNome(String nome);  

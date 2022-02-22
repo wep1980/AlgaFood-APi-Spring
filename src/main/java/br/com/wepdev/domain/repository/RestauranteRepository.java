@@ -45,6 +45,17 @@ public interface RestauranteRepository extends CustomJpaRepository<Restaurante, 
 	
     // Busca os restaurantes com taxa frete entre os valores inicial e final , pode ser adicionado qualquer nome entre o FIND e o BY, portanto que nao seja uma keyWords
 	List<Restaurante> findByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal);
+
+	List<Restaurante> queryByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal); // Faz a mesma coisa do metodo acima, so muda o prefixo
+
+	// Busca o primeiro restaurante de acordo com a letra escolhida(como se fosse um like)
+	Optional<Restaurante> findFirstByNomeContaining(String nome);
+	Optional<Restaurante> findFirstRestauranteByNomeContaining(String nome); // Faz a mesma coisa que o metodo acima, so que entre o First e o By tem o nome Restaurante, que poderia ser inlcusive qq nome.
+
+	// Busca os 2 primeiros restaurantes de acordo com a letra escolhida(como se fosse um like)
+	List<Restaurante> findTop2ByNomeContaining(String nome);
+
+	List<Restaurante> findByNomeContainingAndCozinhaId(String nome, Long cozinha);
 	
 	// Busca por qualquer parte do nome de um restaurante junto com ID da cozinha
 	//List<Restaurante> queryByNomeContainingAndCozinhaId(String nome, Long cozinhaId); // Metodo com nome muito grande ou ruim na legibilidade
@@ -85,23 +96,6 @@ public interface RestauranteRepository extends CustomJpaRepository<Restaurante, 
 	 * @return
 	 */
 	//public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal);
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 }

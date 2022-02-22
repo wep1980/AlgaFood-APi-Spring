@@ -2,6 +2,7 @@ package br.com.wepdev.infrastructure.repository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -44,51 +45,56 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 	
 	@Autowired @Lazy //So instancia essa dependencia no momento que for preciso
 	private RestauranteRepository restauranteRepository;
-	
+
 	
 	/**
 	 * É necessario colocar a assinatura do metodo na Interface RestauranteRepository
 	 * O metodo funciona independente dos parametros passados: nome, taxaFreteInicial ou taxaFreteFinal
+	 *
+	 * Metodo com consulta em JPQL Dinamica
 	 * 
 	 * @param nome
 	 * @param taxaFreteInicial
 	 * @param taxaFreteFinal
 	 * @return
 	 */
-//	@Override
-//	public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal){
-//		
-//		var jpql = new StringBuilder(); // StringBuilder() -> Uma forma melhor de concatenar Strings
-//		
-//		var parametrosDaQuery = new HashMap< String , Object >();
-//		
-//		// Para resolver o problema se for passado so a taxaFrete inicial sem o nome e colocado where 0 = 0 que e sempre verdadeiro
-//		jpql.append("from Restaurante where 0 = 0 "); // Se nao for passado nenhum restaurante o where 0 = 0 e verdadeiro e retorna todos os restaurantes
-//		
-//		if(StringUtils.hasLength(nome)) { // verifica se o nome esta vazio ou nulo
-//			jpql.append("and nome like :nome ");
-//			parametrosDaQuery.put("nome", "%" + nome + "%");
-//		}
-//		
-//		if(taxaFreteInicial != null) {
-//			jpql.append("and taxaFrete >= :taxaInicial ");
-//			parametrosDaQuery.put("taxaInicial", taxaFreteInicial);
-//		}
-//		
-//		if(taxaFreteFinal != null) {
-//			jpql.append("and taxaFrete <= :taxaFinal ");
-//			parametrosDaQuery.put("taxaFinal", taxaFreteFinal);
-//		}
-//		
-//		// createQuery recebe jpql.toString() pq o jpql virou um StringBuilder()
-//		TypedQuery<Restaurante> query = manager.createQuery(jpql.toString(), Restaurante.class);// TypedQuery() -> Instancia que recebe a consulta de createQuery
-//		
-//		// Para cada chave, valor : faça query.setParameter(chave, valor)
-//		parametrosDaQuery.forEach((chave, valor) -> query.setParameter(chave, valor)); // forEach loop com expressao lambda
-//		
-//		return query.getResultList();
-//			
-//	}
+	@Override
+	public List<Restaurante> find2(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal){
+
+		var jpql = new StringBuilder(); // StringBuilder() -> Uma forma melhor de concatenar Strings
+
+		var parametrosDaQuery = new HashMap< String , Object >(); // Variavel que adiciona no mapa as informações de cada if()
+
+		// Para resolver o problema se for passado so a taxaFrete inicial sem o nome, e colocado where 0 = 0 que e sempre verdadeiro
+		jpql.append("from Restaurante where 0 = 0 "); // Se nao for passado nenhum restaurante o where 0 = 0 e verdadeiro e retorna todos os restaurantes
+
+		if(StringUtils.hasLength(nome)) { // verifica se o nome esta vazio ou nulo
+			jpql.append("and nome like :nome ");
+			parametrosDaQuery.put("nome", "%" + nome + "%"); // Adiciona o parametro nome e o valor dele
+		}
+
+		if(taxaFreteInicial != null) { // Pode ser passado na consulta so a taxaFreteInicial ou so a taxaFreteFinal ou nenhuma delas
+			jpql.append("and taxaFrete >= :taxaInicial ");
+			parametrosDaQuery.put("taxaInicial", taxaFreteInicial);
+		}
+
+		if(taxaFreteFinal != null) {
+			jpql.append("and taxaFrete <= :taxaFinal ");
+			parametrosDaQuery.put("taxaFinal", taxaFreteFinal);
+		}
+
+		/*
+		createQuery recebe jpql.toString() pq o jpql virou um StringBuilder()
+		TypedQuery - recebe uma consulta tipada, no caso Restaurante
+		 */
+		TypedQuery<Restaurante> query = manager.createQuery(jpql.toString(), Restaurante.class);// TypedQuery() -> Instancia que recebe a consulta de createQuery
+
+		// Para cada chave, valor : faça query.setParameter(chave, valor)
+		parametrosDaQuery.forEach((chave, valor) -> query.setParameter(chave, valor)); // forEach loop com expressao lambda
+
+		return query.getResultList();
+
+	}
 	
 	
 	// ******* CRITERIA Api do JPA para criacao de querys de forma programatica, ela e burocratica, ideal para consultas complexas e dinamicas ******************
@@ -96,23 +102,25 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 	
 	/**
 	 * O Metodo ficou dinamico, e obrigatorio passar todos os parametros
+	 *
+	 * Metodo com consulta em criteria
 	 */
 	@Override
 	public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal){
 		
-		CriteriaBuilder builder = manager.getCriteriaBuilder(); // Criando uma instancia de CriteriaBuilder, é uma fabrica.
+		CriteriaBuilder builder = manager.getCriteriaBuilder(); // Criando uma instancia de CriteriaBuilder, é uma fabrica para fazer consultas
 		
 		CriteriaQuery<Restaurante> criteria = builder.createQuery(Restaurante.class); // Monta uma query de Restaurante atraves do builder(Construtor de clausulas)
-		Root<Restaurante> root = criteria.from(Restaurante.class);// Root representa a raiz do restaurante, as propreidades vao ser de restaurante
+		Root<Restaurante> root = criteria.from(Restaurante.class);// Root representa a raiz do restaurante, as propreidades vao ser de restaurante, retorna um Restaurante
 		
-		var predicates = new ArrayList<Predicate>();
+		var predicates = new ArrayList<Predicate>(); // Predicate e como se fosse um filtro, exemplo : select * from nomeTabela where x = y and y > 3
 		
 		if(StringUtils.hasText(nome)) { // Se tiver texto dentro da variavel nome
 		// like(root.get("nome"), "%" + nome + "%") -> O primeiro parametro da propriedade e o nome, e a segunda propriedade e o valor
 		predicates.add(builder.like(root.get("nome"), "%" + nome + "%")); // Predicate e um filtro, funciona como se fosse um where
 	    }
 		if(taxaFreteInicial != null) {
-		// TaxaFrete tem q ser maior que ou igual a tacaFreteInicial
+		// TaxaFrete tem que ser maior que ou igual a taxaFreteInicial
 			predicates.add(builder.greaterThanOrEqualTo(root.get("taxaFrete"), taxaFreteInicial));
 		}
 		if(taxaFreteFinal != null) {

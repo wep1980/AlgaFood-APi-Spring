@@ -1,5 +1,6 @@
 package br.com.wepdev.api.inputDTO;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,8 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class CozinhaInputDTO {
 
+    @ApiModelProperty(example = "Brasileira", required = true)
+    @NotBlank
     @NotBlank
     private String nome;
 }

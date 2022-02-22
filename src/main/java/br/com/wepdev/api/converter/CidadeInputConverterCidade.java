@@ -24,7 +24,7 @@ public class CidadeInputConverterCidade {
 
 
     /**
-     * Metodo que transforma RestauranteInput para Restaurante, utilizado no
+     * Metodo que transforma CidadeInputDTO para Cidade, utilizado no
      * @param cidadeInput
      * @return
      */

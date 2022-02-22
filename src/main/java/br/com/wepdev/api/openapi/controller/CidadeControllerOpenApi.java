@@ -27,8 +27,6 @@ public interface CidadeControllerOpenApi {
     public List<CidadeDTO> listar();
 
 
-
-
     /**
      * example = "1" -> Parametro que ja preenche na pagina HTML de documentação do swagger o numero 1 como exemplo do que deve ser preenchido.
      * @param cidadeId

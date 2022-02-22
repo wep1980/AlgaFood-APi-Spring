@@ -116,7 +116,8 @@ public class RestauranteService {
 	 * ele lança a excessao
 	 */
 	public Restaurante buscarOuFalhar(Long restauranteId){
-		return restauranteRepository.findById(restauranteId).orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
+		return restauranteRepository.findById(restauranteId)
+				.orElseThrow(() -> new RestauranteNaoEncontradoException(restauranteId));
 	}
 	
 
