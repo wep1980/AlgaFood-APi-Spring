@@ -14,6 +14,8 @@ import br.com.wepdev.domain.filter.PedidoFilter;
 import br.com.wepdev.domain.service.EmissaoPedidoService;
 import br.com.wepdev.infrastructure.repository.spec.PedidoSpecs;
 import com.google.common.collect.ImmutableMap;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -70,6 +72,10 @@ public class PedidoController {
 //	}
 
 
+	@ApiImplicitParams({
+			@ApiImplicitParam(value = "Nomes das propriedades para filtrar na resposta, separados por vírgula",
+			name = "campos", paramType = "query", type = "string")
+	})
 	@GetMapping
 	public Page<PedidoResumoDTO> pesquisarComPaginacao(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
 
@@ -124,6 +130,10 @@ public class PedidoController {
 
 
 
+	@ApiImplicitParams({
+			@ApiImplicitParam(value = "Nomes das propriedades para filtrar na resposta, separados por vírgula",
+					name = "campos", paramType = "query", type = "string")
+	})
 	@GetMapping("/{codigoPedido}")
 	public PedidoDTO buscar(@PathVariable String codigoPedido) {
 
