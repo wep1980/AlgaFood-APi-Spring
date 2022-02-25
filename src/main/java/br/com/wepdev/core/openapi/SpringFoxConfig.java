@@ -20,12 +20,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.*;
 import springfox.documentation.schema.AlternateTypeRules;
+import springfox.documentation.schema.ScalarType;
 import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.json.JacksonModuleRegistrar;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -62,6 +64,14 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
                 .globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
                 .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
+                .globalRequestParameters(Collections.singletonList(
+                        new RequestParameterBuilder() // Adicionando o nome da propriedade campos na documentacao de forma global
+                                .name("campos")
+                                .description("Nomes das propriedades para filtrar na resposta, separados por vírgula")
+                                .in(ParameterType.QUERY) // O Tipo do parametro é query
+                                .required(true)
+                                .query(q -> q.model(m -> m.scalarModel(ScalarType.STRING))) // Tipo do model e String
+                                .build()))
                 .additionalModels(typeResolver.resolve(Problem.class)) // Lista na pagina de documentação http://api.algafood.local:8080/swagger-ui/index.html em Schemas a classe Problem.class
                 .ignoredParameterTypes(ServletWebRequest.class) // Ignorando o parametro do tipo ServletWebRequest, para nao aparecer os campos na documentacao, ja que quem adiciona esse campo e o proprio spring no controller do FormaPagamento
                 .directModelSubstitute(Pageable.class, PageableModelOpenApi.class) // Substituindo a classe principal pela classe customizada que foi feita para fins de documentação
