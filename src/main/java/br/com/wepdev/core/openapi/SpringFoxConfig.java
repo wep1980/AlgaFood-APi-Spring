@@ -1,9 +1,11 @@
 package br.com.wepdev.core.openapi;
 
 import br.com.wepdev.api.DTO.CozinhaDTO;
+import br.com.wepdev.api.DTO.PedidoResumoDTO;
 import br.com.wepdev.api.exceptionhandler.Problem;
 import br.com.wepdev.api.openapi.model.CozinhasModelOpenApi;
 import br.com.wepdev.api.openapi.model.PageableModelOpenApi;
+import br.com.wepdev.api.openapi.model.PedidosResumoModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
@@ -78,11 +80,13 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .directModelSubstitute(Pageable.class, PageableModelOpenApi.class) // Substituindo a classe principal pela classe customizada que foi feita para fins de documentação
                 .alternateTypeRules(AlternateTypeRules.newRule(
                         typeResolver.resolve(Page.class, CozinhaDTO.class), CozinhasModelOpenApi.class)) // Criando uma regra de substituição de classe, pois o Page recebe um parametro generico, tipado como CozinhaDTO e alterna para CozinhasModelOpenApi, que e a classe para documentação
+                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, PedidoResumoDTO.class), PedidosResumoModelOpenApi.class))
                 .apiInfo(apiInfo()) // Passando as informações do cabeçalho da pagina HTML do swagger
                 .tags(new Tag("Cidades", "Gerencia as cidades"), // Adicionando uma nova Tag na documentação
                         new Tag("Grupos", "Gerencia os grupos de usuários"),
                         new Tag("Cozinhas", "Gerencia as cozinhas"), // Adicionando uma nova Tag na documentação
-                        new Tag("Formas de pagamento", "Gerencia as formas de pagamento"));
+                        new Tag("Formas de pagamento", "Gerencia as formas de pagamento"),
+                        new Tag("Pedidos", "Gerencia os pedidos"));
     }
 
 

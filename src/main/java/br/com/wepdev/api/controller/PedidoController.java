@@ -4,6 +4,7 @@ import br.com.wepdev.api.inputDTO.PedidoInputDTO;
 import br.com.wepdev.api.DTO.PedidoDTO;
 import br.com.wepdev.api.DTO.PedidoResumoDTO;
 import br.com.wepdev.api.converter.*;
+import br.com.wepdev.api.openapi.controller.PedidoControllerOpenApi;
 import br.com.wepdev.core.data.PageableTradutor;
 import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wepdev.domain.exception.NegocioException;
@@ -32,7 +33,7 @@ import java.util.List;
 //@Controller // Controlador REST
 @RestController // Substitue as 2 anotacoes acima
 @RequestMapping(value = "/pedidos") //, produces = MediaType.APPLICATION_JSON_VALUE) // Toda a classe produz JSON
-public class PedidoController {
+public class PedidoController implements PedidoControllerOpenApi {
 	
 	
 	@Autowired

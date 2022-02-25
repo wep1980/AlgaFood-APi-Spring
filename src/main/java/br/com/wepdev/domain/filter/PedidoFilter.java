@@ -1,13 +1,11 @@
 package br.com.wepdev.domain.filter;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
-/**
- * Classe que representa as propriedades que podem ser filtradas na consulta
- */
 import java.time.OffsetDateTime;
 
 @Setter
@@ -15,12 +13,17 @@ import java.time.OffsetDateTime;
 public class PedidoFilter {
 
 
+    @ApiModelProperty(example = "1", value = "ID do cliente para filtro da pesquisa")
     private Long clienteId;
+
+    @ApiModelProperty(example = "1", value = "ID do restaurante para filtro da pesquisa")
     private Long restauranteId;
 
+    @ApiModelProperty(example = "2019-10-30T00:00:00Z", value = "Data/hora de criação inicial para filtro da pesquisa")
     @DateTimeFormat(iso = ISO.DATE_TIME) // Anotacao de formatacao de data e hora para o formato ISO -> 2019-11-01T00:00:00Z
     private OffsetDateTime dataCriacaoInicio; // Data de criação do pedido
 
+    @ApiModelProperty(example = "2019-11-01T10:00:00Z", value = "Data/hora de criação final para filtro da pesquisa")
     @DateTimeFormat(iso = ISO.DATE_TIME)
     private OffsetDateTime dataCriacaoFim;  // Data de criação do fim do pedido
 
