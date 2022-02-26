@@ -1,27 +1,28 @@
 package br.com.wepdev.api.controller;
 
-import java.util.List;
-
-import br.com.wepdev.api.inputDTO.RestauranteInputDTO;
 import br.com.wepdev.api.DTO.RestauranteDTO;
-import br.com.wepdev.api.converter.RestauranteInputConverterRestaurante;
 import br.com.wepdev.api.converter.RestauranteConverterDTO;
+import br.com.wepdev.api.converter.RestauranteInputConverterRestaurante;
+import br.com.wepdev.api.inputDTO.RestauranteInputDTO;
 import br.com.wepdev.domain.exception.CidadeNaoEncontradaException;
 import br.com.wepdev.domain.exception.CozinhaNaoEncontradaException;
 import br.com.wepdev.domain.exception.NegocioException;
 import br.com.wepdev.domain.exception.RestauranteNaoEncontradoException;
+import br.com.wepdev.domain.model.Restaurante;
 import br.com.wepdev.domain.model.view.RestauranteView;
+import br.com.wepdev.domain.repository.RestauranteRepository;
+import br.com.wepdev.domain.service.RestauranteService;
 import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.*;
 
-import br.com.wepdev.domain.model.Restaurante;
-import br.com.wepdev.domain.repository.RestauranteRepository;
-import br.com.wepdev.domain.service.RestauranteService;
-
 import javax.validation.Valid;
+import java.util.List;
 
 //@CrossOrigin(origins = {"http://www.algafood.local:8000", ""}) // Liberando CORS no controller completo, e para liberar mais de 1 URL e so colocar um array como no exemplo
 
@@ -56,7 +57,18 @@ public class RestauranteController {
 
 
 
+	//	@JsonView(RestauranteView.Resumo.class) // Ao inves de representação ser exibido o DTO, sera exibido a classe de resumo que utiliza o JsonView
+//	@GetMapping(params = "projecao=resumo") // esse endpoint so sera utilizado se no GET for passado esse parametro=resumo
+//	public List<RestauranteDTO> listarResumido() {
+//		return listar();
+//	}
+
+
 	//@CrossOrigin -> Pode ser utilizado no metodo, dessa forma e como se fosse : @CrossOrigin(origins = "*"), liberado para todas as URLs
+	@ApiOperation(value = "Lista restaurantes")
+	@ApiImplicitParams({
+			@ApiImplicitParam(value = "Nome da projecão de pedidos", allowableValues = "apenas-nome" , name = "projecao", paramType = "query", dataTypeClass = String.class)
+	})
 	@JsonView(RestauranteView.Resumo.class)
 	@GetMapping
 	public List<RestauranteDTO> listar() {
@@ -64,13 +76,8 @@ public class RestauranteController {
 	}
 
 
-//	@JsonView(RestauranteView.Resumo.class) // Ao inves de representação ser exibido o DTO, sera exibido a classe de resumo que utiliza o JsonView
-//	@GetMapping(params = "projecao=resumo") // esse endpoint so sera utilizado se no GET for passado esse parametro=resumo
-//	public List<RestauranteDTO> listarResumido() {
-//		return listar();
-//	}
-
-
+	//hidden = true -> Ocultando essa operacao da documentacao, a que sera exibida e a operacao acima, a de listar(), nela informamaos que pode ser passado um parametro opicinal, o apenas-nome
+	@ApiOperation(value = "Lista restaurantes", hidden = true)
 	@JsonView(RestauranteView.ApenasNome.class) // Ao inves de representação ser exibido o DTO, sera exibido a classe de resumo que utiliza o JsonView
 	@GetMapping(params = "projecao=apenas-nome") // esse endpoint so sera utilizado se no GET for passado esse parametro=apenas-nome
 	public List<RestauranteDTO> listarApenasNomes() {
