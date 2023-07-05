@@ -1,4 +1,4 @@
-package br.com.wepdev.api.inputDTO;
+package br.com.wepdev.api.DTOentrada;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -8,11 +8,11 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-public class FormaPagamentoInputDTO {
+public class GrupoInputDTO {
 
-    @ApiModelProperty(example = "Cartão de crédito", required = true)
+    @ApiModelProperty(example = "Gerente", required = true)
     @NotBlank
-    private String descricao;
+    private String nome;
 
 
 }

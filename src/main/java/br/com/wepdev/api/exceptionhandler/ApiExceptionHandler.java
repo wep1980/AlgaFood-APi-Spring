@@ -1,6 +1,5 @@
 package br.com.wepdev.api.exceptionhandler;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,14 +42,38 @@ import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 @ControllerAdvice // Permite adicionar exceptions handlers do projeto inteiro
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
-
     public static final String MSG_ERRO_GENERICA_USUARIO_FINAL = "Ocorreu um erro interno inesperado no sistema. " +
             "Tente novamente e se o problema persistir, entre em contato com o administrador do sistema.";
-
 
     @Autowired
     private MessageSource messageSource; // Instancia injetada, é uma interface que resolve mensagens
 
+
+    /**
+     * Metodo padrao do ResponseEntityExceptionHandler sobrestrito com customização.
+     * Obs -> Em outros locais podem estar sendo usado o body desse método, então ao sobrescrever precisa tomar cuidado
+     */
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        if(body == null){ // Retorna o corpo(body) com o getReasonPhrase() do status
+            body = Problem.builder()
+                    .title(status.getReasonPhrase()) // Descreve o titulo do erro que
+                    .timestamp(OffsetDateTime.now())
+                    .status(status.value()) // Pega o HTTP.Status que é uma enumercao
+                    .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+                    .build();
+
+        } else if(body instanceof String){ // Se o corpo(body) for uma instancia de uma String
+            body = Problem.builder()
+                    .title((String) body) // Faz o cast do Object(body) para String com o titulo do erro
+                    .timestamp(OffsetDateTime.now())
+                    .status(status.value()) // Pega o HTTP.Status que é uma enumercao
+                    .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+                    .build();
+        }
+        return super.handleExceptionInternal(ex, body, headers, status, request);
+    }
 
     /**
      * Metodo sobre escrito de exception para tratar a excessão no controlador no endpoint servirFoto caso o consumidor passe um contentType
@@ -62,18 +85,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return  ResponseEntity.status(status).headers(headers).build();
     }
 
-
     /**
      * Metodo de exception usado para erro de sintaxe na requisição (POSTMAN)
-     * @param ex
-     * @param headers
-     * @param status
-     * @param request
-     * @return
      */
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+                                                                  HttpHeaders headers, HttpStatus status, WebRequest request) {
         /**
          * Throwable ->  Super tipo de todas as exceptions
          * ExceptionUtils -> metodo do pacote commons-lang3, dependencia adicionada no pom.xml
@@ -81,22 +98,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
          */
         Throwable rootCause = ExceptionUtils.getRootCause(ex); // Pega a causa da exception na raiz, na pilha das exceptions
 
-        //rootCause = getRootException(ex);
-
         if(rootCause instanceof InvalidFormatException){
-            return handleInvalidFormat((InvalidFormatException) rootCause, headers, status,request);
+            return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status,request);
         } else if(rootCause instanceof PropertyBindingException){ // PropertyBindingException trata IgnoredPropertyException e tambem UnrecognizedPropertyException
             return handlePropertyBinding((PropertyBindingException) rootCause, headers, status, request);
         } else if (rootCause instanceof NegocioException){
 
         }
-
-
         /**
          * Enumeracao onde fica as constantes dos tipos de problemas gerados pelas exceptions, novos problemas devem ser colocados dentro dela
          * Nela possue descrições do titulo e da uri, que é um tipo de URL
          */
-        //todo O ExceptionUtils.getRootCause(ex) nao esta pegando as exceptions devidas de erros
+        //todo o ExceptionUtils.getRootCause(ex) nao esta pegando as exceptions devidas de erros
         ProblemType problemType = ProblemType.DADOS_INVALIDOS;
         String detail = "O corpo da requisição esta inválido. Verifique erro de sintaxe."; // Pega a informacao do detalhe da mensagem
 
@@ -148,18 +161,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
      * Metodo que captura excessão ao digitar um tipo de valor invalido da propriedade na representação
-     * @param ex
-     * @param headers
-     * @param status
-     * @param request
-     * @return
      */
-    private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
         String path = joinPath(ex.getPath());
 
         ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
-        String detail = String.format("A propriedade '%s' recebeu o valor '%s', " + "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
+        String detail = String.format("A propriedade '%s' recebeu o valor '%s', " + "que é de um tipo inválido. " +
+                                      "Corrija e informe um valor compatível com o tipo %s.",
                 path, ex.getValue(), ex.getTargetType().getSimpleName());
 
         Problem problem = createProblemBuilder(status, problemType, detail)
@@ -168,7 +177,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternal(ex, problem, headers, status, request);
     }
-
 
     /**
      * Metodo que retorna a propriedade que recebeu o tipo de valor invalido, e qual e o tipo certo valido para ser digitado
@@ -192,7 +200,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         HttpStatus status = HttpStatus.NOT_FOUND; //Entidade nao encontrada retorna sempre um NOT_FOUND 404
         String detail = ex.getMessage(); // Pega a informacao do detalhe da mensagem
-
         /**
          * Enumeracao onde fica as constantes dos tipos de problemas gerados pelas exceptions, novos problemas devem ser colocados dentro dela
          * Nela possue descrições do titulo e da uri, que é um tipo de URL
@@ -295,39 +302,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
-    /**
-     * Metodo padrao do ResponseEntityExceptionHandler sobrestrito com customização.
-     *
-     * Obs -> Em outros locais podem estar sendo usado o body desse método, então ao sobrescrever precisa tomar cuidado
-     *
-     * @param ex
-     * @param body
-     * @param headers
-     * @param status
-     * @param request
-     * @return
-     */
-    @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
-
-        if(body == null){ // Retorna o corpo(body) com o getReasonPhrase() do status
-            body = Problem.builder()
-                    .title(status.getReasonPhrase()) // Descreve o titulo do erro que
-                    .timestamp(OffsetDateTime.now())
-                    .status(status.value()) // Pega o HTTP.Status que é uma enumercao
-                    .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-                    .build();
-
-        } else if(body instanceof String){ // Se o corpo(body) for uma instancia de uma String
-            body = Problem.builder()
-                    .title((String) body) // Faz o cast do Object(body) para String com o titulo do erro
-                    .timestamp(OffsetDateTime.now())
-                    .status(status.value()) // Pega o HTTP.Status que é uma enumercao
-                    .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-                    .build();
-        }
-        return super.handleExceptionInternal(ex, body, headers, status, request);
-    }
 
     /**
      * Metodo auxiliar que ajuda na hora de criar um tipo de problema , que pode ser uma EntidadeNaoEncontrada, EntidadeEmUso ...etc
@@ -444,7 +418,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .userMessage(detail)
                 .build();
 
-
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
@@ -456,7 +429,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
+                                                                  HttpStatus status, WebRequest request) {
 
         return handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
     }
@@ -467,7 +441,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemType problemType = ProblemType.DADOS_INVALIDOS;
 
         String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
-
         /**
          * bindingResult -> Armazena as violações de constraints.
          * Transformando a lista de erros que e do tipo BindingResult em uma lista de Problem.Campo
@@ -477,13 +450,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
          * por conta do String message
          */
         List<Problem.Objeto> problemObjetos = bindingResult.getAllErrors().stream().map(objectError -> {
-
                     /**
                      * Pegando a mensagem do erro com fieldError e passando a região local para as mesagens serem enviadas em portugues.
                      * Foi necessario configurar o UTF-8 no settings -> file encodings
+                     * com essa linha e possivel pegar a mensagem customizada do messages.propertioes
                      */
                     String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
-
                      /*
                      Pegando o nome da classe na qual ocorreu o erro de validação, no exemplo o erro ocorre quando e usada a validação de classe customizada,
                      @ValorZeroIncluiDescricao que de acordo com a regra se o frete e igual a zero, no campo nome deve contem a frase frete gratis

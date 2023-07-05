@@ -3,7 +3,7 @@ package br.com.wepdev.api.controller;
 import br.com.wepdev.api.DTO.CozinhaDTO;
 import br.com.wepdev.api.converter.CozinhaConverterDTO;
 import br.com.wepdev.api.converter.CozinhaInputConverterCozinha;
-import br.com.wepdev.api.inputDTO.CozinhaInputDTO;
+import br.com.wepdev.api.DTOentrada.CozinhaInputDTO;
 import br.com.wepdev.api.openapi.controller.CozinhaControllerOpenApi;
 import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.repository.CozinhaRepository;

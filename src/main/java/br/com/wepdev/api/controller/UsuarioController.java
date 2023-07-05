@@ -1,8 +1,8 @@
 package br.com.wepdev.api.controller;
 
-import br.com.wepdev.api.inputDTO.SenhaInputDTO;
-import br.com.wepdev.api.inputDTO.UsuarioComSenhaInputDTO;
-import br.com.wepdev.api.inputDTO.UsuarioInputDTO;
+import br.com.wepdev.api.DTOentrada.SenhaInputDTO;
+import br.com.wepdev.api.DTOentrada.UsuarioComSenhaInputDTO;
+import br.com.wepdev.api.DTOentrada.UsuarioInputDTO;
 import br.com.wepdev.api.DTO.UsuarioDTO;
 import br.com.wepdev.api.converter.UsuarioConverterDTO;
 import br.com.wepdev.api.converter.UsuarioInputConverterUsuario;

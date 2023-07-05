@@ -8,7 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.TYPE}) // Essa anotação so pode ser usada em uma classe ou interface
+@Target({ElementType.TYPE}) // Essa anotação so pode ser usada em uma classe, enum ou interface
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = { ValorZeroIncluiDescricaoValidator.class}) //Vinculando a anotacao, a classe ValorZeroIncluiDescricaoValidator, que e a classe que possui a regra de validação
 public @interface ValorZeroIncluiDescricao {

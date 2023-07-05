@@ -1,6 +1,6 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.inputDTO.RestauranteInputDTO;
+import br.com.wepdev.api.DTOentrada.RestauranteInputDTO;
 import br.com.wepdev.domain.model.Cidade;
 import br.com.wepdev.domain.model.Cozinha;
 import br.com.wepdev.domain.model.Restaurante;
@@ -29,7 +29,7 @@ public class RestauranteInputConverterRestaurante {
      * @param restauranteInputDTO
      * @return
      */
-    public Restaurante converteInputParaEntidade(RestauranteInputDTO restauranteInputDTO){
+    public Restaurante converteRestauranteEntradaParaEntidade(RestauranteInputDTO restauranteInputDTO){
         return modelMapper.map(restauranteInputDTO, Restaurante.class);
     }
 

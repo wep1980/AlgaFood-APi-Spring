@@ -68,27 +68,20 @@ public class Restaurante {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) //Quem gera a chave e o provedor do banco de dados
 	private Long id;
 
-
-	//@NotBlank -> essa validação esta sendo feita no DTO de Input
+	//@NotBlank -> essa validação esta sendo feita no DTO de Input (nao pode ser nulo,vazio ou espaço em branco)
 	@Column(nullable = false)
 	private String nome;
-
 
 	//@PositiveOrZero -> essa validação esta sendo feita no DTO de Input
 	//@NotNull -> essa validação esta sendo feita no DTO de Input
 	@Column(name = "taxa_frete" , nullable = false) // Nao aceita valor nulo
 	private BigDecimal taxaFrete;
-	
-
-	
-	
 
 	//@NotNull -> essa validação esta sendo feita no DTO de Input
 	@ManyToOne//(fetch = FetchType.LAZY) // Muitos - many(*) RESTAURANTES possuem uma - one(1) COZINHA.
 	@JoinColumn(name = "cozinha_id", nullable = false) // A classe dona da associação e Restaurante, pois é onde fica a coluna cozinha_id
 	private Cozinha cozinha;//Um restaurante possui 1 cozinha
 
-	
 	@Embedded // Esta classe esta sendo incorporada em Restaurante
 	private Endereco endereco;
 

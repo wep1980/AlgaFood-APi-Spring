@@ -1,4 +1,4 @@
-package br.com.wepdev.api.inputDTO;
+package br.com.wepdev.api.DTOentrada;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -8,11 +8,10 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-public class GrupoInputDTO {
+public class CozinhaInputDTO {
 
-    @ApiModelProperty(example = "Gerente", required = true)
+    @ApiModelProperty(example = "Brasileira", required = true)
+    @NotBlank
     @NotBlank
     private String nome;
-
-
 }

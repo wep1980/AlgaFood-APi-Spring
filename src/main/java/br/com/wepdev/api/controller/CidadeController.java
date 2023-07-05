@@ -4,7 +4,7 @@ import java.util.List;
 
 import br.com.wepdev.api.DTO.CidadeDTO;
 import br.com.wepdev.api.openapi.controller.CidadeControllerOpenApi;
-import br.com.wepdev.api.inputDTO.CidadeInputDTO;
+import br.com.wepdev.api.DTOentrada.CidadeInputDTO;
 import br.com.wepdev.api.converter.CidadeConverterDTO;
 import br.com.wepdev.api.converter.CidadeInputConverterCidade;
 import br.com.wepdev.domain.exception.EstadoNaoEncontradoException;

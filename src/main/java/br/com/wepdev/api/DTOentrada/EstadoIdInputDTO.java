@@ -1,4 +1,4 @@
-package br.com.wepdev.api.inputDTO;
+package br.com.wepdev.api.DTOentrada;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -8,12 +8,10 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class FormaPagamentoIdInputDTO {
+public class EstadoIdInputDTO {
 
 
     @ApiModelProperty(example = "1", required = true)
     @NotNull
     private Long id;
-
-
 }

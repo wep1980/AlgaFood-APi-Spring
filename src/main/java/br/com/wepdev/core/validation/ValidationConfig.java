@@ -5,6 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+/*
+   Classe que deixa como padrão o arquivo messages.properties do spring.
+ */
 @Configuration
 public class ValidationConfig {
 

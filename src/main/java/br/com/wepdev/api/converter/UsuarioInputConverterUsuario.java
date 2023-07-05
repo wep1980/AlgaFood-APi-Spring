@@ -1,6 +1,6 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.inputDTO.UsuarioInputDTO;
+import br.com.wepdev.api.DTOentrada.UsuarioInputDTO;
 import br.com.wepdev.domain.model.Usuario;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

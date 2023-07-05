@@ -2,7 +2,7 @@ package br.com.wepdev.api.openapi.controller;
 
 import br.com.wepdev.api.DTO.CozinhaDTO;
 import br.com.wepdev.api.exceptionhandler.Problem;
-import br.com.wepdev.api.inputDTO.CozinhaInputDTO;
+import br.com.wepdev.api.DTOentrada.CozinhaInputDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

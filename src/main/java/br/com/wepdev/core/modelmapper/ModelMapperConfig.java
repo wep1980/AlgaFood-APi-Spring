@@ -1,7 +1,7 @@
 package br.com.wepdev.core.modelmapper;
 
 import br.com.wepdev.api.DTO.EnderecoDTO;
-import br.com.wepdev.api.inputDTO.ItemPedidoInputDTO;
+import br.com.wepdev.api.DTOentrada.ItemPedidoInputDTO;
 import br.com.wepdev.domain.model.Endereco;
 import br.com.wepdev.domain.model.ItemPedido;
 import org.modelmapper.ModelMapper;
@@ -31,7 +31,7 @@ public class ModelMapperConfig {
         var enderecoToEnderecoDTOTypeMap = modelMapper.createTypeMap(Endereco.class, EnderecoDTO.class);
 
         //.<String> -> tipo do valor
-        enderecoToEnderecoDTOTypeMap.<String>addMapping(enderecoOrigem -> enderecoOrigem.getCidade().getEstado().getNome(), // Origem de onde vem o valor
+        enderecoToEnderecoDTOTypeMap.<String>addMapping(enderecoOrigem -> enderecoOrigem.getCidade().getEstado().getNome(), // Origem de onde vem o nome do estado
                 (enderecoDtoDestino, valor) -> enderecoDtoDestino.getCidade().setEstado(valor)); // destino -> objeto do tipo enderecoDTO -- valor -> e o retorno da expressao lambda acima
 
         return modelMapper;

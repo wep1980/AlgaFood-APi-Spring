@@ -2,7 +2,7 @@ package br.com.wepdev.api.controller;
 
 import br.com.wepdev.api.DTO.FotoProdutoDTO;
 import br.com.wepdev.api.converter.FotoProdutoConverterDTO;
-import br.com.wepdev.api.inputDTO.ProdutoFotoInputDTO;
+import br.com.wepdev.api.DTOentrada.ProdutoFotoInputDTO;
 import br.com.wepdev.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wepdev.domain.model.FotoProduto;
 import br.com.wepdev.domain.model.Produto;

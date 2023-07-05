@@ -3,7 +3,7 @@ package br.com.wepdev.api.openapi.controller;
 import br.com.wepdev.api.DTO.PedidoDTO;
 import br.com.wepdev.api.DTO.PedidoResumoDTO;
 import br.com.wepdev.api.exceptionhandler.Problem;
-import br.com.wepdev.api.inputDTO.PedidoInputDTO;
+import br.com.wepdev.api.DTOentrada.PedidoInputDTO;
 import br.com.wepdev.domain.filter.PedidoFilter;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.media.Content;

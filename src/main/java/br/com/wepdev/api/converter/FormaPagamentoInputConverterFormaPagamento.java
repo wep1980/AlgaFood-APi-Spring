@@ -1,6 +1,6 @@
 package br.com.wepdev.api.converter;
 
-import br.com.wepdev.api.inputDTO.FormaPagamentoInputDTO;
+import br.com.wepdev.api.DTOentrada.FormaPagamentoInputDTO;
 import br.com.wepdev.domain.model.FormaPagamento;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

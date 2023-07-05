@@ -1,6 +1,6 @@
 package br.com.wepdev.api.controller;
 
-import br.com.wepdev.api.inputDTO.ProdutoInputDTO;
+import br.com.wepdev.api.DTOentrada.ProdutoInputDTO;
 import br.com.wepdev.api.DTO.ProdutoDTO;
 import br.com.wepdev.api.converter.ProdutoConverterDTO;
 import br.com.wepdev.api.converter.ProdutoInputConverterProduto;

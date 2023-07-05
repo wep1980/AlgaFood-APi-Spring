@@ -1,4 +1,4 @@
-package br.com.wepdev.api.inputDTO;
+package br.com.wepdev.api.DTOentrada;
 
 import lombok.Getter;
 import lombok.Setter;

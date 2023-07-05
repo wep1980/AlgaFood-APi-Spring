@@ -35,7 +35,6 @@ public class Cozinha {
 	@Column(nullable = false)
 	@NotBlank// Nao aceita nulo, nem vazio, nem espaços
 	private String nome;
-	
 
 	/*
 	 * One -> uma cozinha, para varios (Many) restaurantes.

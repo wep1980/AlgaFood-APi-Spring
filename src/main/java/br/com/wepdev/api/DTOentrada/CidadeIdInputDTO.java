@@ -1,4 +1,4 @@
-package br.com.wepdev.api.inputDTO;
+package br.com.wepdev.api.DTOentrada;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class EstadoIdInputDTO {
+public class CidadeIdInputDTO {
 
 
     @ApiModelProperty(example = "1", required = true)

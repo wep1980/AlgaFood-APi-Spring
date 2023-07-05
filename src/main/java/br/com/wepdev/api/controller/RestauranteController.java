@@ -3,7 +3,7 @@ package br.com.wepdev.api.controller;
 import br.com.wepdev.api.DTO.RestauranteDTO;
 import br.com.wepdev.api.converter.RestauranteConverterDTO;
 import br.com.wepdev.api.converter.RestauranteInputConverterRestaurante;
-import br.com.wepdev.api.inputDTO.RestauranteInputDTO;
+import br.com.wepdev.api.DTOentrada.RestauranteInputDTO;
 import br.com.wepdev.domain.exception.CidadeNaoEncontradaException;
 import br.com.wepdev.domain.exception.CozinhaNaoEncontradaException;
 import br.com.wepdev.domain.exception.NegocioException;
@@ -132,7 +132,7 @@ public class RestauranteController {
 	public RestauranteDTO adicionar(@RequestBody @Valid RestauranteInputDTO restauranteInputDTO) {
 
 		try {
-			Restaurante restaurante = restInputConverterRestaurante.converteInputParaEntidade(restauranteInputDTO);
+			Restaurante restaurante = restInputConverterRestaurante.converteRestauranteEntradaParaEntidade(restauranteInputDTO);
 
 			return restauranteConverterDTO.converteEntidadeParaDto(restauranteService.salvar(restaurante));
 
@@ -144,11 +144,11 @@ public class RestauranteController {
 
 
 	@PutMapping("/{restauranteId}")
-	public RestauranteDTO atualizar(@PathVariable Long restauranteId, @RequestBody @Valid RestauranteInputDTO restauranteInputDTO) {
+	public RestauranteDTO atualizar(@PathVariable Long restauranteId, @RequestBody @Valid RestauranteInputDTO restauranteEntradaDTO) {
 		try {
 			Restaurante restauranteAtual = restauranteService.buscarOuFalhar(restauranteId);
 
-			restInputConverterRestaurante.copiaInputParaEntidade(restauranteInputDTO, restauranteAtual);
+			restInputConverterRestaurante.copiaInputParaEntidade(restauranteEntradaDTO, restauranteAtual);
 
 			return restauranteConverterDTO.converteEntidadeParaDto(restauranteService.salvar(restauranteAtual));
 
@@ -162,6 +162,13 @@ public class RestauranteController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ativar(@PathVariable Long restauranteId){
 		restauranteService.ativar(restauranteId);
+
+	}
+
+	@DeleteMapping("/{restauranteId}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void inativar(@PathVariable Long restauranteId){
+		restauranteService.inativar(restauranteId);
 
 	}
 
@@ -190,20 +197,13 @@ public class RestauranteController {
 	}
 
 
-	@DeleteMapping("/{restauranteId}/ativo")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void inativar(@PathVariable Long restauranteId){
-		restauranteService.inativar(restauranteId);
-
-	}
-
-
 	@PutMapping("/{restauranteId}/abertura")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void abrir(@PathVariable Long restauranteId) {
 
 		restauranteService.abrir(restauranteId);
 	}
+
 
 	@PutMapping("/{restauranteId}/fechamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)

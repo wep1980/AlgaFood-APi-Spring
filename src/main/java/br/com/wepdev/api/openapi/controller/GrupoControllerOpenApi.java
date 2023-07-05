@@ -2,7 +2,7 @@ package br.com.wepdev.api.openapi.controller;
 
 import br.com.wepdev.api.DTO.GrupoDTO;
 import br.com.wepdev.api.exceptionhandler.Problem;
-import br.com.wepdev.api.inputDTO.GrupoInputDTO;
+import br.com.wepdev.api.DTOentrada.GrupoInputDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

@@ -4,7 +4,7 @@ package br.com.wepdev.api.controller;
 import br.com.wepdev.api.DTO.FormaPagamentoDTO;
 import br.com.wepdev.api.converter.FormaPagamentoConverterDTO;
 import br.com.wepdev.api.converter.FormaPagamentoInputConverterFormaPagamento;
-import br.com.wepdev.api.inputDTO.FormaPagamentoInputDTO;
+import br.com.wepdev.api.DTOentrada.FormaPagamentoInputDTO;
 import br.com.wepdev.api.openapi.controller.FormaPagamentoControllerOpenApi;
 import br.com.wepdev.domain.model.FormaPagamento;
 import br.com.wepdev.domain.repository.FormaPagamentoRepository;

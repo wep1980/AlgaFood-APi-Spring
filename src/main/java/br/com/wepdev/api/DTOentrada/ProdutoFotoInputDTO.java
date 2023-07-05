@@ -1,4 +1,4 @@
-package br.com.wepdev.api.inputDTO;
+package br.com.wepdev.api.DTOentrada;
 
 import br.com.wepdev.core.validation.FileContentType;
 import br.com.wepdev.core.validation.FileSize;

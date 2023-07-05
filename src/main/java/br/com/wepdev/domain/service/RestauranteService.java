@@ -42,7 +42,7 @@ public class RestauranteService {
 
 
 
-	@Transactional
+	@Transactional // Existe mais de uma transação dentro desse metodo, para evitar erros, todos os metodos que fazem alteração no BD devem ter essa anotação @Transactional
 	public Restaurante salvar(Restaurante restaurante) {
 
 		Long cozinhaId = restaurante.getCozinha().getId();
@@ -77,9 +77,9 @@ public class RestauranteService {
 	}
 
 
-	@Transactional
+	@Transactional // Anotação colocada pq e feita varias transações de ativaçao para cada restaurante
 	public void ativarVarios(List<Long> restaurantesIds){
-		restaurantesIds.forEach(this::ativar); // Chamando o metodo acima no loop para ativar todos todos os restaurantes
+		restaurantesIds.forEach(this::ativar); // Chamando o metodo acima no loop para ativar cada restaurabte que esta dentro da lista
 
 	}
 

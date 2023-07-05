@@ -27,9 +27,8 @@ public class MultiploValidator implements ConstraintValidator<Multiplo, Number> 
 
     /**
      * Metodo que implementa a logica de validacao
-     * @param value
-     * @param context
-     * @return
+     * Number value recebe o valor que e colocado na taxaFrete
+     * numeroMultiplo -> valor que e colocado na anotação = @Multiplo(numero = 5)
      */
     @Override
     public boolean isValid(Number value, ConstraintValidatorContext context) {

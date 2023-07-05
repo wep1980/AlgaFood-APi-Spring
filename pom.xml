@@ -81,7 +81,7 @@
 			<version>3.1</version>
 		</dependency>
 
-		<dependency>
+		<dependency> <!-- Biblioteca para teste de API -->
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
 			<scope>test</scope>
@@ -164,7 +164,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
+			<plugin> <!-- Plugin do maven do maven para rodar testes de integração, o build do projeto não vai rodar os testes de integração automaticamente -->
 				<artifactId>maven-failsafe-plugin</artifactId>
 			</plugin>
 		</plugins>

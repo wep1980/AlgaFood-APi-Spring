@@ -40,7 +40,7 @@ public class UsuarioService {
 		 * antes de a busca do email abaixo e a validação acontecer. Metodo criado em CustomJpaRepository, implementado na classe
 		 * CustomJpaRepositoryImpl
 		 */
-		usuarioRepository.detach(usuario);
+		usuarioRepository.detach(usuario); // para de gerenciar o usuario. Dessincronizando a instancia do contexto do JPA, deixando de ser gerenciada
 
 		Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(usuario.getEmail());
 

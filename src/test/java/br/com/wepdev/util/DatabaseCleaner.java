@@ -29,6 +29,7 @@ public class DatabaseCleaner {
 
     private Connection connection;
 
+
     public void clearTables() {
         try (Connection connection = dataSource.getConnection()) {
             this.connection = connection;
@@ -68,7 +69,7 @@ public class DatabaseCleaner {
             tableNames.add(rs.getString("TABLE_NAME"));
         }
 
-        tableNames.remove("flyway_schema_history");
+        tableNames.remove("flyway_schema_history"); // não limpa a tabela de dados do flyway
 
         return tableNames;
     }

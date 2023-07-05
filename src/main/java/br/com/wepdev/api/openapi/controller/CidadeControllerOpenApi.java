@@ -2,7 +2,7 @@ package br.com.wepdev.api.openapi.controller;
 
 import br.com.wepdev.api.DTO.CidadeDTO;
 import br.com.wepdev.api.exceptionhandler.Problem;
-import br.com.wepdev.api.inputDTO.CidadeInputDTO;
+import br.com.wepdev.api.DTOentrada.CidadeInputDTO;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -61,7 +61,7 @@ public interface CidadeControllerOpenApi {
     public CidadeDTO atualizar(
             @ApiParam(value = "ID de uma cidade") Long cidadeId,
             @ApiParam(name = "corpo", value = "Representação de uma cidade com os novos dados")
-            CidadeInputDTO cidadeInput);
+                    CidadeInputDTO cidadeInput);
 
 
 

@@ -33,14 +33,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 //Fornece as funcionalidades do spring para os testes. webEnvironment -> levanta um servidor para uso dos testes, em uma porta aleatoria
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class) // levanta o contexto do spring na hora dos testes
-@TestPropertySource("/application-test.properties")// Configurando o application-properties de teste
-public class CadastroCozinhaIT {
+@TestPropertySource("/application-test.properties")// Configurando o application-test.properties de teste, onde contem as configs do banco de dados de teste
+public class CadastroCozinhaIT { // As Classes de teste de integração devem seguir o padrão de nome IT, para que possa ser utilizado o plugin do maven-failsafe. Para executar os testes por via de comando com maven é : mvnw verify
 
 
     @LocalServerPort
     private int port; // Variavel que recebe o numero da porta que foi levantado pelo servidor para teste
 
-    @Autowired
+    @Autowired // so e possivel injetar essa Classe pq ela foi criada com @componnet do spring
     private DatabaseCleaner databaseCleaner; // Intancia da classe responsavel por limpar os dados do banco de dados
 
     @Autowired
@@ -56,7 +56,7 @@ public class CadastroCozinhaIT {
 
 
     /**
-     * Metodo executado antes de cada teste.
+     * Metodo executado antes de cada teste. Metodo de callBack
      * Evita repetição de codigo que era colocado em cada metodo de teste
      */
     @Before
@@ -69,24 +69,29 @@ public class CadastroCozinhaIT {
         jsonCorretoCozinhaChinesa = ResourceUtils.getContentFromResource(
                 "/json/correto/cozinha-chinesa.json");
 
+        // Antes de cada teste e feito a limpeza do banco e uma nova inserção
         databaseCleaner.clearTables(); // metodo que vai limpar os dados de todas as tabelas
         prepararDados();
     }
 
 
+    /*
+        TESTE DE API
+        -> Biblioteca utilizada  io.rest-assured
+     */
     @Test
     public void deveRetornarStatus200_QuandoConsultarCozinhas(){
 
-        //RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(); // Habilita o logging
+        //RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(); // Habilita o logging da requisição e da resposta
 
         RestAssured.given() // Dado que
-                    //.basePath("/cozinhas") // eu tenho basePath
-                    //.port(port) // na porta
-                    .accept(ContentType.JSON) // aceita o retorno em Json
-                .when() // Quando
-                    .get() // for feita uma requisição GET
-                    .then() // Então
-                    .statusCode(HttpStatus.OK.value()); // O status precisa ser 200
+                        //.basePath("/cozinhas") // eu tenho basePath
+                        //.port(port) // na porta
+                        .accept(ContentType.JSON) // aceita o retorno em Json
+                   .when() // Quando
+                        .get() // for feita uma requisição GET
+                   .then() // Então
+                        .statusCode(HttpStatus.OK.value()); // O status precisa ser 200
     }
 
 
@@ -98,13 +103,13 @@ public class CadastroCozinhaIT {
         RestAssured.given() // Dado que
                 //.basePath("/cozinhas") // eu tenho basePath
                 //.port(port) // na porta
-                .accept(ContentType.JSON) // aceita o retorno em Json
+                      .accept(ContentType.JSON) // aceita o retorno em Json
                 .when() // Quando
-                .get() // for feita uma requisição GET
+                      .get() // for feita uma requisição GET
                 .then() // Então
-                .body("", Matchers.hasSize(quantidadeCozinhasCadastradas)) // Verifica no corpo se tem a quantidade de cozinhas correta.
-                // Matchers -> biblioteca para inscrever expressoes com regras de correspondencia entre objetos
-                .body("nome" , Matchers.hasItems("Tailandesa", "Americana")); // Verifica se no corpo os objetos possuem esses nomes
+                      .body("", Matchers.hasSize(quantidadeCozinhasCadastradas)) // Verifica no corpo se tem a quantidade de (Objetos)cozinhas correta.
+                       // Matchers -> biblioteca para inscrever expressoes com regras de correspondencia entre objetos
+                      .body("nome" , Matchers.hasItems("Tailandesa", "Americana")); // Verifica se no corpo os objetos possuem esses nomes
 
     }
 
@@ -128,7 +133,7 @@ public class CadastroCozinhaIT {
     public void deveRetornarRespostaEStatusCorretos_QuandoConsultarCozinhaExistente() {
 
         RestAssured.given() // Dado que
-                .pathParam("cozinhaId", cozinhaAmericana.getId()) // o parametro de caminho, que é cozinhaId
+                    .pathParam("cozinhaId", cozinhaAmericana.getId()) // o parametro de caminho, que é cozinhaId
                     .accept(ContentType.JSON) // aceita o retorno em Json
                 .when() // Quando
                     .get("/{cozinhaId}") // for feita uma requisição GET

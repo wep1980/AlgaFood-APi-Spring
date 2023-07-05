@@ -3,7 +3,7 @@ package br.com.wepdev.api.controller;
 import java.util.List;
 
 import br.com.wepdev.api.DTO.EstadoDTO;
-import br.com.wepdev.api.inputDTO.EstadoInputDTO;
+import br.com.wepdev.api.DTOentrada.EstadoInputDTO;
 import br.com.wepdev.api.converter.EstadoConverterDTO;
 import br.com.wepdev.api.converter.EstadoInputConverterEstado;
 import org.springframework.beans.factory.annotation.Autowired;

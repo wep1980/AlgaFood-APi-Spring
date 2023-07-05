@@ -1,4 +1,4 @@
-package br.com.wepdev.api.inputDTO;
+package br.com.wepdev.api.DTOentrada;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +24,7 @@ public class RestauranteInputDTO {
     @NotNull // Nao pode ser nulo
     private CozinhaIdInputDTO cozinha;
 
-    @Valid // Valida os campos que estao em enderecpINPUT
+    @Valid // Valida os campos que estao em enderecoEntradaDTO
     @NotNull // O endereço nao pode ser nulo
     private EnderecoInputDTO endereco;
 
